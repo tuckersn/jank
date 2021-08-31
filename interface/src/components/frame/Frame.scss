@@ -1,0 +1,54 @@
+.mechanism {
+    &.title-bar {
+
+        display: flex;
+        height: 100%;
+
+        align-items: center;
+        justify-content: center;
+
+        user-select: none;
+        -webkit-app-region: drag;
+
+        
+
+        .left, .middle, .right {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            vertical-align: middle;
+            text-align: 100%;
+            height: 100%;
+            
+            .selectable {
+                -webkit-app-region: no-drag;
+                user-select: auto;
+            }
+        }
+
+        .left {
+            text-align: left;
+            flex: 33%;
+
+            justify-content: flex-start;
+        }
+        
+        .middle {
+            text-align: center;
+            flex: 34%;
+
+            justify-content: center;
+            
+        }
+        .right {
+            text-align: right;
+            flex: 33%;
+
+            justify-content: flex-end;
+        }
+
+
+
+    }
+}
