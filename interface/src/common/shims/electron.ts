@@ -2,10 +2,10 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 import { FrameEvent } from "jank-shared/dist/ipc/events";
 
-import { ipcRendererType, ShellType } from "./electron-types";
+import { ElectronType, IpcRendererType, RemoteType, ShellType } from "./electron-types";
 
 const electron = window.require('electron');
-const ipcRenderer: typeof ipcRendererType = electron.ipcRenderer;
+const ipcRenderer: IpcRendererType = electron.ipcRenderer;
 const shell: ShellType = electron.shell;
 
 export default class Electron {
@@ -37,9 +37,10 @@ export default class Electron {
         Electron.maximizationSubject.complete();
     }
     
-    
-    static ipcRenderer: any = ipcRenderer;
+    static electron: ElectronType = electron;
+    static ipcRenderer: IpcRendererType = ipcRenderer;
     static shell: ShellType = shell;
+    static remote: RemoteType = electron.remote;
     
     static maximized: boolean = false;
     static maximizationSubject: BehaviorSubject<boolean> = new BehaviorSubject(Electron.maximized);

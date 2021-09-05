@@ -1,7 +1,6 @@
 import React from "react";
-import { fileStringFromURL } from "../../common/util";
-import { TabProps } from "./TabManager";
-
+import { fileStringFromURL } from "../../../common/util";
+import { TabProps } from "../TabManager";
 
 
 export const ImageTab: React.FC<TabProps> = ({instance}) => {

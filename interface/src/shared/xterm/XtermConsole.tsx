@@ -5,10 +5,6 @@ import Xterm, { XtermProps } from "./Xterm";
 import { useState } from "react";
 
 
-function defaultPrompt(terminal: Terminal) {
-    
-}
-
 export type XtermConsoleProps = {
     prompt?: string,
     onInput: (input: {
@@ -21,15 +17,15 @@ export type XtermConsoleProps = {
     }) => boolean | Promise<boolean>
 } & Partial<XtermProps>;
 
-export function XtermConsole({ prompt: defaultPrompt, onInput, onData, onResize, onStart }: XtermConsoleProps) {
+export function XtermConsole({ prompt: defaultPrompt, onInput, onKey, onResize, onStart }: XtermConsoleProps) {
     const [prompt, setPrompt] = useState(defaultPrompt || '> ');
 
     return (
         <Xterm onStart={({terminal}) => {
                 terminal.writeln("Hello World!");
             }}
-            onData={async ({terminal, data}) => {
-                switch (data) {
+            onKey={onKey || (async ({terminal, char}) => {
+                switch (char) {
                     case '\r': // Enter
                     case '\u0003': // Ctrl+C
                         if(await onInput({
@@ -50,8 +46,8 @@ export function XtermConsole({ prompt: defaultPrompt, onInput, onData, onResize,
                     }
                     break;
                     default: // Print all other characters for demo
-                    terminal.write(data);
+                    terminal.write(char);
                 }
-        }}></Xterm>
+        })}></Xterm>
     );
 }

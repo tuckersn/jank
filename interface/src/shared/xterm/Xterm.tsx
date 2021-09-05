@@ -13,6 +13,7 @@ import "./Xterm.scss";
 
 import { openLinkInBrowser } from "../../common/util";
 import { Observable, Subject } from "rxjs";
+import ansiEscapes from "ansi-escapes";
 
 export type XtermOptions = {
     font: string;
@@ -22,7 +23,7 @@ export type XtermProps = {
     options?: XtermOptions,
     input?: Subject<string>,
     output?: Observable<string>,
-    onData?: (event: {terminal: Terminal, data: string}) => void | Promise<void>,
+    onKey?: (event: {terminal: Terminal, char: string}) => void | Promise<void>,
     onStart?: (event: {terminal: Terminal, fitAddon: FitAddon, searchAddon: SearchAddon, webLinksAddon: WebLinksAddon}) => void | Promise<void>
     /** If implemented will not automatically call fit()! */
     onResize?: (event: {terminal: Terminal, fitAddon: FitAddon}) => void | Promise<void>;
@@ -36,11 +37,12 @@ export const defaultXtermOptions = {
     font: "'IBM Plex Mono', monospace"
 }
 
-function Xterm({ onData, onResize, onStart, options: inputOptions, size, input, output }: XtermProps) {
+function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, output }: XtermProps) {
     const options = Object.assign({}, defaultXtermOptions, inputOptions);
     
     const [terminal] = useState(new Terminal({
-        fontFamily: options.font
+        fontFamily: options.font,
+        
     }));
 
     const [fitAddon] = useState(new FitAddon());
@@ -51,10 +53,6 @@ function Xterm({ onData, onResize, onStart, options: inputOptions, size, input, 
     }));
 
     const terminalRef = useRef<HTMLElement>(null);
-
-    console.log("HEIGHT:", size.height);
-    console.log("WIDTH:", size.width);
-
 
     useEffect(() => {
 
@@ -73,23 +71,28 @@ function Xterm({ onData, onResize, onStart, options: inputOptions, size, input, 
         }
 
         terminal.onData((data) => {
-            if(onData) {
-                onData({
+            if(onKey) {
+                onKey({
                     terminal, 
-                    data
+                    char: data
                 });
-            }
-            if(input) {
+            } else if(input) {
                 input.next(data);
             }
         });
+
+        if(input) {
+            input.subscribe((input) => {
+                terminal.write(input);
+            });
+        }
         
         if(output) {
             output.subscribe((data) => {
                 terminal.write(data);
             });
         }
-    }, [terminalRef]);
+    }, []);
 
 
     useEffect(() => {

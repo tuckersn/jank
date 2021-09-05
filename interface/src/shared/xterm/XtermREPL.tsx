@@ -1,41 +1,33 @@
+/* eslint-disable no-fallthrough */
 
 import { useEffect, useState } from "react";
-import { Observable, Subject } from "rxjs";
-import { repl as nodeREPL } from "../shims/repl";
-
+import { Subject } from "rxjs";
 import Xterm, { XtermProps } from "./Xterm";
-
+import { Terminal } from "xterm";
 
 export type XtermREPLProps = {
+    prompt?: string,
     input?: Subject<string>
     output?: Subject<string>
 } & Omit<XtermProps, 'size'>;
 
+export const DefaultXtermREPLProps: XtermREPLProps = {
+    prompt: "> "
+}
 
-export function XtermREPL({input, output, onData} : XtermREPLProps) {
+
+export function XtermREPL({input, output, onKey, prompt} : XtermREPLProps) {
+
+    prompt = prompt || DefaultXtermREPLProps.prompt;
 
     const [stdin] = useState(input || new Subject<string>());
     const [stdout] = useState(output || new Subject<string>());
+    const [term, setTerm] = useState<Terminal>();
 
-    useEffect(() => {
-        const repl = nodeREPL.start({
-            useGlobal: true
-        });
-
-        repl.on('line', (input) => {
-            stdin.next(input);
-        })
-
-        stdin.subscribe((input) => {
-            repl.eval('3', {}, '', () => {
-
-            });
-        });
-
-        return () => {
-            repl.close();
-        }
-    });
-
-    return <Xterm input={stdin} output={stdout} onData={onData}/>;
+    return <Xterm onKey={({char}) => {
+        stdin.next(char);
+    }} output={stdout} onStart={({terminal}) => {
+        setTerm(terminal);
+    }}/>;
 }
+

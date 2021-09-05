@@ -4,7 +4,7 @@ import { BsDash } from "react-icons/bs";
 
 import { ChromeCSSProperties } from "../../common";
 import Config from "../../common/config";
-import Electron from "../../common/electron";
+import Electron from "../../common/shims/electron";
 import * as TabManager from "../tab/TabManager";
 
 import "./Frame.scss";
@@ -98,6 +98,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
                 </div>
             </div>
         </div>
+        
         <div style={{height: `calc(100% - ${frameHeight}px)`, width: "100%"}}>
             {(() => {
                 switch(layout) {

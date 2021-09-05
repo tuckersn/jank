@@ -26,6 +26,11 @@ export function createNormalWindow() {
         }
     });
     
+    mainWindow.webContents.on('console-message', async (event, level, msg, line, sourceId) => {
+        //console.log("MAIN:", {event,level,msg,line,sourceId});
+        mainWindow.webContents.send('console-message', {level,msg,line,sourceId});
+    });
+    
     mainWindow.loadURL(`http://localhost:3000`);
 
 

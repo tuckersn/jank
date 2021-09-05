@@ -32,24 +32,6 @@ const json: IJsonModel = {
                         "enableFloat": true
 					}
 				]
-			},
-			{
-				"id": '1',
-				"type": "tabset",
-				"weight": 50,
-				"selected": 0,
-				"children": [
-					{
-						"type": "tab",
-						"name": "FI",
-						"component":"button",
-					},
-					{
-						"type": "tab",
-						"name": "FI",
-						"component":"button",
-					}
-				]
 			}
 		]
 	}
@@ -93,7 +75,7 @@ const instanceData: {[instanceId: string]: Instance<any>} = {};
 export function LayoutEditor({}) {
 
     
-    const [model, setModel] = useState(Model.fromJson(json as any));
+    const [model, setModel] = useState(Model.fromJson(json));
 
 	const addInstance = (inputInstance: MinimalInputInstance) => {
 		let instance: Instance<any> = TabManager.createInstance(inputInstance.fullName, inputInstance.args);
@@ -126,6 +108,9 @@ export function LayoutEditor({}) {
 
     useEffect(() => {
 		for(let exampleTab of exampleTabs) {
+			if(exampleTab.id)
+				if(exampleTab.id in instanceData)
+					continue;
 			addInstance(exampleTab);
 		}
 	}, [exampleTabs])
@@ -142,10 +127,11 @@ export function LayoutEditor({}) {
 			</button>;
         }
 
+		
 		try {
 			
 			let instance: Instance<any>;
-			console.log("INSTANCE:", node.getId(), instanceData);
+			//console.log("INSTANCE:", node.getId(), instanceData);
 			if(node.getId() in instanceData) {
 				instance = instanceData[node.getId()];
 				const TabComponent = instance.componentFunction;	

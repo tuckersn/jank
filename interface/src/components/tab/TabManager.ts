@@ -6,9 +6,10 @@ import * as ExtensionManager from "../../extensions/ExtensionManager";
 
 import { TextTab } from "./TextTab";
 import { TabListTab } from "./debugging/TabListTab";
-import { ImageTab } from "./ImageTab";
+import { ImageTab } from "./files/ImageTab";
 import { TerminalTab } from "./debugging/TerminalTab";
 import { REPLTab } from "./debugging/REPLTab";
+import { TextEditorTab } from "./files/TextEditorTab";
 
 
 export interface TabProps {
@@ -38,7 +39,8 @@ export const baseTabs: {[uniqueName: string]: React.FC<TabProps>} = {
     'tab-list': TabListTab,
     'image': ImageTab,
     'terminal': TerminalTab,
-    'repl': REPLTab
+    'repl': REPLTab,
+    'text-editor': TextEditorTab
 }
 
 
