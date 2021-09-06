@@ -9,8 +9,11 @@ export type MonacoEditorProps = {
     onStart: (args: {editor: monaco.editor.IStandaloneCodeEditor, model: monaco.editor.ITextModel}) => void | Promise<void>,
 
     // DEFAULTS
-    style?: CSSProperties,
-    value?: string,
+    style?: CSSProperties;
+    value?: string;
+    wordWrap?: "on" | "off";
+    minimap?: {enabled: boolean};
+    renderWhitespace?: "all" | "none" | "boundary" | "selection" | "trailing";
     
     // NO DEFAULTS
     language?: string,
@@ -22,7 +25,12 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
     style = {},
     value = 'Hello world!',
     language,
-    uri
+    uri,
+    wordWrap = "on",
+    minimap = {
+        enabled: false
+    },
+    renderWhitespace = "boundary"
 }) => {
 
     const [model, setModel] = useState<monaco.editor.ITextModel>();
@@ -41,7 +49,10 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
             language: 'typescript',
             model,
             theme: 'vs-dark',
-            automaticLayout: true
+            automaticLayout: true,
+            wordWrap,
+            minimap,
+            renderWhitespace
         });
 
         model.onDidChangeContent((event) => {

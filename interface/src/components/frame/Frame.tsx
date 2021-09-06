@@ -8,7 +8,7 @@ import Electron from "../../common/shims/electron";
 import * as TabManager from "../tab/TabManager";
 
 import "./Frame.scss";
-import { LayoutEditor } from "./LayoutEditor";
+import { LayoutEditor } from "./LayoutEditor/LayoutEditor";
 import { LayoutGrid } from "./LayoutGrid";
 import React from "react";
 

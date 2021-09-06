@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import FlexLayout, { IJsonModel, Layout, Model, TabNode } from "flexlayout-react";
 
-import  { Instance, MinimalInputInstance, TabProps } from "../tab/TabManager";
-import * as TabManager from "../tab/TabManager";
+import  { Instance, MinimalInputInstance, TabProps } from "../../tab/TabManager";
+import * as TabManager from "../../tab/TabManager";
 
-import "flexlayout-react/style/dark.css";
-import "./LayoutEditor.scss";
+
+
 import { nanoid } from "nanoid";
 
-
+import "./FlexLayout.scss";
+import "./LayoutEditor.scss";
 
 
 const json: IJsonModel = {
@@ -153,7 +154,10 @@ export function LayoutEditor({}) {
         height: '100%',
         width: '100%'
     }}>
-        <Layout model={model} factory={factory}
+        <Layout classNameMapper={(defaultClassName) => {
+			console.log("DEFAULT CLASS NAME:", defaultClassName);
+			return defaultClassName;
+		}} model={model} factory={factory}
 			onRenderTab={(node, renderValues) => {
 				const data = instanceData[node.getId()];
 				renderValues.content = data?.title ? data.title : renderValues.content;

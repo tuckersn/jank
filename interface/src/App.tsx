@@ -5,7 +5,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { Frame } from './components/frame/Frame';
 import { ChromeCSSProperties } from './common';
 import Config from './common/config';
-import { LayoutEditor } from './components/frame/LayoutEditor';
+import { LayoutEditor } from './components/frame/LayoutEditor/LayoutEditor';
 
 
 let containerStyle: ChromeCSSProperties = {
