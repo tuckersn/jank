@@ -2,14 +2,14 @@
 ROOTDIR=$PWD
 
 # Libraries
-cd ./shared
+cd $ROOTDIR/shared
 yarn run build &
 wait
 
 # Dependents
-cd ../electron
+cd $ROOTDIR/electron
 yarn run build &
 
-cd ../interface
+cd $ROOTDIR/interface
 yarn run build &
 wait
