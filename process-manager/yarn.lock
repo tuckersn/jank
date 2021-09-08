@@ -14,11 +14,6 @@
   resolved "http://192.168.1.88:4873/@types%2fnode/-/node-16.7.11.tgz#5877b3ab359af251fd413517be2d4265b7fea9a9"
   integrity sha512-OtOGO+DYmNNqJQG9HG4e5a6iqoRcNfdCf4ha3div7XF5w/uOa3YVpb5aRGClwSDKLmfOysv2hFIvoklffnQi4w==
 
-"@types/node@^16.7.6":
-  version "16.7.6"
-  resolved "http://192.168.1.88:4873/@types%2fnode/-/node-16.7.6.tgz#8666478db8095aa66e25b7e469f3e7b53ea2855e"
-  integrity sha512-VESVNFoa/ahYA62xnLBjo5ur6gPsgEE5cNRy8SrdnkZ2nwJSW0kJ4ufbFr2zuU9ALtHM8juY53VcRoTA7htXSg==
-
 ansi-regex@^5.0.0:
   version "5.0.0"
   resolved "http://192.168.1.88:4873/ansi-regex/-/ansi-regex-5.0.0.tgz#388539f55179bf39339c81af30a654d69f87cb75"
@@ -111,6 +106,17 @@ is-fullwidth-code-point@^3.0.0:
   version "3.0.0"
   resolved "http://192.168.1.88:4873/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz#f116f8064fe90b3f7844a38997c0b75051269f1d"
   integrity sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==
+
+jank-shared@../shared/:
+  version "0.0.1"
+  dependencies:
+    "@types/ip" "^1.1.0"
+    chalk "^4.1.2"
+    cli-highlight "^2.1.11"
+    ip "^1.1.5"
+    nanoid "^3.1.25"
+    rxjs "^7.3.0"
+    type-fest "^2.2.0"
 
 mz@^2.4.0:
   version "2.7.0"

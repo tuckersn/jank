@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
 import * as path from "path";
 
-import { onEventFrame } from "../channels/frame";
+import { onEventFrame } from "../ipc/frame";
 
 export function createNormalWindow() {
     // Create the browser window.

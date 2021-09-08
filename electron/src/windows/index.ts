@@ -1,2 +1,2 @@
-export * from "./normal";
-export * from "./overlay";
+export * from "./normal-window";
+export * from "./overlay-window";

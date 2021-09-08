@@ -1,0 +1,16 @@
+{
+  "name": "jank-process",
+  "version": "0.0.0",
+  "description": "Backend of Jank, to keep Electron's main process from being busy.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Tucker Sneed",
+  "license": "MIT",
+  "private": true,
+  "repository": "https://github.com/tuckersn/jank",
+  "dependencies": {
+    "jank-shared": "../shared/"
+  }
+}

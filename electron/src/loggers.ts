@@ -23,3 +23,4 @@ export const ipcLogger = winston.createLogger({
         new winston.transports.File({filename: './logs/ipc.log'})
     ]
 });
+

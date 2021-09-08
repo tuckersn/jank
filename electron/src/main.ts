@@ -1,14 +1,30 @@
 import { app, BrowserWindow, globalShortcut } from "electron";
+import { EPingPayload, ProcessManagerMessage } from "jank-shared/src/ipc/process-manager";
 import * as path from "path";
-import { onEventFrame } from "./channels/frame";
+import { onEventFrame } from "./ipc/frame";
+import ProcessManager from "./process-manager";
 import { createNormalWindow } from "./windows";
 
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on("ready", () => {
+// Start seperate process for running backends and CLI stuff.
+const pm = ProcessManager.start();
 
+app.on("ready", async () => {
+
+    const {input: pmInput, output: pmOutput} = await pm;
+
+    pmOutput.subscribe((msg: ProcessManagerMessage) => {
+        console.log("PM MESSAGE:", msg);
+    });
+
+    setInterval(() => {
+        pmInput.next({
+            type: 'e-ping'
+        } as EPingPayload)
+    }, 1000);
+
+
+    console.log("OPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \n")
     createNormalWindow();
 
     app.on("activate", function () {
