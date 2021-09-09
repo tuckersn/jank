@@ -11,6 +11,10 @@
   "private": true,
   "repository": "https://github.com/tuckersn/jank",
   "dependencies": {
-    "jank-shared": "../shared/"
+    "jank-shared": "../shared/",
+    "ws": "^8.2.1"
+  },
+  "devDependencies": {
+    "@types/ws": "^7.4.7"
   }
 }

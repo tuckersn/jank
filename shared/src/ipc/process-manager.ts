@@ -34,14 +34,26 @@ export type LogPayload = {
 export type SpawnRequestPayload = {
     type: 'e-spawn-request',
     payload: {
-        id: string
+        command: string,
+        name?: string,
+        program?: string,
+        /** 
+         * Used when you need to wait for the process
+         * to be spawned on the Electron side.
+         */
+        response_key?: string,
+        encoding?: BufferEncoding
     }
 }
 
 export type SpawnResponsePayload = {
     type: 'pm-spawn-response',
     payload: {
-        id: string
+        id: string,
+        /** 
+         * Comes from SpawnRequestPayload
+         */
+        response_key?: string
     }
 }
 

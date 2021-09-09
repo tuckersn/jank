@@ -8,6 +8,7 @@ import { BufferEncoding } from "jank-shared/src/shims"
 
 export interface ExecutableProcess {
     id: Readonly<string>;
+    command: Readonly<string>;
     name?: Readonly<string>;
     program?: Readonly<string>;
     stdout: Observable<string>;
@@ -22,16 +23,13 @@ export module ProcessRegistry {
     export const namedProcesses: {[name: string]: ExecutableProcess} = {};
     
     export function spawn(command: string, {
-        encoding,
-        onClose,
         name,
-        program
+        program,
+        encoding,
     } : {
+        name?: string;
+        program?: string;
         encoding?: BufferEncoding;
-        onStart?: () => Promisable<void>;
-        onClose?: () => Promisable<void>;
-        name?: string,
-        program?: string
     }): ExecutableProcess {
         const id: Readonly<string> = nanoid();
         const stdout = new Subject<string>();
@@ -47,6 +45,7 @@ export module ProcessRegistry {
 
         processes[id] = {
             id,
+            command,
             stdout,
             stdin,
             ref: process
@@ -81,11 +80,7 @@ export module ProcessRegistry {
                 delete namedProcesses[name];
             if(program)
                 delete programs[program][id];
-            if(onClose) {
-                await onClose();
-            }
         });
-
 
         return processes[id];
     }

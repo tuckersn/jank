@@ -14,6 +14,13 @@
   resolved "http://192.168.1.88:4873/@types%2fnode/-/node-16.7.11.tgz#5877b3ab359af251fd413517be2d4265b7fea9a9"
   integrity sha512-OtOGO+DYmNNqJQG9HG4e5a6iqoRcNfdCf4ha3div7XF5w/uOa3YVpb5aRGClwSDKLmfOysv2hFIvoklffnQi4w==
 
+"@types/ws@^7.4.7":
+  version "7.4.7"
+  resolved "http://192.168.1.88:4873/@types%2fws/-/ws-7.4.7.tgz#f7c390a36f7a0679aa69de2d501319f4f8d9b702"
+  integrity sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==
+  dependencies:
+    "@types/node" "*"
+
 ansi-regex@^5.0.0:
   version "5.0.0"
   resolved "http://192.168.1.88:4873/ansi-regex/-/ansi-regex-5.0.0.tgz#388539f55179bf39339c81af30a654d69f87cb75"
@@ -221,6 +228,11 @@ wrap-ansi@^7.0.0:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
+
+ws@^8.2.1:
+  version "8.2.1"
+  resolved "http://192.168.1.88:4873/ws/-/ws-8.2.1.tgz#bdd92b3c56fdb47d2379b5ae534281922cc5bd12"
+  integrity sha512-XkgWpJU3sHU7gX8f13NqTn6KQ85bd1WU7noBHTT8fSohx7OS1TPY8k+cyRPCzFkia7C4mM229yeHr1qK9sM4JQ==
 
 y18n@^5.0.5:
   version "5.0.8"
