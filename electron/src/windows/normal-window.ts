@@ -23,6 +23,7 @@ export function createNormalWindow() {
         switch(channel) {
             case "frame":
                 onEventFrame({window: mainWindow, event: args});
+    
         }
     });
     

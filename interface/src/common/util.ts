@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as url from "url";
 
-import Electron from "./shims/electron";
+import { ElectronShim, electron } from "./shims/electron";
 
 
 export interface State<TYPE> {
@@ -19,7 +19,7 @@ export function fileStringFromPath(pathString: string): string {
 
 
 export function openLinkInBrowser(urlString: string): void {
-    Electron.shell.openExternal(urlString, {
+    electron.shell.openExternal(urlString, {
 
     });
 }

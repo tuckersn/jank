@@ -1,13 +1,16 @@
 import { OnEventFunction } from "."
-import { ProcessEvent } from "jank-shared/src/ipc";
+import { ProcessMessages } from "jank-shared/src/communication/render-ipc";
+import ProcessManager from "../process-manager";
 
 
-export const onEventProcess: OnEventFunction<ProcessEvent> = async ({window, event}) => {
-    switch(event.event) {
-        case "spawn":
-            console.log("I WAS ASKED TO SPAWN A PROCESS:", event);
-        case "stdin":
+export const onEventProcess: OnEventFunction<ProcessMessages.RenderMessages> = async ({window, event}) => {
+    switch(event.type) {
+        case 'process-spawn':
+            ProcessManager.spawnProcess(event.payload.command, {
+                request_id: event.payload.request_id
+            });
+            return;
         default:
-            throw "Invalid event ttype in onVe"
+            throw new Error("Invalid event type");
     }
 }

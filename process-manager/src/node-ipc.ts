@@ -1,4 +1,4 @@
-import { ElectronMessage, LogPayload, ProcessManagerMessage } from "jank-shared/dist/ipc/process-manager";
+import { ElectronMessage, LogPayload, ProcessManagerMessage } from "jank-shared/src/communication/process-manager-ipc";
 import { ProcessRegistry } from "./process-registry";
 
 export module NodeIPC {
@@ -34,7 +34,7 @@ export module NodeIPC {
                     type: 'pm-spawn-response',
                     payload: {
                         id: spawnedProcess.id,
-                        response_key: msg.payload.response_key
+                        request_id: msg.payload.request_id
                     }
                 });
                 break;

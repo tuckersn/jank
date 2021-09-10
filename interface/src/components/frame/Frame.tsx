@@ -4,13 +4,14 @@ import { BsDash } from "react-icons/bs";
 
 import { ChromeCSSProperties } from "../../common";
 import Config from "../../common/config";
-import Electron from "../../common/shims/electron";
+
 import * as TabManager from "../tab/TabManager";
 
 import "./Frame.scss";
 import { LayoutEditor } from "./LayoutEditor/LayoutEditor";
 import { LayoutGrid } from "./LayoutGrid";
 import React from "react";
+import { ElectronShim } from "../../common/shims/electron";
 
 
 const FrameContext: React.Context<{
@@ -80,19 +81,19 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
                 <div className="right">
                     <div className="selectable">
                         <BsDash onClick={() => {
-                            Electron.window.minimize();
+                            ElectronShim.Frame.minimize();
                         }}/>
                     </div>
                     <div className="selectable" onClick={() => {
-                        Electron.window.maximize();
+                         ElectronShim.Frame.maximize();
                     }}>
-                        {Electron.maximized ?
+                        { ElectronShim.Frame.maximizationSubject ?
                             <MdFullscreenExit/> : 
                             <MdFullscreen/>}
                     </div>
                     <div className="selectable">
                         <MdClose onClick={() => {
-                            Electron.window.close();
+                             ElectronShim.Frame.close();
                         }}/>
                     </div>
                 </div>

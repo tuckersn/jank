@@ -1,24 +1,24 @@
 import { BrowserWindow, IpcMainEvent } from "electron";
-import { FrameEvent } from "jank-shared/src/ipc";
+import { FrameMessages } from "jank-shared/src/communication/render-ipc";
 import { OnEventFunction } from ".";
 import { ipcLogger } from "../loggers";
 
 
-export const onEventFrame: OnEventFunction<FrameEvent> = ({window, event}) => {
+export const onEventFrame: OnEventFunction<FrameMessages.RenderMessages> = ({window, event}) => {
     ipcLogger.info("FRAME ARGS:", event);
-    switch(event.event) {
-        case "close":
+    switch(event.type) {
+        case 'frame-close':
             window.close();
             break;
-        case "minimize":
+        case 'frame-minimize':
             window.minimize();
             break;
-        case "maximize":
+        case 'frame-maximize':
             if(window.isMaximized())
                 window.unmaximize();
             else
                 window.maximize();
         default:
-            throw "onMessageFrame - Invalid event type: " + event.event;
+            throw "onMessageFrame - Invalid event type: " + event.type;
     }
 }

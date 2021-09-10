@@ -1,71 +1,79 @@
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 
-import { FrameEvent } from "jank-shared/dist/ipc/events";
+import { FrameMessages, ProcessMessages } from "jank-shared/src/communication/render-ipc";
 
 import { ElectronType, IpcRendererType, RemoteType, ShellType } from "./electron-types";
+import { nanoid } from "nanoid";
 
-const electron = window.require('electron');
-const ipcRenderer: IpcRendererType = electron.ipcRenderer;
-const shell: ShellType = electron.shell;
+export const electron: ElectronType = window.require('electron');
+export const ipcRenderer: IpcRendererType = electron.ipcRenderer;
+export const shell: ShellType = electron.shell;
 
-export default class Electron {
+export module ElectronShim { 
 
-
-    private static initialized: boolean = false;
-    /**
-     * Run at the start, needs to be setup
-     * to handle updates, RXJS seems a good idea
-     * here.
-     */
-    static init() {
-        if(!Electron.initialized) {
-
-            ipcRenderer.on('frame', (event, { maximized } : {event:"maximization"} & FrameEvent) => {
-                Electron.maximized = maximized;
-                Electron.maximizationSubject.next(Electron.maximized);
-            });
-
-        } else {
-            throw "Cannot initialize twice.";
+    ipcRenderer.on('frame', (event: any, msg: FrameMessages.MainMessages) => {
+        switch(msg.type) {
+            case 'frame-maximized':
+                Frame.maximizationSubject.next(msg.payload.maximized);
+                return;
+            default:
+                throw new Error("Unknown message type from main: " + msg.type);
         }
+    });
+
+    ipcRenderer.on('process', (event: any, msg: ProcessMessages.MainMessages) => {
+        switch(msg.type) {
+            case 'process-spawn-response':
+
+        }
+    });
+
+
+    export function destroy() {
+        Frame.maximizationSubject.complete();
     }
 
-    /**
-     * Runs at the end for clean up.
-     */
-    static destroy() {
-        Electron.maximizationSubject.complete();
+    export async function spawnProcess(command: string) {
+        const request_id: string = nanoid();
+        const event: ProcessMessages.RSpawn = {
+            type: 'process-spawn',
+            payload: {
+                command,
+                request_id
+            }
+        }
+        ipcRenderer.send('process', event);
     }
-    
-    static electron: ElectronType = electron;
-    static ipcRenderer: IpcRendererType = ipcRenderer;
-    static shell: ShellType = shell;
-    static remote: RemoteType = electron.remote;
-    
-    static maximized: boolean = false;
-    static maximizationSubject: BehaviorSubject<boolean> = new BehaviorSubject(Electron.maximized);
-    static window = {
-        minimize: () => {
-            const event: FrameEvent = {
-                event: 'minimize'
+
+
+    export class Frame {
+        
+        static maximized: boolean = false;
+        static maximizationSubject: BehaviorSubject<boolean> = new BehaviorSubject(Frame.maximized);
+        
+        static minimize() {
+            const event: FrameMessages.RMinimize = {
+                type: 'frame-minimize',
+                payload: {}
             }
             ipcRenderer.send('frame', event);
-        },
-        close: () => {
-            const event: FrameEvent = {
-                event: 'close'
+        };
+        static close() {
+            const event: FrameMessages.RClose = {
+                type: 'frame-close',
+                payload: {}
             }
             ipcRenderer.send('frame', event);
             
-        },
-        maximize: () => {
-            const event: FrameEvent = {
-                event: 'maximize'
+        };
+        static maximize() {
+            const event: FrameMessages.RMaximize = {
+                type: 'frame-maximize',
+                payload: {}
             }
             ipcRenderer.send('frame', event);
-        }
+        };
     }
-
 
 
 }

@@ -7,7 +7,7 @@ import * as ExtensionManager from "../../extensions/ExtensionManager";
 import { TextTab } from "./TextTab";
 import { TabListTab } from "./debugging/TabListTab";
 import { ImageTab } from "./files/ImageTab";
-import { TerminalTab } from "./debugging/TerminalTab";
+import { TerminalTab } from "./TerminalTab";
 import { REPLTab } from "./debugging/REPLTab";
 import { TextEditorTab } from "./files/TextEditorTab";
 

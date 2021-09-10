@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 
-import { loadIntoGlobal } from "./__global";
+import { loadIntoGlobal } from "./global";
 
 
 loadIntoGlobal();

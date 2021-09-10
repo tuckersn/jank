@@ -12,6 +12,7 @@
   "repository": "https://github.com/tuckersn/jank",
   "dependencies": {
     "jank-shared": "../shared/",
+    "type-fest": "^2.2.0",
     "ws": "^8.2.1"
   },
   "devDependencies": {

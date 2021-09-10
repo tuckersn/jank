@@ -1,6 +1,6 @@
 import { ChildProcess, ChildProcessByStdio, fork } from "child_process";
 import * as process from "process";
-import { ElectronMessage, ProcessManagerMessage, InitializationPayload, InitializationResponsePayload } from "jank-shared/src/ipc/process-manager";
+import { ElectronMessage, ProcessManagerMessage, InitializationPayload, InitializationResponsePayload, SpawnRequestPayload } from "jank-shared/src/communication/process-manager-ipc";
 
 import { TCP } from "jank-shared/dist/networking/tcp";
 import { Observable, Subject } from "rxjs";
@@ -18,35 +18,23 @@ export module ProcessManager {
     let initialized: boolean = false;
     let processManagerProcess: ChildProcess | undefined;
     let httpServerPort: number = 35000;
-    let tcpServerPort: number;
 
 
     export function ports(): Readonly<{http?: number, tcp?: number}> {
         return {
-            http: httpServerPort,
-            tcp: tcpServerPort
+            http: httpServerPort
         }
     }
 
 
     /**
-     * Sends a message over the IP,
-     * resolves true if successful.
+     * Sends a message over the IPC
+     * wrapped with ElectronMessage.
      */
-    function send(msg: string): Promise<boolean> {
-        return new Promise((res,err) => { 
-            if(processManagerProcess) {
-                processManagerProcess.send(msg, (error) => {
-                    if(error) {
-                        err(error);
-                    } else {
-                        res(true);
-                    }
-                });
-            } else {
-                res(false);
-            }
-        });
+    function send(msg: ElectronMessage) {
+        if(processManagerProcess) {
+            processManagerProcess.send(msg);
+        }
     }
 
 
@@ -101,24 +89,6 @@ export module ProcessManager {
             }
         }
 
-        // Find valid TCP port based off HTTP port.
-        tcpServerPort = httpServerPort + 1;
-        for(let i = 0; i < maxRetries; i++) {
-            try {
-                let used = await TCP.check(tcpServerPort);
-                if(!used) {
-                    break;
-                } else {
-                    if(i === maxRetries) {
-                        throw "No valid TCP port found."
-                    }
-                    tcpServerPort += i * 100;
-                }
-            } catch(e) {
-                console.error("TCP CHECKING ERROR:", e);
-            }
-        }
-
         processManagerProcess = fork("../process-manager/dist/main.js", {
             cwd: process.cwd(),
             stdio: ["pipe", "pipe", "ipc"]
@@ -127,8 +97,7 @@ export module ProcessManager {
         processManagerProcess.send({
             type: 'e-init',
             payload: {
-                httpPort: httpServerPort,
-                tcpPort: tcpServerPort
+                httpPort: httpServerPort
             }
         } as InitializationPayload);
 
@@ -173,5 +142,31 @@ export module ProcessManager {
         }
     }
 
+
+    /**
+     * External to module spawning of process.
+     */
+    export function spawnProcess(command: string, {
+        encoding,
+        name,
+        program,
+        request_id
+    } : {
+        encoding?: BufferEncoding,
+        name?: string,
+        program?: string,
+        request_id?: string
+    }) {
+        send({
+            type: 'e-spawn-request',
+            payload: {
+                command: command,
+                encoding,
+                name,
+                program,
+                request_id
+            }
+        })
+    }
 
 }

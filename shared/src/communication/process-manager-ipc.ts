@@ -41,7 +41,7 @@ export type SpawnRequestPayload = {
          * Used when you need to wait for the process
          * to be spawned on the Electron side.
          */
-        response_key?: string,
+        request_id?: string,
         encoding?: BufferEncoding
     }
 }
@@ -53,7 +53,7 @@ export type SpawnResponsePayload = {
         /** 
          * Comes from SpawnRequestPayload
          */
-        response_key?: string
+        request_id?: string
     }
 }
 

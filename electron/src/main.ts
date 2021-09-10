@@ -1,9 +1,10 @@
 import { app, BrowserWindow, globalShortcut } from "electron";
-import { EPingPayload, ProcessManagerMessage } from "jank-shared/src/ipc/process-manager";
+import { EPingPayload, ProcessManagerMessage } from "jank-shared/src/communication/process-manager-ipc";
 import * as path from "path";
 import { onEventFrame } from "./ipc/frame";
 import ProcessManager from "./process-manager";
 import { createNormalWindow } from "./windows";
+
 
 
 // Start seperate process for running backends and CLI stuff.
@@ -23,8 +24,6 @@ app.on("ready", async () => {
         } as EPingPayload)
     }, 1000);
 
-
-    console.log("OPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \nOPEN OPEN \n")
     createNormalWindow();
 
     app.on("activate", function () {
