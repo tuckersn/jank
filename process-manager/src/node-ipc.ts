@@ -36,12 +36,6 @@ export module NodeIPC {
                     programName: msg.payload.program,
                     encoding: msg.payload.encoding
                 });
-
-                spawnedProcess.output.subscribe((msg) => {
-                    NodeIPC.print("PROCESS:" + msg);
-                });
-
-
                 NodeIPC.send({
                     type: 'pm-spawn-response',
                     payload: {

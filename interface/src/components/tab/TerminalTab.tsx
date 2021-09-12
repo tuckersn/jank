@@ -7,6 +7,9 @@ import ansiEscapes from 'ansi-escapes';
 import { ElectronShim } from "../../common/shims/electron";
 import { Subject } from "rxjs";
 import Xterm from "../../shared/xterm/Xterm";
+import { start } from "repl";
+
+import { ProcessManagerWS } from "jank-shared/dist/communication/process-manager-ws";
 
 const termChalk = new chalk.Instance({
     level: 2
@@ -38,8 +41,22 @@ export const TerminalTab: React.FC<TabProps> = ({instance}) => {
                 }
 
                 socket.addEventListener('message', async (event) => {
-                    console.log("GOT MESSAGE:", event, event.data, await event.data.text());
-                    output.next(await event.data.text());
+
+                    const msg = typeof event.data === 'string' ? event.data : (await event.data instanceof Blob ? event.data.text() : event.data.toString());
+                    console.log("GOT MESSAGE:", event, event.data, msg);
+
+                    const {starting, data} = ProcessManagerWS.split(msg);
+
+                    switch(starting) {
+                        case "err":
+                            console.error(data);
+                            break;
+                        case "out":
+                            output.next(data);
+                            break;
+                        default:
+                            console.warn("Unknown operation:", starting);
+                    }                    
                 });
     
                 socket.addEventListener('error', (e) => {
@@ -54,7 +71,7 @@ export const TerminalTab: React.FC<TabProps> = ({instance}) => {
                 })
     
                 input.subscribe((input) => {
-                    socket.send(input);
+                    socket.send('in:' + input);
                 });
             });
         });    

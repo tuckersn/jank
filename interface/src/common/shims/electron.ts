@@ -37,7 +37,7 @@ export module ElectronShim {
 
     export async function spawnProcess(command: string, {
         args = [],
-        timeout = 5000,
+        timeout = 10000,
         promise = true
     } : {
         args?: string[],

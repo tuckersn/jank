@@ -1,5 +1,5 @@
 import { ChildProcessByStdio, spawn as nodeSpawnProcess, default as child_process } from "child_process";
-import { Observable, Subject, merge, mergeAll } from "rxjs";
+import { Observable, Subject, BehaviorSubject, merge, mergeAll } from "rxjs";
 import { nanoid } from "nanoid";
 import { Promisable } from "type-fest";
 import { Writable, Readable, Stream, Pipe } from 'node:stream';
@@ -24,6 +24,13 @@ export abstract class ExecutableProcess {
     public executed: boolean = false;
     public input = new Subject<Buffer>();
     public output = new Subject<Buffer>();
+    public size = new BehaviorSubject<{
+        cols: number,
+        rows: number
+    }>({
+        cols: 100,
+        rows: 30
+    });
     public shutdown = new Subject<{code?: number, signal?: number}>();
 
     constructor(public id: string, public command: string, public options: {

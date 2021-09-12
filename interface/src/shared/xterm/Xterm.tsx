@@ -34,7 +34,8 @@ export type XtermProps = {
 }
 
 export const defaultXtermOptions = {
-    font: "'IBM Plex Mono', monospace"
+    font: "'IBM Plex Mono', monospace",
+    fontSize: 12
 }
 
 function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, output }: XtermProps) {
@@ -42,7 +43,7 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
     
     const [terminal] = useState(new Terminal({
         fontFamily: options.font,
-        
+        fontSize: options.fontSize
     }));
 
     const [fitAddon] = useState(new FitAddon());
@@ -96,6 +97,7 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
         } else {
             fitAddon.fit();
         }
+        console.log("TERM:", terminal.cols);
     }, [size.height, size.width]);
 
     return (<div style={{height: "100%", width: "100%"}}>

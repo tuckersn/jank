@@ -31,6 +31,10 @@ export type FrameFunctions = {
     tabManager: TabManager.Manager
 }
 
+
+const iconScale = 5.5;
+
+
 export const Frame: FC<FrameProps> = ({ children, layout }) => {
 
     const [frameHeight, setFrameHeight]  = useState(Config.style.frame.height);
@@ -62,7 +66,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
             <div className={"mechanism title-bar"}>
                 <div className="left">
                     <div className="selectable">
-                        <MdMenu onClick={() => {
+                        <MdMenu size={iconScale * Math.log(frameHeight)} onClick={() => {
                             console.log("Menu would go here!");
                         }}/>
                     </div>
@@ -80,7 +84,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
                 </div>
                 <div className="right">
                     <div className="selectable">
-                        <BsDash onClick={() => {
+                        <BsDash size={iconScale * Math.log(frameHeight)} onClick={() => {
                             ElectronShim.Frame.minimize();
                         }}/>
                     </div>
@@ -88,11 +92,11 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
                          ElectronShim.Frame.maximize();
                     }}>
                         { ElectronShim.Frame.maximizationSubject ?
-                            <MdFullscreenExit/> : 
-                            <MdFullscreen/>}
+                            <MdFullscreenExit size={iconScale * Math.log(frameHeight)}/> : 
+                            <MdFullscreen size={iconScale * Math.log(frameHeight)}/>}
                     </div>
                     <div className="selectable">
-                        <MdClose onClick={() => {
+                        <MdClose size={iconScale * Math.log(frameHeight)} onClick={() => {
                              ElectronShim.Frame.close();
                         }}/>
                     </div>

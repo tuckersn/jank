@@ -4,7 +4,7 @@ import { NodeIPC } from "./node-ipc";
 import { ProcessRegistry } from "./processes/process-registry";
 import { WebSocketServer } from "./websocket-server";
 import { logger } from "./logger";
-
+import { ProcessManagerWS } from "jank-shared/dist/communication/process-manager-ws";
 
 // process.on('unhandledRejection', (reason) => {
 //     logger.error(reason);
@@ -12,6 +12,7 @@ import { logger } from "./logger";
 // process.on('uncaughtException', (reason) => {
 //     logger.error(reason);
 // })
+
 
 
 
@@ -30,10 +31,22 @@ process.once('message', function main({type, payload}: InitializationPayload) {
     const { httpPort } = payload;
     const webServer = WebSocketServer.create(httpPort, (exec, socket, state) => {
         exec.output.subscribe((output) => {
-            socket.send(output);
+            socket.send("out:" + output);
         });
         return (msg) => {
-            exec.input.next(typeof msg === 'string' ? Buffer.from(msg) : msg);
+            const {starting,data} = ProcessManagerWS.split(msg.toString('utf-8'));
+            switch(starting) {
+                case "in":
+                    exec.input.next(Buffer.from(data));
+                    break;
+                case "size":
+                    const size: {cols:number,rows:number} = JSON.parse(data);
+                    //TODO: needs to be keep track of each client's size and then use the minimum.
+                    //TODO: send it back, maybe to all OTHER clients.
+                    exec.size.next(size);
+                    break;
+            }
+            
         };
     });
 

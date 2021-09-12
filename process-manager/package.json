@@ -15,6 +15,7 @@
     "jank-shared": "../shared/",
     "node-pty": "^0.10.1",
     "type-fest": "^2.2.0",
+    "winston": "^3.3.3",
     "ws": "^8.2.1"
   },
   "devDependencies": {
