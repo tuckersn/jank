@@ -1,7 +1,9 @@
 import { BrowserWindow } from "electron";
 import * as path from "path";
+import { onEventProcess } from "../ipc";
 
 import { onEventFrame } from "../ipc/frame";
+import { WindowManager } from "./window-manager";
 
 export function createNormalWindow() {
     // Create the browser window.
@@ -19,12 +21,18 @@ export function createNormalWindow() {
         autoHideMenuBar: true
     });
 
+    WindowManager.register({
+        browserWindow: mainWindow,
+        webContents: mainWindow.webContents
+    });
+
     mainWindow.webContents.addListener('ipc-message', (event, channel, args) => {
         switch(channel) {
             case "frame":
                 onEventFrame({window: mainWindow, event: args});
-    
-        }
+            case "process":
+                onEventProcess({window: mainWindow, event: args});
+        }      
     });
     
     mainWindow.webContents.on('console-message', async (event, level, msg, line, sourceId) => {

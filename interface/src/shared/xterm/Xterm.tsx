@@ -21,8 +21,8 @@ export type XtermOptions = {
 
 export type XtermProps = {
     options?: XtermOptions,
-    input?: Subject<string>,
-    output?: Observable<string>,
+    input: Subject<string>,
+    output: Observable<string>,
     onKey?: (event: {terminal: Terminal, char: string}) => void | Promise<void>,
     onStart?: (event: {terminal: Terminal, fitAddon: FitAddon, searchAddon: SearchAddon, webLinksAddon: WebLinksAddon}) => void | Promise<void>
     /** If implemented will not automatically call fit()! */
@@ -70,6 +70,11 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
             });
         }
 
+        output.subscribe((chunk) => {
+            console.log("OUTPUT:", chunk);
+            terminal.write(chunk);
+        });
+
         terminal.onData((data) => {
             if(onKey) {
                 onKey({
@@ -81,21 +86,11 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
             }
         });
 
-        if(input) {
-            input.subscribe((input) => {
-                terminal.write(input);
-            });
-        }
-        
-        if(output) {
-            output.subscribe((data) => {
-                terminal.write(data);
-            });
-        }
     }, []);
 
 
     useEffect(() => {
+        console.log("RESIZE:", onResize?.toString());
         if(onResize) {
             onResize({terminal, fitAddon});
         } else {
@@ -105,7 +100,7 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
 
     return (<div style={{height: "100%", width: "100%"}}>
         
-        <div ref={terminalRef as LegacyRef<HTMLDivElement>}>
+        <div style={{height: "100%", width: "100%"}} ref={terminalRef as LegacyRef<HTMLDivElement>}>
         </div>
     </div>);
 }

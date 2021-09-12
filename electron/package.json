@@ -4,6 +4,7 @@
   "description": "Main process",
   "private": true,
   "scripts": {
+    "version": "electron -h",
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
@@ -20,8 +21,10 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "electron": "^13.1.7",
+    "electron": "^14.0.0",
     "jank-shared": "../shared/",
+    "nanoid": "^3.1.25",
+    "node-pty": "^0.10.1",
     "rxjs": "^7.3.0",
     "type-fest": "^2.2.0",
     "winston": "^3.3.3"

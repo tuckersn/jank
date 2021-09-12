@@ -154,10 +154,7 @@ export function LayoutEditor({}) {
         height: '100%',
         width: '100%'
     }}>
-        <Layout classNameMapper={(defaultClassName) => {
-			console.log("DEFAULT CLASS NAME:", defaultClassName);
-			return defaultClassName;
-		}} model={model} factory={factory}
+        <Layout model={model} factory={factory}
 			onRenderTab={(node, renderValues) => {
 				const data = instanceData[node.getId()];
 				renderValues.content = data?.title ? data.title : renderValues.content;

@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, filter, Observable, Subject } from "rxjs";
 
 import { FrameMessages, ProcessMessages } from "jank-shared/src/communication/render-ipc";
 
@@ -21,10 +21,12 @@ export module ElectronShim {
         }
     });
 
+
+    const processMessages = new Subject<ProcessMessages.MainMessages>();
     ipcRenderer.on('process', (event: any, msg: ProcessMessages.MainMessages) => {
         switch(msg.type) {
             case 'process-spawn-response':
-
+                processMessages.next(msg);
         }
     });
 
@@ -33,16 +35,47 @@ export module ElectronShim {
         Frame.maximizationSubject.complete();
     }
 
-    export async function spawnProcess(command: string) {
+    export async function spawnProcess(command: string, {
+        args = [],
+        timeout = 5000,
+        promise = true
+    } : {
+        args?: string[],
+        timeout?: number,
+        /** Whether or not to create a promise. True = make promise*/
+        promise?: boolean
+    } = {}) {
         const request_id: string = nanoid();
         const event: ProcessMessages.RSpawn = {
             type: 'process-spawn',
             payload: {
                 command,
+                args,
                 request_id
             }
         }
         ipcRenderer.send('process', event);
+
+        console.log("WRPPING UP.")
+
+        if(!promise)
+            return;
+
+        return new Promise<string>((res, err) => {
+            let subscription = processMessages.pipe(filter(msg => request_id === msg.payload.request_id)).subscribe((msg: ProcessMessages.MSpawnResponse) => {
+                res(msg.payload.id);
+                subscription.unsubscribe();
+            });
+
+            //TODO: options for this
+            setTimeout(() => {
+                if(!subscription.closed) {
+                    subscription.unsubscribe();
+                    err("Timed out");
+                }
+            }, timeout);
+        });
+
     }
 
 

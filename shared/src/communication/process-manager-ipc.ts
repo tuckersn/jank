@@ -37,6 +37,7 @@ export type SpawnRequestPayload = {
         command: string,
         name?: string,
         program?: string,
+        args?: string[],
         /** 
          * Used when you need to wait for the process
          * to be spawned on the Electron side.

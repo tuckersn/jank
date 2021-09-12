@@ -3,6 +3,7 @@ import  "xterm/lib/xterm.js";
 import "xterm/css/xterm.css";
 import Xterm, { XtermProps } from "./Xterm";
 import { useState } from "react";
+import { Subject } from "rxjs";
 
 
 export type XtermConsoleProps = {
@@ -19,9 +20,10 @@ export type XtermConsoleProps = {
 
 export function XtermConsole({ prompt: defaultPrompt, onInput, onKey, onResize, onStart }: XtermConsoleProps) {
     const [prompt, setPrompt] = useState(defaultPrompt || '> ');
-
+    const [stdin] = useState(new Subject<string>());
+    const [stdout] = useState(new Subject<string>());
     return (
-        <Xterm onStart={({terminal}) => {
+        <Xterm input={stdin} output={stdout} onStart={({terminal}) => {
                 terminal.writeln("Hello World!");
             }}
             onKey={onKey || (async ({terminal, char}) => {

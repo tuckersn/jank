@@ -4,6 +4,7 @@
   "description": "Backend of Jank, to keep Electron's main process from being busy.",
   "main": "index.js",
   "scripts": {
+    "compile": "bash ./electron_build.bash",
     "build": "tsc"
   },
   "author": "Tucker Sneed",
@@ -12,6 +13,7 @@
   "repository": "https://github.com/tuckersn/jank",
   "dependencies": {
     "jank-shared": "../shared/",
+    "node-pty": "^0.10.1",
     "type-fest": "^2.2.0",
     "ws": "^8.2.1"
   },

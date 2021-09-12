@@ -4,6 +4,9 @@ import { ElectronMessage, ProcessManagerMessage, InitializationPayload, Initiali
 
 import { TCP } from "jank-shared/dist/networking/tcp";
 import { Observable, Subject } from "rxjs";
+import { ipcMain } from "electron";
+import { ProcessMessages } from "jank-shared/src/communication/render-ipc";
+import { WindowManager } from "../windows/window-manager";
 
 
 
@@ -52,6 +55,17 @@ export module ProcessManager {
                     console.log(msg.payload.text);
                 }
                 break;
+            case "pm-spawn-response":
+                console.log("Got spawn response.");
+                const payload: ProcessMessages.MSpawnResponse = {
+                    type: 'process-spawn-response',
+                    payload: {
+                        id: msg.payload.id,
+                        request_id: msg.payload.request_id
+                    }
+                };
+                WindowManager.broadcast('process', payload);
+                break;
             default:
                 throw new Error("Invalid message type: " + msg.type);
         }
@@ -91,8 +105,19 @@ export module ProcessManager {
 
         processManagerProcess = fork("../process-manager/dist/main.js", {
             cwd: process.cwd(),
-            stdio: ["pipe", "pipe", "ipc"]
+            stdio: ["ipc", "pipe", "pipe"]
         });
+
+        
+        processManagerProcess.stdout.on('data', (data) => {
+            console.log(`[PROCESS MANAGER]: ${data}`);
+        });
+
+        if(processManagerProcess.stderr)
+            processManagerProcess.stderr.on('data', (data) => {
+              console.error(`[PROCESS MANAGER][ERROR]: ${data}`);
+            });
+
 
         processManagerProcess.send({
             type: 'e-init',
@@ -105,6 +130,7 @@ export module ProcessManager {
             console.error("FAILED TO START PROCESS MANAGER:", err);
         });
 
+
         processManagerProcess.on('close', (code, signal) => {
             console.error("ProcessManager closed!", code, signal);
             process.exit(1);
@@ -112,7 +138,7 @@ export module ProcessManager {
 
         // This is the start of the IPC communication!
         processManagerProcess.once('message', (msg: InitializationResponsePayload) => {
-
+            console.log("*PM*");
             if(msg.type !== 'pm-init-response')
                 throw new Error("Invalid initialization response: " + JSON.stringify(msg));
 
@@ -128,10 +154,15 @@ export module ProcessManager {
 
             // Electron to ProcessManager messages.
             input.subscribe((msg) => {
+
                 processManagerProcess.send(msg);
             }); 
         });
 
+
+
+        
+      
 
         
 

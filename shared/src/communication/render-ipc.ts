@@ -34,13 +34,15 @@ export module ProcessMessages {
         type: 'process-spawn',
         payload: {
             request_id?: string,
-            command: string
+            command: string,
+            args?: string[]
         }
     }
 
     export interface MSpawnResponse extends Message {
         type: 'process-spawn-response',
         payload: {
+            id: string,
             request_id?: string
         }
     }
@@ -52,5 +54,5 @@ export module ProcessMessages {
 
 
 export type RenderMessages = FrameMessages.RenderMessages | ProcessMessages.RenderMessages;
-export type MainMessages = FrameMessages.MainMessages | FrameMessages.MainMessages;
+export type MainMessages = FrameMessages.MainMessages | ProcessMessages.MainMessages;
 export type AnyMessage = RenderMessages | MainMessages;

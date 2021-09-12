@@ -1,12 +1,23 @@
 import { Socket } from "net";
 import { ElectronMessage, InitializationPayload, LogPayload } from "jank-shared/src/communication/process-manager-ipc"
 import { NodeIPC } from "./node-ipc";
-import { ProcessRegistry } from "./process-registry";
+import { ProcessRegistry } from "./processes/process-registry";
 import { WebSocketServer } from "./websocket-server";
+import { logger } from "./logger";
+
+
+// process.on('unhandledRejection', (reason) => {
+//     logger.error(reason);
+// })
+// process.on('uncaughtException', (reason) => {
+//     logger.error(reason);
+// })
+
+
 
 // First payload is args
 process.once('message', function main({type, payload}: InitializationPayload) {
-    
+    console.log("NODE VERSION:", process.version);
     //TODO: simple verifictaion of initialization payload.
     NodeIPC.send({
         type: 'pm-init-response'
@@ -18,11 +29,11 @@ process.once('message', function main({type, payload}: InitializationPayload) {
 
     const { httpPort } = payload;
     const webServer = WebSocketServer.create(httpPort, (exec, socket, state) => {
-        exec.stdout.subscribe((out) => {
-            socket.send(out);
+        exec.output.subscribe((output) => {
+            socket.send(output);
         });
         return (msg) => {
-            exec.stdin.next(typeof msg === 'string' ? msg : msg.toString('utf-8'));
+            exec.input.next(typeof msg === 'string' ? Buffer.from(msg) : msg);
         };
     });
 

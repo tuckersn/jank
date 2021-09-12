@@ -1,5 +1,7 @@
 import { ElectronMessage, LogPayload, ProcessManagerMessage } from "jank-shared/src/communication/process-manager-ipc";
-import { ProcessRegistry } from "./process-registry";
+import { merge } from "rxjs";
+import { logger } from "./logger";
+import { ProcessRegistry } from "./processes/process-registry";
 
 export module NodeIPC {
 
@@ -8,13 +10,15 @@ export module NodeIPC {
     }
 
     export function print(text: string) {
-        return NodeIPC.send({
+        const payload = {
             type: 'pm-log',
             payload: {
                 type: 'info',
                 text: `PM: ${text}`
             }
-        } as LogPayload);
+        } as LogPayload;
+        logger.info(`Sending Node IPC print:`, payload);
+        return NodeIPC.send(payload);
     }
 
     export function messageRouting(msg: ElectronMessage) {
@@ -25,11 +29,19 @@ export module NodeIPC {
             case "e-init":
                 throw new Error("Aready initialized, shouldn't get here.");
             case "e-spawn-request":
+                NodeIPC.print("Recieved spawn process request.");
                 const spawnedProcess = ProcessRegistry.spawn(msg.payload.command, {
                     name: msg.payload.name,
-                    program: msg.payload.program,
+                    args: msg.payload.args,
+                    programName: msg.payload.program,
                     encoding: msg.payload.encoding
                 });
+
+                spawnedProcess.output.subscribe((msg) => {
+                    NodeIPC.print("PROCESS:" + msg);
+                });
+
+
                 NodeIPC.send({
                     type: 'pm-spawn-response',
                     payload: {

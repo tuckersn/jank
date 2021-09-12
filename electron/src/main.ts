@@ -18,12 +18,6 @@ app.on("ready", async () => {
         console.log("PM MESSAGE:", msg);
     });
 
-    setInterval(() => {
-        pmInput.next({
-            type: 'e-ping'
-        } as EPingPayload)
-    }, 1000);
-
     createNormalWindow();
 
     app.on("activate", function () {
