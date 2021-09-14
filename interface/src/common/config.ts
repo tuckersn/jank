@@ -1,11 +1,11 @@
-namespace Config {
+export module Config {
     export const style = {
         accentColor: '#787878',
         backgroundColor: '#0d1117',
 
         fontColor: 'white',
 
-        contrast: 0.05,
+        contrast: 0.15,
 
         frame: {
             height: 24,
@@ -14,8 +14,6 @@ namespace Config {
         }
     }
 }
-
-
 
 export default Config;
 //@ts-expect-error

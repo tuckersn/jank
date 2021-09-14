@@ -35,16 +35,14 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
 
     const [model, setModel] = useState<monaco.editor.ITextModel>();
 	const divEl = useRef<HTMLDivElement>(null);
-	let editor: monaco.editor.IStandaloneCodeEditor;
+	const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
 
 
 
 	useEffect(() => {
-
         const model = monaco.editor.createModel(value, language, uri);
         setModel(model);
-
-        editor = monaco.editor.create(divEl.current!, {
+        setEditor(monaco.editor.create(divEl.current!, {
             value: [value].join('\n'),
             language: 'typescript',
             model,
@@ -53,22 +51,32 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
             wordWrap,
             minimap,
             renderWhitespace
-        });
-
-        model.onDidChangeContent((event) => {
-            value = editor.getValue();
-        });
-
-        onStart({editor, model: model});
-
-		return () => {
-			editor.dispose();
-		};
+        }));
 	}, []);
 
     useEffect(() => {
-        //editor
-    });
+        if(model && editor) {
+            model.onDidChangeContent((event) => {
+                value = editor!.getValue();
+            });
+
+            onStart({editor: editor!, model: model});
+
+            return () => {
+                editor!.dispose();
+            };
+        }
+    }, [model, editor]);
+
+    useEffect(() => {
+        if(minimap) {
+            if(editor) {
+                editor.updateOptions(Object.assign({}, editor.getRawOptions(), {
+                    minimap
+                }));
+            }
+        }
+    }, [minimap]);
     
 
 

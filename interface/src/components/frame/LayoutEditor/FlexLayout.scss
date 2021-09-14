@@ -52,6 +52,7 @@ $font-family: Roboto, Arial, sans-serif !default;
     box-shadow: inset -2px 0px 5px rgba(0, 0, 0, 0.1);
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    overflow: hidden;
 }
 
 
@@ -113,6 +114,9 @@ $font-family: Roboto, Arial, sans-serif !default;
 @mixin splitter_border_mixin {
 }
 
+@mixin tab {
+    overflow: hidden
+}
 
 @import "node_modules/flexlayout-react/style/_base.scss";
 
@@ -124,6 +128,12 @@ $font-family: Roboto, Arial, sans-serif !default;
     left: 0;
     right: 0;
 
+    height: 100%;
+    width: 100%;
+}
+
+.flexlayout__tab {
+    overflow: hidden;
     height: 100%;
     width: 100%;
 }

@@ -3,7 +3,8 @@ import { MdClose, MdFullscreen, MdFullscreenExit, MdMenu } from "react-icons/md"
 import { BsDash } from "react-icons/bs";
 
 import { ChromeCSSProperties } from "../../common";
-import Config from "../../common/config";
+import { Config } from "../../common/config";
+
 
 import * as TabManager from "../tab/TabManager";
 
