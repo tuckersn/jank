@@ -33,10 +33,12 @@ export type XtermProps = {
     }
 }
 
+
 export const defaultXtermOptions = {
-    font: "'IBM Plex Mono', monospace",
-    fontSize: 12
+    font: `IBM Plex Mono Terminal`,
+    fontSize: 14
 }
+
 
 function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, output }: XtermProps) {
     const options = Object.assign({}, defaultXtermOptions, inputOptions);
@@ -62,6 +64,12 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
         terminal.loadAddon(webLinksAddon);
         terminal.open(terminalRef.current!);
 
+        terminal.setOption('theme', {
+            'font-family': `arial`,
+            color: "red",
+            height: "100%"
+        } as CSSProperties)
+
         if(onStart) {
             onStart({
                 terminal,
@@ -85,6 +93,7 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
             } else if(input) {
                 input.next(data);
             }
+            fitAddon.fit();
         });
 
     }, []);
@@ -100,11 +109,7 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
         console.log("TERM:", terminal.cols);
     }, [size.height, size.width]);
 
-    return (<div style={{height: "100%", width: "100%"}}>
-        
-        <div style={{height: "100%", width: "100%"}} ref={terminalRef as LegacyRef<HTMLDivElement>}>
-        </div>
-    </div>);
+    return <div style={{height: "100%", background: "black", width: "100%", display: "flex", alignContent: "center", justifyContent: "center"}} ref={terminalRef as LegacyRef<HTMLDivElement>}></div>;
 }
 
 

@@ -2,6 +2,7 @@ export module Config {
     export const style = {
         accentColor: '#787878',
         backgroundColor: '#0d1117',
+        backgroundColorDeep: '#0b0e14',
 
         fontColor: 'white',
 

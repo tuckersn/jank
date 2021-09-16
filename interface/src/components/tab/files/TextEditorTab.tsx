@@ -4,9 +4,10 @@ import { fileStringFromPath } from "../../../common/util";
 import { MonacoEditor } from "../../../shared/monaco/MonacoEditor";
 import { TabProps } from "../TabManager";
 import { editor } from "monaco-editor";
-import { ToolBar, toolBarButton, toolBarDropdown } from "../shared/Toolbar";
+import { ToolBar, toolBarButton } from "../shared/Toolbar/Toolbar";
 import { MdAccessAlarm, MdAccountBox, MdMap, MdMenu, MdSave, MdSettings } from "react-icons/md";
 import Config from "../../../common/config";
+import { toolBarDropdownFactory } from "../shared/Toolbar/ToolbarDropdown";
 
 export function TextEditorTab({instance} : TabProps) {
 
@@ -37,10 +38,10 @@ export function TextEditorTab({instance} : TabProps) {
 
     return (<ToolBar items={[
         // Main Menu
-        toolBarDropdown({
+        toolBarDropdownFactory({
             Icon: MdMenu,
             component: () => {
-                return (<div style={{padding: 6}}>
+                return (<div>
                     <div>New file...</div>
                     <div>Open file...</div>
                     <div>Save</div>
@@ -91,7 +92,7 @@ export function TextEditorTab({instance} : TabProps) {
                 setMinimap(!minimap);
             }
         }),
-        toolBarDropdown({
+        toolBarDropdownFactory({
             Icon: MdSettings,
             override: {
                 alignment: 'right'

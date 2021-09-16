@@ -155,6 +155,14 @@ export function LayoutEditor({}) {
         width: '100%'
     }}>
         <Layout model={model} factory={factory}
+			classNameMapper={(className) => {
+				/*	
+					As of writing classNames follow this pattern:
+						flex_layout__tab(__button(--selected/unselected))
+					Where () are previous layers.
+				*/
+				return className;
+			}}
 			onRenderTab={(node, renderValues) => {
 				const data = instanceData[node.getId()];
 				renderValues.content = data?.title ? data.title : renderValues.content;

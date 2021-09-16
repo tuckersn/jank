@@ -1,5 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useState } from "react"
-import { MdClose, MdFullscreen, MdFullscreenExit, MdMenu } from "react-icons/md";
+import { MdClose, MdFullscreen, MdFullscreenExit, MdMenu, MdRefresh } from "react-icons/md";
 import { BsDash } from "react-icons/bs";
 
 import { ChromeCSSProperties } from "../../common";
@@ -69,6 +69,11 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
                     <div className="selectable">
                         <MdMenu size={iconScale * Math.log(frameHeight)} onClick={() => {
                             console.log("Menu would go here!");
+                        }}/>
+                    </div>
+                    <div className="selectable">
+                        <MdRefresh size={iconScale * Math.log(frameHeight)} onClick={() => {
+                            window.location.reload();
                         }}/>
                     </div>
                     <button className="selectable" onClick={() => {

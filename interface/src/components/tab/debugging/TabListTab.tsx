@@ -25,7 +25,7 @@ export const TabListTab: React.FC<TabProps> = ({instance}) => {
         text: "Image Tab",
         componentString: "image",
         args: {
-            url: "https://media.istockphoto.com/photos/dog-computer-pc-picture-id473499332?k=6&m=473499332&s=170667a&w=0&h=QWcLXXfn9P3mhxkUiamfuCRvscFzmcsyULoXwfqpVXc="
+            url: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg"
         }
     },
     {
