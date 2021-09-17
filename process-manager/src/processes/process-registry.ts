@@ -50,6 +50,7 @@ export abstract class ExecutableProcess {
             //@ts-expect-error
             delete this.shutdown;
         });
+
     }
 
     abstract execute(): Promise<void>;
@@ -79,7 +80,12 @@ export class ExecutableProcessTerminal extends ExecutableProcess {
 
         const shutdownSubscription = this.shutdown.subscribe(({code, signal}) => {
             spawnedProcess.kill();
-            shutdownSubscription.unsubscribe();
+            //shutdownSubscription.unsubscribe();
+        });
+
+        const resizeSubscription = this.size.subscribe(({cols, rows}) => {
+            spawnedProcess.resize(cols, rows);
+            //resizeSubscription.unsubscribe();
         });
 
         this.executed = true;

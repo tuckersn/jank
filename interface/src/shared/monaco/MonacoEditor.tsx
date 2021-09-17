@@ -1,5 +1,21 @@
 import * as monaco from "monaco-editor";
 import { CSSProperties, useEffect, useRef, useState } from "react";
+import { Theme } from "../../Theme";
+
+
+
+export module Monaco {
+    monaco.editor.defineTheme('jank', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [
+        ],
+        colors: {
+            "editor.background": Theme.baseColorDark
+        }
+    })
+}
+
 
 
 
@@ -46,7 +62,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
             value: [value].join('\n'),
             language: 'typescript',
             model,
-            theme: 'vs-dark',
+            theme: 'jank',
             automaticLayout: true,
             wordWrap,
             minimap,

@@ -96,17 +96,16 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
             fitAddon.fit();
         });
 
+        fitAddon.fit();
     }, []);
 
 
     useEffect(() => {
-        console.log("RESIZE:", onResize?.toString());
         if(onResize) {
             onResize({terminal, fitAddon});
         } else {
             fitAddon.fit();
         }
-        console.log("TERM:", terminal.cols);
     }, [size.height, size.width]);
 
     return <div style={{height: "100%", background: "black", width: "100%", display: "flex", alignContent: "center", justifyContent: "center"}} ref={terminalRef as LegacyRef<HTMLDivElement>}></div>;

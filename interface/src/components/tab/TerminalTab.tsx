@@ -10,6 +10,7 @@ import Xterm from "../../shared/xterm/Xterm";
 import { start } from "repl";
 
 import { ProcessManagerWS } from "jank-shared/dist/communication/process-manager-ws";
+import { Terminal } from "xterm";
 
 const termChalk = new chalk.Instance({
     level: 2
@@ -22,6 +23,7 @@ export const TerminalTab: React.FC<TabProps> = ({instance}) => {
 
     const [output] = useState(new Subject<string>());
     const [input] = useState(new Subject<string>());
+    const [resize] = useState(new Subject<{terminal: Terminal}>());
 
     useEffect(() => {
         setLoadingText("Starting bash...");
@@ -61,17 +63,29 @@ export const TerminalTab: React.FC<TabProps> = ({instance}) => {
     
                 socket.addEventListener('error', (e) => {
                     console.error("SOCKET ERROR:");
-                })
+                });
     
     
                 socket.addEventListener('close', (e) => {
                     console.error("SOCKET CLOSED:");
                     setLoaded(false);
                     setLoadingText("WebSocket Closed!");
-                })
+                    socket.send('kill:');
+                });
     
                 input.subscribe((input) => {
                     socket.send('in:' + input);
+                });
+
+                resize.subscribe(({terminal}) => {
+                    console.log("RESIZE:", {
+                        cols: terminal.cols,
+                        rows: terminal.rows
+                    });
+                    socket.send('resize:' + JSON.stringify({
+                        cols: terminal.cols,
+                        rows: terminal.rows
+                    }));
                 });
             });
         });    
@@ -79,7 +93,10 @@ export const TerminalTab: React.FC<TabProps> = ({instance}) => {
 
 
     return loaded ? (<div style={{height: "100%", width: "100%"}}>
-        <Xterm input={input} output={output} onKey={({terminal, char}) => {
+        <Xterm input={input} output={output} onResize={({fitAddon, terminal}) => {
+            fitAddon.fit();
+            resize.next({terminal});
+        }} onKey={({terminal, char}) => {
             input.next(char);
         }}></Xterm>
     </div>) : (<h1>{loadingText}</h1>);

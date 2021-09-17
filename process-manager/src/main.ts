@@ -39,7 +39,10 @@ process.once('message', function main({type, payload}: InitializationPayload) {
                 case "in":
                     exec.input.next(Buffer.from(data));
                     break;
-                case "size":
+                case "kill":
+                    exec.shutdown.next({code:0});
+                    break;
+                case "resize":
                     const size: {cols:number,rows:number} = JSON.parse(data);
                     //TODO: needs to be keep track of each client's size and then use the minimum.
                     //TODO: send it back, maybe to all OTHER clients.
