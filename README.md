@@ -1,11 +1,15 @@
 # Jank
-My Electron based toolbox, a playground for TypeScript/JavaScript mini applications using HTML5.
+A personal toolbox designed for running miniature programs visually with loose coupling built-in around a REPL.
 
-# ⚠️ DISCLAIMER ⚠️
-This project is early into development and is intended primarily for fun and trying out new ideas. It is not secure, use at your own risk.
+# ⚠️ SECURITY DISCLAIMER ⚠️
+This project is inherently insecure, and it is provided as is. This project is primarily for fun and educational purposes. If you find value you in it, great!
+
+This early into development especially there are a number of extremely insecure aspects of this project. Using this project out of the box shouldn't pose any threats, but to enable the maximum user power in the program it is inherently dangerous from a cyber security perspective.
 
 # Requirements
-Requires bash and Node 14+
+Currently only tested against Windows 10.
+
+Requires Git(Git bash) and Node 14+
 
 Following NPM packages required globally.
 ```
@@ -14,5 +18,5 @@ npm install -g typescript
 npm install -g sass
 ```
 
-
+Run the yarn install command in each yarn package, and then use the bash scripts in the root directory to build/start.
 

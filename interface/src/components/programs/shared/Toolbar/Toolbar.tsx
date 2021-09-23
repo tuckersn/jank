@@ -5,6 +5,7 @@ import { IconBaseProps, IconType } from "react-icons/lib";
 import { Promisable } from "type-fest";
 import Config from "../../../../common/config";
 import ReactIcons from "../../../../shared/react-icons";
+import { Theme } from "../../../../Theme";
 
 
 
@@ -28,19 +29,12 @@ export function getBaseStyle({alignment} : ToolBarItemProps, style?: CSSProperti
         background: 'rgba(0,0,0,0)',
         color: 'white',
         border: 0,
-        borderRight: "1px solid white",
+        borderRight: "1px solid " + Theme.accentColor,
         padding: 0,
         display: "flex",
         alignItems: 'center',
         justifyContent: 'center',
-        boxSizing: "border-box",
-        ...(
-            alignment === 'right' ? {
-                borderLeft: "1px solid white"
-            } as CSSProperties : {
-                left: 0
-            } as CSSProperties
-        ),
+        boxSizing: "border-box"
     }, style || {});
 }
 
@@ -93,9 +87,9 @@ export const ToolBar: React.FC<{
             width: '100%',
             height: toolbarHeight,
             ...(bottom ? {
-                borderTop: "1px solid white"
+                borderTop: "1px solid " + Theme.accentColor
             } : {
-                borderBottom: "1px solid white"
+                borderBottom: "1px solid " + Theme.accentColor
             })
         }}>
             {items.map((item) => {

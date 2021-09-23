@@ -108,7 +108,7 @@ function Xterm({ onKey, onResize, onStart, options: inputOptions, size, input, o
         }
     }, [size.height, size.width]);
 
-    return <div style={{height: "100%", background: "black", width: "100%", display: "flex", alignContent: "center", justifyContent: "center"}} ref={terminalRef as LegacyRef<HTMLDivElement>}></div>;
+    return <div style={{height: "100%", background: "black", width: "100%"}} ref={terminalRef as LegacyRef<HTMLDivElement>}></div>;
 }
 
 

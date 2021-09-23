@@ -14,6 +14,8 @@ import { relative } from 'path';
 import { MonacoEditor } from '../../../shared/monaco/MonacoEditor';
 import * as monaco from "monaco-editor";
 import {KeyCode,KeyMod} from "monaco-editor";
+import { Theme } from '../../../Theme';
+import { PaneProps } from '../Panes';
 
 // const MonacoEnvironment = {
 // 	getWorkerUrl: function (_moduleId: any, label: string) {
@@ -44,7 +46,7 @@ const output = new Subject<{
 
 
 
-export function REPLTab() {
+export const REPLTab: React.FC<PaneProps<any>> = () => {
 
     //https://codepen.io/mgmarlow/pen/bNmJKK
     const [resizeBarLastY,setResizeBarLastY] = useState<number>();
@@ -107,8 +109,9 @@ export function REPLTab() {
         display: "flex", 
         flexDirection: "column",
         overflow: 'hidden'
+        
     }} ref={containerRef}>
-        <div style={{ overflowY: "scroll", height: "100%" }} ref={consoleContainerRef} onScroll={() => {
+        <div style={{ overflowY: "scroll", height: "100%", background: Theme.baseColorVeryDark }} ref={consoleContainerRef} onScroll={() => {
       
         }}>
             <ConsoleComponent logs={logs} variant="dark" />

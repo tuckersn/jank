@@ -1,29 +1,34 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Slider } from "../../../common/components/Slider";
 import { fileStringFromPath } from "../../../common/util";
 import { MonacoEditor } from "../../../shared/monaco/MonacoEditor";
-import { TabProps } from "../TabManager";
+
 import { editor } from "monaco-editor";
 import { ToolBar, toolBarButton } from "../shared/Toolbar/Toolbar";
 import { MdAccessAlarm, MdAccountBox, MdMap, MdMenu, MdSave, MdSettings } from "react-icons/md";
 import Config from "../../../common/config";
 import { toolBarDropdownFactory } from "../shared/Toolbar/ToolbarDropdown";
+import { PaneProps } from "../Panes";
 
-export function TextEditorTab({instance} : TabProps) {
+export const TextEditorTab: React.FC<PaneProps<{
+    value: string,
+    url: string
+}>> = ({instance}) => {
 
-    const [content, setContent] = useState(instance.args?.value || '');
+    const [content, setContent] = useState(instance.state?.value || '');
     const [title, setTitle] = useState(instance.title);
     const [editor, setEditor] = useState<editor.IStandaloneCodeEditor>();
     const [minimap, setMinimap] = useState<boolean>(false);
 
     useEffect(() => {
-        if(instance.args) {
-            if('file' in instance.args) {
-                setTitle(fileStringFromPath(instance.args.url));
-            } else if ('data' in instance.args) {
+        if(instance.state) {
+            if('file' in instance.state) {
+                setTitle(fileStringFromPath(instance.state.url));
+            } else if ('data' in instance.state) {
                 setTitle("");
-            } else if ('url' in instance.args) {
-                setTitle(fileStringFromPath(instance.args.url));
+            } else if ('url' in instance.state) {
+                setTitle(fileStringFromPath(instance.state.url));
             } else {
                 setTitle('New File');
             }
@@ -122,7 +127,7 @@ export function TextEditorTab({instance} : TabProps) {
             <MonacoEditor minimap={{
                 enabled: minimap
             }} style={{height:"100%", width:"100%"}} onStart={({editor, model}) => {
-                editor.setValue(instance.args?.value || 'hello world');
+                editor.setValue(instance.state?.value || 'hello world');
             }}/>
         </div>
     </ToolBar>);

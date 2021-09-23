@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import FlexLayout, { IJsonModel, Layout, Model, TabNode } from "flexlayout-react";
 
-import  { Instance, MinimalInputInstance, TabProps } from "../../tab/TabManager";
-import * as TabManager from "../../tab/TabManager";
-
-
-
+import { Instance, InstanceRegistry, InstanceCreationObject } from "../../programs/Instances";
+import {Image} from "../../../common/components/Image";
 import { nanoid } from "nanoid";
 
 import "./FlexLayout.scss";
 import "./LayoutEditor.scss";
+import { BehaviorSubject, filter, Observable } from "rxjs";
+import { ProgramRegistry } from "../../programs/Programs";
 
 
 const json: IJsonModel = {
@@ -38,39 +37,33 @@ const json: IJsonModel = {
 	}
 };
 
-const exampleTabs: MinimalInputInstance[] = [
-	{
-		id: nanoid(),
-		fullName: "text:file:./helloWorld.txt",
-		componentString: "text",
-		args: {
-			'text': "Hello world?"
-		},
-		title: "TEST!"
-	},
-	{
-		id: nanoid(),
-		fullName: "tab-list",
-		componentString: "tab-list",
-		args: {
-			'text': "Hello world?"
-		},
-		title: "Tab List"
-	},
-	{
-		id: nanoid(),
-		fullName: "text",
-		componentString: "text",
-		args: {
-			'text': "Hello world other?"
-		},
-		title: "OTHER TEST!"
-	}
-]
-
-
-const instanceData: {[instanceId: string]: Instance<any>} = {};
-
+function exampleTabs() {
+	return [
+		InstanceRegistry.create(ProgramRegistry.get('jank-text'), {
+			name: "text:file:./helloWorld.txt",
+			title: "TEST!",
+			state: {
+				'text': "Hello world?"
+			},
+			meta: {}
+		}),
+		InstanceRegistry.create(ProgramRegistry.get('jank-tab-list'), {
+			name: "tab-list",
+			title: "TAB LIST DEBUG",
+			state: {
+				'text': "Hello world?"
+			},
+			meta: {}
+		}),
+		InstanceRegistry.create(ProgramRegistry.get('jank-text'), {
+			name: "text",
+			title: "TEST!",
+			state: {
+				text: 'test'
+			}, meta: {}
+		})
+	];
+}
 
 
 export function LayoutEditor({}) {
@@ -78,43 +71,27 @@ export function LayoutEditor({}) {
     
     const [model, setModel] = useState(Model.fromJson(json));
 
-	const addInstance = (inputInstance: MinimalInputInstance) => {
-		let instance: Instance<any> = TabManager.createInstance(inputInstance.fullName, inputInstance.args);
-		instance = Object.assign(instance, inputInstance);
-		instance.layout = {
-			tabManager
-		}
-		instanceData[instance.id] = instance;
-
-		model.doAction(FlexLayout.Actions.addNode(
-			{
-				id: instance.id,
-				type: 'tab',
-				component: instance.componentString,
-				name: instance.fullName
-			},
-			"0",
-			FlexLayout.DockLocation.CENTER,
-			0
-		));
-	};
-
-	const tabManager: TabManager.Manager = {
-		addInstance,
-		removeInstance: () => {
-			//TODO: removing tabs.
-		}
-	}
 
 
     useEffect(() => {
-		for(let exampleTab of exampleTabs) {
-			if(exampleTab.id)
-				if(exampleTab.id in instanceData)
-					continue;
-			addInstance(exampleTab);
-		}
-	}, [exampleTabs])
+
+		InstanceRegistry.creation.subscribe((instance) => {
+			const program = ProgramRegistry.get(instance.programName);
+			model.doAction(FlexLayout.Actions.addNode(
+				{
+					id: instance.id,
+					type: 'tab',
+					component: instance.programName,
+					name: instance.name
+				},
+				"0",
+				FlexLayout.DockLocation.CENTER,
+				0
+			));
+		});
+
+		exampleTabs();
+	}, [])
 	
 	const factory = (node: TabNode) => {
         let component = node.getComponent();
@@ -128,16 +105,13 @@ export function LayoutEditor({}) {
 			</button>;
         }
 
-		
 		try {
-			
-			let instance: Instance<any>;
-			//console.log("INSTANCE:", node.getId(), instanceData);
-			if(node.getId() in instanceData) {
-				instance = instanceData[node.getId()];
-				const TabComponent = instance.componentFunction;	
+			let instance: Instance<any, any> = InstanceRegistry.get(node.getId());
+			if(instance) {
+				const program = ProgramRegistry.get(instance.programName);
+				const TabComponent = program.component;	
 				return(<div style={{height: "100%", width: "100%"}}>
-					<TabComponent instance={instance}/>
+					<TabComponent instance={instance} program={program} InstanceRegistry={InstanceRegistry} ProgramRegistry={ProgramRegistry}/>
 				</div>);
 			} else {
 				throw "No instance found for that tab.";
@@ -163,9 +137,17 @@ export function LayoutEditor({}) {
 				*/
 				return className;
 			}}
+			iconFactory={(node) => {
+				const instance = InstanceRegistry.get(node.getId());
+				if(instance) {				
+					return <Image height={40} width={40} fill src={instance.iconImg.pipe(filter((x) => x !== undefined)) as Observable<string>}/>;
+				}
+			}}
 			onRenderTab={(node, renderValues) => {
-				const data = instanceData[node.getId()];
-				renderValues.content = data?.title ? data.title : renderValues.content;
+				const instance = InstanceRegistry.get(node.getId());
+				if(instance) {
+					renderValues.content = instance.title ? instance.title : renderValues.content;
+				}
 			}}>
 			
 		</Layout>

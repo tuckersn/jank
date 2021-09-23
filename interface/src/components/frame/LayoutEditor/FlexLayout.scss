@@ -159,6 +159,15 @@ $color_text: $theme-font-color !default;
         border-top: 1px solid $color_background;
         border-left: 1px solid $color_background;
         border-right: 1px solid $color_background;
+
+
+        padding: 0;
+        padding-left: 1px;
+        padding-right: 1px;
+
+        .flexlayout__tab_button_leading {
+            height: calc(100% - 2px);
+        }
     }    
 
 

@@ -6,13 +6,12 @@ import { ChromeCSSProperties } from "../../common";
 import { Config } from "../../common/config";
 
 
-import * as TabManager from "../tab/TabManager";
-
 import "./Frame.scss";
 import { LayoutEditor } from "./LayoutEditor/LayoutEditor";
 import { LayoutGrid } from "./LayoutGrid";
 import React from "react";
 import { ElectronShim } from "../../common/shims/electron";
+import { Theme } from "../../Theme";
 
 
 const FrameContext: React.Context<{
@@ -26,10 +25,6 @@ const FrameContext: React.Context<{
 
 type FrameProps = {
   layout: "editor" | "grid"
-}
-
-export type FrameFunctions = {
-    tabManager: TabManager.Manager
 }
 
 
@@ -49,9 +44,10 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
         color: Config.style.fontColor,
         height: frameHeight + 'px',
         fontSize: Config.style.frame.fontScale * Math.log(frameHeight) + 'px',
-
         boxSizing: 'border-box',
-        borderBottom: Config.style.frame.border + ' ' + Config.style.accentColor,
+        borderBottom: Config.style.frame.border + ' ' + Theme.accentColor,
+        boxShadow: '0px 8.4px 7.1px rgba(0, 0, 0, 0.154), 0px 67px 57px rgba(0, 0, 0, 0.18)',
+        background: Theme.baseColorVeryDark
     };
 
     return <div style={{
@@ -60,8 +56,8 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
 
         color: Config.style.fontColor,
         background: Config.style.backgroundColor,
-        border: Config.style.frame.border + ' ' + Config.style.accentColor,
-        boxSizing: "border-box"
+        boxSizing: "border-box",
+        border: Config.style.frame.border + ' ' + Theme.accentColorDark,
       }}>
         <div style={titleBarStyle}>
             <div className={"mechanism title-bar"}>
@@ -110,7 +106,10 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
             </div>
         </div>
         
-        <div style={{height: `calc(100% - ${frameHeight}px)`, width: "100%"}}>
+        <div style={{
+            height: `calc(100% - ${frameHeight}px)`,
+            width: "100%",
+        }}>
             {(() => {
                 switch(layout) {
                     case "editor":

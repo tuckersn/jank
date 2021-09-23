@@ -1,5 +1,6 @@
 import React from "react";
-import { TabProps } from "../components/tab/TabManager";
+import { PaneProps } from "../components/programs/Panes";
+
 
 export class Extension<D extends Object = any, C extends Object = any> {
 
@@ -8,7 +9,7 @@ export class Extension<D extends Object = any, C extends Object = any> {
     /** Store global settings for this extension */
     public config: Partial<C>;
 
-    constructor(public name: string, public tabFactory: React.FC<TabProps>) {
+    constructor(public name: string, public tabFactory: React.FC<PaneProps<any>>) {
         this.data = {};
         this.config = {};
     }

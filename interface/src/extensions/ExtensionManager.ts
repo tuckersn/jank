@@ -1,4 +1,4 @@
-import { Instance, TabProps } from "../components/tab/TabManager";
+import { PaneProps } from "../components/programs/Panes";
 import { Extension } from "./Extension";
 
 const extensions: {[name: string]: Extension} = {};
@@ -18,7 +18,7 @@ export function get(name: string): Extension {
 }
 
 
-export function register(name: string, tabFactory: React.FC<TabProps>) {
+export function register(name: string, tabFactory: React.FC<PaneProps<any>>) {
     extensions[name] = new Extension(name, tabFactory);
 }
 

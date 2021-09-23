@@ -1,3 +1,6 @@
+import { InstanceRegistry } from "./components/programs/Instances";
+import { ProgramRegistry } from "./components/programs/Programs";
+
 function json<T extends Object>(value: T): string {
     return JSON.stringify(value, null, 4);
 };
@@ -11,11 +14,12 @@ function keys<T extends Object>(value: any): string[] {
 }
 
 
-
 export let GlobalThings = {
     json,
     values,
-    keys
+    keys,
+    InstanceRegistry,
+    ProgramRegistry
 }
 
 

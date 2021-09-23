@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { inspect} from "jank-shared/dist/util";
 import * as chalk from "chalk";
 import { XtermConsole } from "../../shared/xterm/XtermConsole";
-import { TabProps } from "./TabManager";
+import { PaneProps } from "./Panes";
 import ansiEscapes from 'ansi-escapes';
 import { ElectronShim } from "../../common/shims/electron";
 import { Subject } from "rxjs";
@@ -16,7 +16,7 @@ const termChalk = new chalk.Instance({
     level: 2
 });
 
-export const TerminalTab: React.FC<TabProps> = ({instance}) => {
+export const TerminalTab: React.FC<PaneProps> = ({instance}) => {
     
     const [loaded, setLoaded] = useState(false);
     const [loadingText, setLoadingText] = useState("Loading...");
