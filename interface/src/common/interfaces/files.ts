@@ -4,7 +4,7 @@ import { Promisable } from "type-fest";
 export interface File<VALUE = any, META = any> {
     fileType: string,
     location: string,
-    breadcrumbs: string[],
+    breadcrumbs: {crumb: string, path: string}[],
 
     get: () => Promisable<VALUE>,
     set: (data: VALUE) => Promisable<void>,

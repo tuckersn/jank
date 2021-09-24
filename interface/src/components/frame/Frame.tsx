@@ -1,8 +1,7 @@
-import { FC, useCallback, useContext, useEffect, useState } from "react"
+import { CSSProperties, FC, useCallback, useContext, useEffect, useState } from "react"
 import { MdClose, MdFullscreen, MdFullscreenExit, MdMenu, MdRefresh } from "react-icons/md";
 import { BsDash } from "react-icons/bs";
 
-import { ChromeCSSProperties } from "../../common";
 import { Config } from "../../common/config";
 
 
@@ -40,7 +39,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
         console.log("TITLE CHANGE:", FrameContext);
     }, [title])
 
-    const titleBarStyle: ChromeCSSProperties = {
+    const titleBarStyle: CSSProperties = {
         color: Config.style.fontColor,
         height: frameHeight + 'px',
         fontSize: Config.style.frame.fontScale * Math.log(frameHeight) + 'px',

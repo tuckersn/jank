@@ -3,14 +3,13 @@ import './App.scss';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 import { Frame } from './components/frame/Frame';
-import { ChromeCSSProperties } from './common';
 import Config from './common/config';
 import { LayoutEditor } from './components/frame/LayoutEditor/LayoutEditor';
+import { CSSProperties } from 'react';
 
 
-let containerStyle: ChromeCSSProperties = {
+let containerStyle: CSSProperties = {
   background: `rgba(255,255,255,${Config.style.contrast})`,
-  "-webkit-scrollbar-track": "rgba(0,0,0,0)",
 
   position: "relative",
   height: "100%",

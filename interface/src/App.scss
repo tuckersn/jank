@@ -57,3 +57,9 @@ button {
 	border: 1px $theme-border-hard;
 	padding: 4px;
 }
+
+.jank-link {
+	&:hover {
+		color: $theme-highlight-color;
+	}
+}
