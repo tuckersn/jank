@@ -1,8 +1,20 @@
 @import 'src/Theme.scss';
 
 
-$color_base: $theme-base-color !default;
-$color_1: scale_color($color_base, $lightness: 7%) !default;
+$color_base: rgba($theme-base-color) !default;
+$color_1: rgba($theme-base-color, 93%)  !default;
+$color_2: rgba($theme-base-color, 90%)  !default;
+$color_3: rgba($theme-base-color, 85%)  !default;
+$color_4: rgba($theme-base-color, 80%)  !default;
+$color_5: rgba($theme-base-color, 75%)  !default;
+$color_6: rgba($theme-base-color, 70%)  !default;
+$color_drag1: rgba($theme-highlight-color)  !default;
+$color_drag2: rgba($theme-highlight-color) !default;
+
+/**
+
+$color_base: red !default;
+$color_1: scale_color(var($color_base, $lightness: 7%) !default;
 $color_2: scale_color($color_base, $lightness: 10%) !default;
 $color_3: scale_color($color_base, $lightness: 15%) !default;
 $color_4: scale_color($color_base, $lightness: 20%) !default;
@@ -11,114 +23,60 @@ $color_6: scale_color($color_base, $lightness: 30%) !default;
 $color_drag1: #cfe8ff !default;
 $color_drag2: #b7d1b5 !default;
 
+**/
+
 $font-size: medium !default;
 $font-family: Roboto, Arial, sans-serif !default;
 
 // Doesn't do anything
 @mixin tabset_mixin {
-    background-color: red;
-    border-bottom: 1px solid red !important;
 }
-
 // Doesn't do anything
 @mixin tabset_tabbar_mixin {
-    background-color: $theme-base-color-very-dark;
 }
-
-
 @mixin tabset_header_mixin {
-    background-color: $color_1;
-    box-shadow: inset 0 0 3px 0 rgba(136, 136, 136, 0.54);
 }
-
 @mixin tabset_selected_mixin {
-    background-color: $theme-base-color-light;
-    /** Handled in overrides. **/
 }
-
 @mixin tabset_maximized_mixin {
-    background-image: linear-gradient($color_6, $color_2);
 }
-
 @mixin tab_top_mixin {
-    box-shadow: inset -2px 0px 5px rgba(0, 0, 0, 0.1);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
 }
-
 @mixin tab_bottom_mixin {
-    box-shadow: inset -2px 0px 5px rgba(0, 0, 0, 0.1);
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    overflow: hidden;
 }
-
-
 @mixin tab_button_mixin {
-
 }
-
 @mixin tab_button_selected_mixin {
-    background-color: $theme-base-color-dark;
-    color: $theme-font-color;
-
 }
-
 @mixin tab_button_unselected_mixin {
-    color: $theme-font-color-dark;
 }
-
 @mixin tab_button_hovered_mixin {
-    background-color: $color_3;
-    color: $theme-font-color;
 }
-
 @mixin border_mixin {
-    background-color: red;
 }
-
 @mixin border_button_mixin {
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, .15);
-    background-color: $color_2;
 }
-
 @mixin border_button_selected_mixin {
-    background-color: $color_3;
-    color: red;
 }
-
 @mixin border_button_unselected_mixin {
-    color: red;
 }
-
 @mixin border_button_hovered_mixin {
-    background-color: $color_3;
-    color: $theme-font-color;
 }
-
 @mixin splitter_mixin {
-    background-color: $theme-base-color-very-dark;
 }
-
 @mixin splitter_hover_mixin {
-    background-color: $color_4;
 }
-
 @mixin splitter_drag_mixin {
-    background-color: $color_5;
 }
-
 @mixin splitter_border_mixin {
 }
-
 @mixin tab {
-    overflow: hidden
 }
 
 
 
 
-$color_background: $theme-base-color-dark !default;
+$color_background: rgba($theme-base-color-dark) !default;
 $color_text: $theme-font-color !default;
 
 
@@ -150,7 +108,7 @@ $color_text: $theme-font-color !default;
 
 
 .flexlayout__tabset_tabbar_outer {
-    background-color: $theme-base-color;
+    background-color: rgba($theme-base-color);
     box-sizing: border-box;
     border-bottom: 1px $theme-border-soft;
 
@@ -180,7 +138,7 @@ $color_text: $theme-font-color !default;
 
     // Equivalent to @mixin tabset_selected_mixin
     &.flexlayout__tabset-selected {
-        background-color: $theme-base-color-light;
+        background-color: rgba($theme-base-color-light);
         box-sizing: border-box;
         border-bottom: 1px $theme-border-hard;
 

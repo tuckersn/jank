@@ -1,5 +1,5 @@
 import { constants } from "os";
-import { FC, ClassAttributes, HTMLAttributes, useEffect, useState } from "react";
+import { FC, ClassAttributes, HTMLAttributes, useEffect, useState, useMemo } from "react";
 import { async, BehaviorSubject } from "rxjs";
 import { useBehaviorSubject } from "../../../common/hooks";
 import { DirectoryFile, File } from "../../../common/interfaces/files";
@@ -11,6 +11,8 @@ import { MinimalProgram, Program, ProgramRegistry } from "../Programs";
 
 import folderIcon from "material-design-icons/file/2x_web/ic_folder_white_48dp.png";
 import { EDangerous } from "../../../common/modules/html/elements";
+
+import { useTable, Column } from "react-table";
 
 export interface FileBrowserInstanceState {
     cwd: BehaviorSubject<string>
@@ -25,15 +27,31 @@ interface DetailedHTMLProps<T> extends HTMLAttributes<any>, ClassAttributes<T> {
 
 
 
-
 const maxHistory: number = 5;
 export const FileBrowserPane: FC<PaneProps<FileBrowserInstanceState>> = ({
     instance: {state,iconImg}
 }) => {
 
+    const [headers,setHeaders] = useState<Column<File>[]>([
+        {
+            Header: 'Name',
+            accessor: 'name'
+        },
+        {
+            Header: 'Type',
+            accessor: 'fileType'
+        }
+    ]);
 
     const [currentFile, setCurrentFile] = useState<File>();
-    const [files,setFiles] = useState<File[]>();
+    const [files,setFiles] = useState<File[]>([]);
+
+    const {
+        columns
+    } = useTable({
+        columns: headers,
+        data: files,
+    })
 
 
     useEffect(() => {
@@ -69,7 +87,20 @@ export const FileBrowserPane: FC<PaneProps<FileBrowserInstanceState>> = ({
         }}>
             C:/
         </button>
+        <button className={'j-error'}>
+        </button>
         
+
+        <table>
+            <tr>
+                {columns?.map((column) => {
+                    return <th>{column.id}</th>
+                })}
+            </tr>
+            <tr>
+
+            </tr>
+        </table>
         <div style={{
             display: 'flex',
             flexDirection: 'row'

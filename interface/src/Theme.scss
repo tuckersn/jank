@@ -1,18 +1,30 @@
+
+:root {
+    --theme-base-color: 17, 21, 27;
+    --theme-base-color-light: 28, 47, 71;
+    --theme-base-color-very-light: 	38, 67, 102;
+    --theme-base-color-dark: 14, 24, 41;
+    //--theme-base-color-very-dark: 2, 7, 15;
+    --theme-base-color-very-dark: 4, 16, 36;
+    --theme-highlight-color: 172, 198, 255;
+}
 /***
 
     COLOR SCHEME
 
 ***/
 
-$theme-base-color: #11151b;
-$theme-base-color-dark: #0e1829;
-$theme-base-color-very-dark: #02070f;
-$theme-base-color-light: #1c2f47;
-$theme-base-color-very-light: #264366;
+$theme-base-color: var(--theme-base-color);
+$theme-base-color-dark: var(--theme-base-color-dark);
+$theme-base-color-very-dark: var(--theme-base-color-very-dark);
+$theme-base-color-light: var(--theme-base-color-light);
+$theme-base-color-very-light: var(--theme-base-color-very-light);
 
 $theme-accent-color: #2e60a1;
 
-$theme-highlight-color: rgb(172, 198, 255);
+$theme-error-color: rgb(68, 13, 13);
+
+$theme-highlight-color: var(--theme-highlight-color);
 
 /***
 

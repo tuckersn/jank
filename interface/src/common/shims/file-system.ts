@@ -46,8 +46,9 @@ export module FS {
         return path.parse(filePath).base;
     }
 
-    export function file(location: string, fileType: string, size: number, lastModified: Date, created: Date) {
+    export function file(location: string, fileType: string, size: number, lastModified: Date, created: Date): File {
         return {
+            name: path.parse(location).base,
             location: location,
             breadcrumbs: filePathCrumbs(location),
             fileType: fileType,
@@ -124,6 +125,7 @@ export module FS {
         } else {
 
             return {
+                name: path.parse(location).base,
                 location,
                 breadcrumbs: filePathCrumbs(location),
                 fileType: 'directory',

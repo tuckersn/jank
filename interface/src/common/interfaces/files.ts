@@ -3,6 +3,7 @@ import { Promisable } from "type-fest";
 
 export interface File<VALUE = any, META = any> {
     fileType: string,
+    name: string,
     location: string,
     breadcrumbs: {crumb: string, path: string}[],
 

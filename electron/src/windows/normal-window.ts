@@ -39,6 +39,8 @@ export function createNormalWindow() {
         //console.log("MAIN:", {event,level,msg,line,sourceId});
         mainWindow.webContents.send('console-message', {level,msg,line,sourceId});
     });
+
+    mainWindow.loadFile('./loading.html');
     
     mainWindow.loadURL(`http://localhost:3000`);
 

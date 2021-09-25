@@ -2102,6 +2102,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-table@^7.7.5":
+  version "7.7.5"
+  resolved "http://192.168.1.88:4873/@types%2freact-table/-/react-table-7.7.5.tgz#34603de1f4e745d8eacdb289b90b6853d97f4e6d"
+  integrity sha512-a6KLDyT6ZXxewYTG9sOsB9heoBVTYYwfoyB7+sziNGECOJXqmavdWeRtp548pJl490XHmUSxaWnVeeT9UOW9Gg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^17.0.0":
   version "17.0.19"
   resolved "http://192.168.1.88:4873/@types%2freact/-/react-17.0.19.tgz"
