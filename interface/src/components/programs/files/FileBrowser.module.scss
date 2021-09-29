@@ -1,0 +1,59 @@
+.content {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+
+    .side_panel {
+        flex: 0 0 400px;
+        border-right: 1px solid white;
+    }
+    
+    .files_table {
+
+        flex: 1;
+        display: inline-block;
+        border-spacing: 0;
+        border: 1px solid black;
+    
+        .row {
+            :last-child {
+                .data {
+                    border-bottom: 0;
+                }
+            }
+        }
+    
+        .header,
+        .data {
+            margin: 0;
+            padding: 0.5rem;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+        
+            position: relative;
+        
+            :last-child {
+                border-right: 0;
+            }
+        
+            .resizer {
+                display: inline-block;
+                background: blue;
+                width: 10px;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                transform: translateX(50%);
+                z-index: 1;
+
+                touch-action:none;
+        
+                &.isResizing {
+                    background: red;
+                }
+            }
+        }
+        
+    }
+}

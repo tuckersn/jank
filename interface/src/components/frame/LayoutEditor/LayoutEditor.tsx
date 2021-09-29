@@ -7,7 +7,6 @@ import {Image} from "../../../common/components/Image";
 import { nanoid } from "nanoid";
 
 import "./FlexLayout.scss";
-import "./LayoutEditor.scss";
 import { BehaviorSubject, filter, Observable } from "rxjs";
 import { ProgramRegistry } from "../../programs/Programs";
 

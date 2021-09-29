@@ -1,6 +1,5 @@
 @import 'src/Theme.scss';
 
-
 $color_base: rgba($theme-base-color) !default;
 $color_1: rgba($theme-base-color, 93%)  !default;
 $color_2: rgba($theme-base-color, 90%)  !default;
@@ -8,22 +7,12 @@ $color_3: rgba($theme-base-color, 85%)  !default;
 $color_4: rgba($theme-base-color, 80%)  !default;
 $color_5: rgba($theme-base-color, 75%)  !default;
 $color_6: rgba($theme-base-color, 70%)  !default;
+
 $color_drag1: rgba($theme-highlight-color)  !default;
 $color_drag2: rgba($theme-highlight-color) !default;
 
-/**
-
-$color_base: red !default;
-$color_1: scale_color(var($color_base, $lightness: 7%) !default;
-$color_2: scale_color($color_base, $lightness: 10%) !default;
-$color_3: scale_color($color_base, $lightness: 15%) !default;
-$color_4: scale_color($color_base, $lightness: 20%) !default;
-$color_5: scale_color($color_base, $lightness: 25%) !default;
-$color_6: scale_color($color_base, $lightness: 30%) !default;
-$color_drag1: #cfe8ff !default;
-$color_drag2: #b7d1b5 !default;
-
-**/
+$color_background: rgba($theme-base-color-dark) !default;
+$color_text: $theme-font-color !default;
 
 $font-size: medium !default;
 $font-family: Roboto, Arial, sans-serif !default;
@@ -72,14 +61,6 @@ $font-family: Roboto, Arial, sans-serif !default;
 }
 @mixin tab {
 }
-
-
-
-
-$color_background: rgba($theme-base-color-dark) !default;
-$color_text: $theme-font-color !default;
-
-
 @import "node_modules/flexlayout-react/style/_base.scss";
 
 /**

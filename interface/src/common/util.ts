@@ -1,7 +1,9 @@
-import * as path from "path";
-import * as url from "url";
 
 import { ElectronShim, electron } from "./shims/electron";
+
+const path = window.require('path');
+const url = window.require('url');
+
 
 
 export interface State<TYPE> {

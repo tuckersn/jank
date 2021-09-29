@@ -59,7 +59,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
         border: Config.style.frame.border + ' ' + Theme.accentColorDark,
       }}>
         <div style={titleBarStyle}>
-            <div className={"mechanism title-bar"}>
+            <div className={"jank title-bar"}>
                 <div className="left">
                     <div className="selectable">
                         <MdMenu size={iconScale * Math.log(frameHeight)} onClick={() => {

@@ -48,13 +48,20 @@ export function Image({
             });
         }
     }, []);
+
+    useEffect(() => {
+        if(typeof src === 'string') {
+            setSrc(src);
+        }
+    }, [src]);
     
     return <div style={{
         ...(fill ? {
             width: '100%',
             height: '100%'
         } : {
-
+            width,
+            height
         })
     }}>
         <img height={height} width={width} style={style} src={_src}/>

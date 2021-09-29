@@ -60,6 +60,6 @@ button {
 
 .jank-link {
 	&:hover {
-		color: $theme-highlight-color;
+		color: rgba($theme-highlight-color);
 	}
 }

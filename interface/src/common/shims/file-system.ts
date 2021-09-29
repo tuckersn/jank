@@ -1,4 +1,4 @@
-import {  DirectoryFile, File } from "../interfaces/files";
+import {  DirectoryFile, File, ImageFile } from "../interfaces/files";
 import { fs, path } from "./node";
 
 
@@ -46,7 +46,7 @@ export module FS {
         return path.parse(filePath).base;
     }
 
-    export function file(location: string, fileType: string, size: number, lastModified: Date, created: Date): File {
+    export function newFile(location: string, fileType: string, size: number, lastModified: Date, created: Date): File {
         return {
             name: path.parse(location).base,
             location: location,
@@ -74,7 +74,6 @@ export module FS {
 
     export function createFile(fileLocation: string): File | null {
         let stats;
-        let fileType = 'unknown';
         
         try {
             stats = fs.statSync(fileLocation);
@@ -84,9 +83,9 @@ export module FS {
                     console.log("NO SUCH FILE:", fileLocation)
                     return null;
                 } else if(e.message.startsWith('EPERM: operation not permitted')) {
-                    return file(fileLocation, 'restricted', 0, ZERO_DATE, ZERO_DATE);
+                    return newFile(fileLocation, 'restricted', 0, ZERO_DATE, ZERO_DATE);
                 } else if(e.message.startsWith('EBUSY: resource busy or locked')) {
-                    return file(fileLocation, 'busy', 0, ZERO_DATE, ZERO_DATE);
+                    return newFile(fileLocation, 'busy', 0, ZERO_DATE, ZERO_DATE);
                 } else {
                     throw e;
                 }
@@ -95,13 +94,27 @@ export module FS {
             }
         }       
     
-        if(fileType === 'unknown') {
-            if(stats.isDirectory()) {
-                fileType = 'directory'
+        let file = newFile(fileLocation, 'unknown', stats.size, stats.mtime, stats.birthtime);
+      
+        if(stats.isDirectory()) {
+            const directory: DirectoryFile = {
+                ...file,
+                fileType: 'directory'
             }
+            return directory;
+        } 
+        
+        if(/.+\.png/im.test(fileLocation)) {
+            const imgFile: ImageFile = {
+                ...file,
+                fileType: 'image',
+                trusted: true,
+                get: async () => Buffer.from(await file.get()).toString('base64')
+            };
+            return imgFile;
         }
 
-        return file(fileLocation, fileType, stats.size, stats.mtime, stats.birthtime);
+        return file;
     }
     
     
@@ -129,19 +142,25 @@ export module FS {
                 location,
                 breadcrumbs: filePathCrumbs(location),
                 fileType: 'directory',
-                get: () => {
-                    return new Promise((res, err) => {
-                        fs.readdir(location,{}, (error, files) => {
-                            if(error) {
-                                err(error);
-                            } else {
-                                const fileObjects: File[] = files.map((fileStr) => {
-                                    return createFile(path.join(location,typeof fileStr === 'string' ? fileStr : fileStr.toString('utf-8')));
-                                }).filter(file => file !== null) as File[];
-                                res(fileObjects);
-                            }
-                        });
+                get: async () => {
+                    const read = new Promise((res, err) => {
+                        try {
+                            fs.readdir(location,{}, (error, files) => {
+                                if(error) {
+                                    err(error);
+                                } else {
+                                    const fileObjects: File[] = files.map((fileStr) => {
+                                        return createFile(path.join(location,typeof fileStr === 'string' ? fileStr : fileStr.toString('utf-8')));
+                                    }).filter(file => file !== null) as File[];
+                                    res(fileObjects);
+                                }
+                            });
+                        } catch(e) {
+                            throw e;
+                        }
                     });
+
+                    return read;
                 },
                 set: (data) => {
                     
@@ -149,5 +168,31 @@ export module FS {
             } as DirectoryFile;
 
         }
+    }
+
+
+    /**
+     * Same as read, but outputs a trusted ImageFile and reads the data
+     * as a base64 encoded string for img tags.
+     */
+    export async function readAsImage(location: string): Promise<ImageFile<any>> {
+        const file: ImageFile = {
+            ...await read(location),
+            fileType: 'image',
+            trusted: true
+        };
+        
+        //TODO: validation or trust developer?
+
+        const originalGet = file.get;
+        file.get = async () => {
+            try {
+                return Buffer.from(await originalGet()).toString('base64');
+            } catch(e) {
+                throw e;
+            }
+        }
+        
+        return file;
     }
 }
