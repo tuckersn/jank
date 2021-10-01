@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "(/) Root Folder"
+		},
+		{
+			"path": "electron",
+			"name": "(/electron) Electron App"
+		},
+		{
+			"path": "interface",
+			"name": "(/interface) React Interface"
+		},
+		{
+			"path": "shared",
+			"name": "(/shared) Shared Package"
+		},
+		{
+			"path": "process-manager",
+			"name": "(/process-manager) Process Manager"
+		}
+	],
+	"settings": {}
+}

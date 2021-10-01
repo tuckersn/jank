@@ -1,4 +1,5 @@
 import React from "react";
+import { BehaviorSubject } from "rxjs";
 import { Instance} from "../Instances";
 import { PaneProps } from "../Panes";
 import { Program } from "../Programs";
@@ -49,6 +50,12 @@ export const ProgramListPane: React.FC<PaneProps> = ({instance, InstanceRegistry
     }, {
         title: "FILE BROWSER",
         program: ProgramRegistry.get("jank-file-browser")
+    }, {
+        title: "WEB BROWSER",
+        program: ProgramRegistry.get("jank-web-browser"),
+        state: {
+            location: new BehaviorSubject<string>('https://google.com')
+        }
     }];
 
     return (<div style={{height: "100%", width: "100%"}}>

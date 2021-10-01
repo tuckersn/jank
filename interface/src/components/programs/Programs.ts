@@ -12,6 +12,7 @@ import { TextDisplayPane } from "./TextDisplayProgram";
 import { FileBrowserProgram } from "./files/FileBrowserProgram";
 import { ErrorPane } from "./ErrorPane";
 import { Instance, InstanceCreationObject } from "./Instances";
+import { WebBrowserProgram } from "./web/WebBrowserProgram";
 
 
 
@@ -186,6 +187,7 @@ const _DEFAULT_PROGRAMS: {[uniqueName: string]: Omit<MinimalProgram<any>, 'uniqu
         state: {}
     },
     'jank-file-browser': FileBrowserProgram,
+    'jank-web-browser': WebBrowserProgram,
     'error': {
         component: ErrorPane,
         instanceInit: (instance) => {
