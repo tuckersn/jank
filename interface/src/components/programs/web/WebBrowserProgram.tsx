@@ -1,5 +1,7 @@
+
 import React from "react"
 import { BehaviorSubject } from "rxjs";
+import BrowserView from "../../../common/components/BrowserView";
 import { FileBrowserInstanceState } from "../files/FileBrowserProgram";
 import { PaneProps } from "../Panes";
 import { MinimalProgram } from "../Programs";
@@ -11,12 +13,18 @@ export interface WebBrowserInstanceState {
 }
 
 export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () => {
-    return <div>
+    return <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%'
+    }}>
         <div className={WebBrowserStyle.toolbar}>
             NAV BAR HERE
         </div>
         <div className={WebBrowserStyle.content}>
-            CONTENT HERE
+            Testing
+            <BrowserView></BrowserView>
         </div>
     </div>;
 };

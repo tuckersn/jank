@@ -2,6 +2,13 @@ import { BrowserWindow, WebContents } from "electron";
 import { MainMessages } from "jank-shared/src/communication/render-ipc";
 import {nanoid} from "nanoid";
 
+export type WindowTypes = 'browserWindow' | 'browserView';
+export interface IWindow {
+    id: string;
+    webContents: () => WebContents;
+}
+
+
 export module WindowManager {
     export const windows: {[id: string]: {
         id: string;

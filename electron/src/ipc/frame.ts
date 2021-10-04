@@ -7,13 +7,13 @@ import { ipcLogger } from "../loggers";
 export const onEventFrame: OnEventFunction<FrameMessages.RenderMessages> = ({window, event}) => {
     ipcLogger.info("FRAME ARGS:", event);
     switch(event.type) {
-        case 'frame-close':
+        case 'frame-R-close':
             window.close();
             break;
-        case 'frame-minimize':
+        case 'frame-R-minimize':
             window.minimize();
             break;
-        case 'frame-maximize':
+        case 'frame-R-maximize':
             if(window.isMaximized())
                 window.unmaximize();
             else

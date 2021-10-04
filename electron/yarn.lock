@@ -1049,7 +1049,7 @@ isexe@^2.0.0:
   resolved "http://192.168.1.88:4873/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
 
-jank-shared@../shared/:
+jank-shared@../shared:
   version "0.0.1"
   dependencies:
     "@types/ip" "^1.1.0"

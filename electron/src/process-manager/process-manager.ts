@@ -58,7 +58,7 @@ export module ProcessManager {
             case "pm-spawn-response":
                 console.log("Got spawn response.");
                 const payload: ProcessMessages.MSpawnResponse = {
-                    type: 'process-spawn-response',
+                    type: 'process-M-spawn-response',
                     payload: {
                         id: msg.payload.id,
                         request_id: msg.payload.request_id

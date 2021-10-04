@@ -5,7 +5,7 @@ import ProcessManager from "../process-manager";
 
 export const onEventProcess: OnEventFunction<ProcessMessages.RenderMessages> = async ({window, event}) => {
     switch(event.type) {
-        case 'process-spawn':
+        case 'process-R-spawn':
             ProcessManager.spawnProcess(event.payload.command, {
                 request_id: event.payload.request_id
             });

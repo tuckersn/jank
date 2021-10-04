@@ -13,7 +13,7 @@ export module ElectronShim {
 
     ipcRenderer.on('frame', (event: any, msg: FrameMessages.MainMessages) => {
         switch(msg.type) {
-            case 'frame-maximized':
+            case 'frame-M-maximize':
                 Frame.maximizationSubject.next(msg.payload.maximized);
                 return;
             default:
@@ -25,7 +25,7 @@ export module ElectronShim {
     const processMessages = new Subject<ProcessMessages.MainMessages>();
     ipcRenderer.on('process', (event: any, msg: ProcessMessages.MainMessages) => {
         switch(msg.type) {
-            case 'process-spawn-response':
+            case 'process-M-spawn-response':
                 processMessages.next(msg);
         }
     });
@@ -47,7 +47,7 @@ export module ElectronShim {
     } = {}) {
         const request_id: string = nanoid();
         const event: ProcessMessages.RSpawn = {
-            type: 'process-spawn',
+            type: 'process-R-spawn',
             payload: {
                 command,
                 args,
@@ -86,14 +86,14 @@ export module ElectronShim {
         
         static minimize() {
             const event: FrameMessages.RMinimize = {
-                type: 'frame-minimize',
+                type: 'frame-R-minimize',
                 payload: {}
             }
             ipcRenderer.send('frame', event);
         };
         static close() {
             const event: FrameMessages.RClose = {
-                type: 'frame-close',
+                type: 'frame-R-close',
                 payload: {}
             }
             ipcRenderer.send('frame', event);
@@ -101,7 +101,7 @@ export module ElectronShim {
         };
         static maximize() {
             const event: FrameMessages.RMaximize = {
-                type: 'frame-maximize',
+                type: 'frame-R-maximize',
                 payload: {}
             }
             ipcRenderer.send('frame', event);

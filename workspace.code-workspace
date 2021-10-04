@@ -21,5 +21,8 @@
 			"name": "(/process-manager) Process Manager"
 		}
 	],
-	"settings": {}
+	"settings": {},
+	"extensions": {
+		"recommendations": []
+	}
 }
