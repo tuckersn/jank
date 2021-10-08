@@ -111,7 +111,7 @@ export const REPLTab: React.FC<PaneProps<any>> = () => {
         overflow: 'hidden'
         
     }} ref={containerRef}>
-        <div style={{ overflowY: "scroll", height: "100%", background: Theme.baseColorVeryDark }} ref={consoleContainerRef} onScroll={() => {
+        <div style={{ overflowY: "scroll", height: "100%", background: Theme.current.value.baseColorVeryDark }} ref={consoleContainerRef} onScroll={() => {
       
         }}>
             <ConsoleComponent logs={logs} variant="dark" />

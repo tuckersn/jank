@@ -21,8 +21,14 @@
 			"name": "(/process-manager) Process Manager"
 		}
 	],
-	"settings": {},
+	"settings": {
+		"material-icon-theme.folders.associations": {
+			"interface/src/components/programs/info": "src"
+		}
+	},
 	"extensions": {
-		"recommendations": []
+		"recommendations": [
+			"pkief.material-icon-theme"
+		]
 	}
 }

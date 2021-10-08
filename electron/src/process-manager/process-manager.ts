@@ -6,7 +6,7 @@ import { TCP } from "jank-shared/dist/networking/tcp";
 import { Observable, Subject } from "rxjs";
 import { ipcMain } from "electron";
 import { ProcessMessages } from "jank-shared/src/communication/render-ipc";
-import { WindowManager } from "../windows/window-manager";
+import { WindowRegistry } from "../windows/window-registry";
 
 
 
@@ -61,10 +61,10 @@ export module ProcessManager {
                     type: 'process-M-spawn-response',
                     payload: {
                         id: msg.payload.id,
-                        request_id: msg.payload.request_id
+                        requestId: msg.payload.request_id
                     }
                 };
-                WindowManager.broadcast('process', payload);
+                WindowRegistry.broadcast('process', payload);
                 break;
             default:
                 throw new Error("Invalid message type: " + msg.type);
@@ -181,13 +181,14 @@ export module ProcessManager {
         encoding,
         name,
         program,
-        request_id
+        requestId
     } : {
         encoding?: BufferEncoding,
         name?: string,
         program?: string,
-        request_id?: string
+        requestId?: string
     }) {
+        //TODO: fix request_id, stopped here.
         send({
             type: 'e-spawn-request',
             payload: {
@@ -195,7 +196,7 @@ export module ProcessManager {
                 encoding,
                 name,
                 program,
-                request_id
+                request_id: requestId
             }
         })
     }

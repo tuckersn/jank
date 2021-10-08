@@ -1,15 +1,17 @@
-export interface Message<TYPE_KEY extends string, PAYLOAD extends Object = {}> {
-    type: TYPE_KEY
+
+
+export interface Message<MESSAGE_TYPE extends string, PAYLOAD extends Object = {}> {
+    type: MESSAGE_TYPE,
     payload: PAYLOAD
 }
 
 export module FrameMessages {
-    type TypePrefix = 'frame';
+    export const PREFIX = 'frame';
 
-    export type RClose = Message<`${TypePrefix}-R-close`>;
-    export type RMinimize = Message<`${TypePrefix}-R-minimize`>;
-    export type RMaximize = Message<`${TypePrefix}-R-maximize`>;
-    export type MMaximized = Message<`${TypePrefix}-M-maximize`, {
+    export type RClose = Message<`${typeof PREFIX}-R-close`>;
+    export type RMinimize = Message<`${typeof PREFIX}-R-minimize`>;
+    export type RMaximize = Message<`${typeof PREFIX}-R-maximize`>;
+    export type MMaximized = Message<`${typeof PREFIX}-M-maximize`, {
         maximized: boolean
     }>;
 
@@ -19,16 +21,16 @@ export module FrameMessages {
 }
 
 export module ProcessMessages {
-    type TypePrefix = 'process';
+    export const PREFIX = 'process';
 
-    export type RSpawn = Message<`${TypePrefix}-R-spawn`, {
-        request_id?: string,
+    export type RSpawn = Message<`${typeof PREFIX}-R-spawn`, {
+        requestId?: string,
         command: string,
         args?: string[]
     }>;
-    export type MSpawnResponse = Message<`${TypePrefix}-M-spawn-response`, {
+    export type MSpawnResponse = Message<`${typeof PREFIX}-M-spawn-response`, {
         id: string,
-        request_id?: string
+        requestId?: string
     }>;
 
     export type RenderMessages = RSpawn;
@@ -37,19 +39,33 @@ export module ProcessMessages {
 }
 
 export module BrowserViewMessages {
+    export const PREFIX = 'browser-view';
 
-    type TypePrefix = 'browser-view';
-
-    export type RSpawn = Message<`${TypePrefix}-R-spawn`, {
-        request_id?: string,
+    export type RSpawn = Message<`${typeof PREFIX}-R-spawn`, {
+        requestId?: string,
     }>;
 
-    export type MSpawnResponse = Message<`${TypePrefix}-M-spawn-response`, {
+    export type RDestroy = Message<`${typeof PREFIX}-R-destroy`, {
+        requestId?: string,
+        target: {
+            id: string
+        } | {
+            // If all is true, erase destroy all views for this window.
+            all: true
+        }
+    }>;
+
+    export type MSpawnResponse = Message<`${typeof PREFIX}-M-spawn-response`, {
         id: string,
-        request_id?: string
+        requestId?: string
     }>;
 
-    export type RPosition = Message<`${TypePrefix}-R-position`, {
+    export type MDestroyResponse = Message<`${typeof PREFIX}-M-spawn-response`, {
+        id: string,
+        requestId?: string
+    }>;
+
+    export type RPosition = Message<`${typeof PREFIX}-R-position`, {
         id: string,
         x: number,
         y: number,
@@ -57,15 +73,19 @@ export module BrowserViewMessages {
         h: number
     }>;
 
-    export type RenderMessage = RSpawn | RPosition;
-    export type MainMessage = MSpawnResponse;
-    export type AnyMessage = RenderMessage | MainMessages;
+    export type RenderMessages = RSpawn | RDestroy | RPosition;
+    export type MainMessages = MSpawnResponse | MDestroyResponse;
+    export type AnyMessage = RenderMessages | MainMessages;
 }
 
+
+export type Prefixs = typeof FrameMessages.PREFIX |
+    typeof ProcessMessages.PREFIX |
+    typeof BrowserViewMessages.PREFIX;
 export type RenderMessages = FrameMessages.RenderMessages | 
     ProcessMessages.RenderMessages |
-    BrowserViewMessages.RenderMessage;
+    BrowserViewMessages.RenderMessages;
 export type MainMessages = FrameMessages.MainMessages | 
     ProcessMessages.MainMessages |
-    BrowserViewMessages.MainMessage;
+    BrowserViewMessages.MainMessages;
 export type AnyMessage = RenderMessages | MainMessages;

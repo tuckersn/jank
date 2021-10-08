@@ -1,5 +1,6 @@
 import * as monaco from "monaco-editor";
 import { CSSProperties, useEffect, useRef, useState } from "react";
+import { RGBColor } from "../../common/modules/colors";
 import { Theme } from "../../Theme";
 
 
@@ -11,7 +12,7 @@ export module Monaco {
         rules: [
         ],
         colors: {
-            "editor.background": Theme.baseColorDark
+            "editor.background": RGBColor.toHex(Theme.current.value.baseColorDark)
         }
     })
 }

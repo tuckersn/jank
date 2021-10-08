@@ -1,9 +1,18 @@
-import React, { useEffect, useRef } from "react";
+
+import { BrowserViewMessages } from "jank-shared/src/communication/render-ipc";
+import { nanoid } from "nanoid";
+import React, { useEffect, useRef, useState } from "react";
 import { withSize } from "react-sizeme";
-import styled from 'styled-components'
+import { filter } from "rxjs";
+import styled, { StyledComponent } from 'styled-components'
+import { ElectronShim, ipcRenderer } from "../shims/electron";
 
 const Container = styled.div`
-    border: 1px solid red;
+    height: 100%;
+    width: 100%;
+`;
+
+const BrowserViewDiv = styled.div`
     height: 100%;
     width: 100%;
 `;
@@ -16,12 +25,71 @@ const BrowserViewComponent: React.FC<{
     size
 }) => {
 
+    const browserViewDivRef = useRef<HTMLDivElement>(null);
+    const [id, setId] = useState<string | null>(null);
+
     useEffect(() => {
-        console.log("SIZE CHANGE:", size);
-    }, [size.height, size.width]);
+        const requestId: string = nanoid();
+        const event: BrowserViewMessages.RSpawn = {
+            type: 'browser-view-R-spawn',
+            payload: {
+                requestId
+            }
+        }
+
+        console.log("Getting ready to start!");
+
+
+        let subscription = ElectronShim.browserViewMessages.pipe(filter(({msg}) => {
+            if(msg.type === 'browser-view-M-spawn-response') {
+                return msg.payload.requestId === requestId;
+            }
+            return false;
+        })).subscribe(({
+            msg: {
+                payload
+            }
+        }) => {
+            const msg = payload as BrowserViewMessages.MSpawnResponse['payload'];
+            setId(msg.id);
+            subscription.unsubscribe();
+        });
+
+        ipcRenderer.send('browser-view', event);
+
+
+        console.log("Waiting for a response.");
+
+    }, []);
+
+    useEffect(() => {
+        console.log("BV RESIZE:", id, browserViewDivRef);
+        if(id && browserViewDivRef) {
+            console.log("UPDATING POSITION")
+            const rect = browserViewDivRef.current?.getBoundingClientRect()!;
+            const event: BrowserViewMessages.RPosition = {
+                type: 'browser-view-R-position',
+                payload: {
+                    id,
+                    x: rect.left,
+                    y: rect.top,
+                    h: size.height,
+                    w: size.width
+                }
+            };
+            ipcRenderer.send('browser-view', event);
+            console.log("RESIZE:", event, {
+                id,
+                x: rect.left,
+                y: rect.top,
+                h: size.height,
+                w: size.width
+            });
+        }
+    }, [size.height, size.width, id, browserViewDivRef]);
 
     return (<Container>
-        <div></div>
+        <BrowserViewDiv style={{width: "100%", height: "100%"}} ref={browserViewDivRef}></BrowserViewDiv>
     </Container>);
 };
 

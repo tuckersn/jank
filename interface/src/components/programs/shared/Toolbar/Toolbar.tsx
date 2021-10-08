@@ -29,7 +29,7 @@ export function getBaseStyle({alignment} : ToolBarItemProps, style?: CSSProperti
         background: 'rgba(0,0,0,0)',
         color: 'white',
         border: 0,
-        borderRight: "1px solid " + Theme.accentColor,
+        borderRight: "1px solid " + Theme.current.value.accentColor,
         padding: 0,
         display: "flex",
         alignItems: 'center',
@@ -87,9 +87,9 @@ export const ToolBar: React.FC<{
             width: '100%',
             height: toolbarHeight,
             ...(bottom ? {
-                borderTop: "1px solid " + Theme.accentColor
+                borderTop: "1px solid " + Theme.current.value.accentColor
             } : {
-                borderBottom: "1px solid " + Theme.accentColor
+                borderBottom: "1px solid " + Theme.current.value.accentColor
             })
         }}>
             {items.map((item) => {

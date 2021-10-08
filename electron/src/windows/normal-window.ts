@@ -3,17 +3,19 @@ import * as path from "path";
 import { onEventProcess } from "../ipc";
 
 import { onEventFrame } from "../ipc/frame";
-import { WindowManager } from "./window-manager";
+import { onBrowserViewChannel } from "./browser-views/browser-view-registry";
+import { WindowRegistry } from "./window-registry";
 
 export function createNormalWindow() {
-    // Create the browser window.
-    const mainWindow = new BrowserWindow({
+
+    const { id, browserWindow } = WindowRegistry.create({
         height: 600,
         webPreferences: {
-        preload: path.join(__dirname, "preload-main.js"),
-        nodeIntegration: true,
-        contextIsolation: false,
-        javascript: true
+            preload: path.join(__dirname, "preload-main.js"),
+            nodeIntegration: true,
+            contextIsolation: false,
+            javascript: true,
+            webviewTag: true
         },
         width: 800,
         frame: false,
@@ -21,31 +23,41 @@ export function createNormalWindow() {
         autoHideMenuBar: true
     });
 
-    WindowManager.register({
-        browserWindow: mainWindow,
-        webContents: mainWindow.webContents
-    });
+    const senderGenerator = (channel: string) => {
+        return {
+            reply: (data: any) => {
+                console.log("SENDING DATA:", data);
+                browserWindow.webContents.send(channel, data);
+            }
+        }
+    }
 
-    mainWindow.webContents.addListener('ipc-message', (event, channel, args) => {
+    browserWindow.webContents.addListener('ipc-message', (event, channel, args) => {
+        const window = {
+            id,
+            browserWindow
+        };
         switch(channel) {
             case "frame":
-                onEventFrame({window: mainWindow, event: args});
+                onEventFrame({window, sender: senderGenerator(channel), event: args});
             case "process":
-                onEventProcess({window: mainWindow, event: args});
+                onEventProcess({window, sender: senderGenerator(channel), event: args});
+            case "browser-view":
+                onBrowserViewChannel({window, sender: senderGenerator(channel),event:args});
         }      
     });
     
-    mainWindow.webContents.on('console-message', async (event, level, msg, line, sourceId) => {
+    browserWindow.webContents.on('console-message', async (event, level, msg, line, sourceId) => {
         //console.log("MAIN:", {event,level,msg,line,sourceId});
-        mainWindow.webContents.send('console-message', {level,msg,line,sourceId});
+        browserWindow.webContents.send('console-message', {level,msg,line,sourceId});
     });
 
-    mainWindow.loadFile('./loading.html');
+    browserWindow.loadFile('./loading.html');
     
-    mainWindow.loadURL(`http://localhost:3000`);
+    browserWindow.loadURL(`http://localhost:3000`);
 
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    browserWindow.webContents.openDevTools();
     
 }

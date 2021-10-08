@@ -44,9 +44,9 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
         height: frameHeight + 'px',
         fontSize: Config.style.frame.fontScale * Math.log(frameHeight) + 'px',
         boxSizing: 'border-box',
-        borderBottom: Config.style.frame.border + ' ' + Theme.accentColor,
+        borderBottom: Config.style.frame.border + ' ' + Theme.current.value.accentColor,
         boxShadow: '0px 8.4px 7.1px rgba(0, 0, 0, 0.154), 0px 67px 57px rgba(0, 0, 0, 0.18)',
-        background: Theme.baseColorVeryDark
+        background: Theme.current.value.baseColorVeryDark
     };
 
     return <div style={{
@@ -56,7 +56,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
         color: Config.style.fontColor,
         background: Config.style.backgroundColor,
         boxSizing: "border-box",
-        border: Config.style.frame.border + ' ' + Theme.accentColorDark,
+        border: Config.style.frame.border + ' ' + Theme.current.value.accentColorDark,
       }}>
         <div style={titleBarStyle}>
             <div className={"jank title-bar"}>

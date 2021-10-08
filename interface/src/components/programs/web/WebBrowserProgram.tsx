@@ -2,6 +2,7 @@
 import React from "react"
 import { BehaviorSubject } from "rxjs";
 import BrowserView from "../../../common/components/BrowserView";
+import { TabbedContainer } from "../../../common/components/containers/TabbedContainer";
 import { FileBrowserInstanceState } from "../files/FileBrowserProgram";
 import { PaneProps } from "../Panes";
 import { MinimalProgram } from "../Programs";
@@ -23,8 +24,11 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
             NAV BAR HERE
         </div>
         <div className={WebBrowserStyle.content}>
-            Testing
-            <BrowserView></BrowserView>
+            <TabbedContainer>
+                <h1>Test</h1>
+                <h1>Test 2</h1>
+            </TabbedContainer>
+            {/* <BrowserView></BrowserView> */}
         </div>
     </div>;
 };

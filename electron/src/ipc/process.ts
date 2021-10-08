@@ -1,13 +1,13 @@
-import { OnEventFunction } from "."
+import { OnIpcEventFunction } from "."
 import { ProcessMessages } from "jank-shared/src/communication/render-ipc";
 import ProcessManager from "../process-manager";
 
 
-export const onEventProcess: OnEventFunction<ProcessMessages.RenderMessages> = async ({window, event}) => {
+export const onEventProcess: OnIpcEventFunction<ProcessMessages.RenderMessages> = async ({window: window, event}) => {
     switch(event.type) {
         case 'process-R-spawn':
             ProcessManager.spawnProcess(event.payload.command, {
-                request_id: event.payload.request_id
+                requestId: event.payload.requestId
             });
             return;
         default:
