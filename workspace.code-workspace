@@ -24,11 +24,15 @@
 	"settings": {
 		"material-icon-theme.folders.associations": {
 			"interface/src/components/programs/info": "src"
-		}
+		},
+		"cSpell.words": [
+			"Jank"
+		]
 	},
 	"extensions": {
 		"recommendations": [
-			"pkief.material-icon-theme"
+			"pkief.material-icon-theme",
+			"streetsidesoftware.code-spell-checker"
 		]
 	}
 }
