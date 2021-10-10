@@ -9,6 +9,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/lodash@^4.14.175":
+  version "4.14.175"
+  resolved "http://192.168.1.88:4873/@types%2flodash/-/lodash-4.14.175.tgz#b78dfa959192b01fae0ad90e166478769b215f45"
+  integrity sha512-XmdEOrKQ8a1Y/yxQFOMbC47G/V2VDO1GvMRnl4O75M4GW/abC5tnfzadQYkqEveqRM1dEJGFFegfPNA2vvx2iw==
+
 "@types/node@*":
   version "16.7.11"
   resolved "http://192.168.1.88:4873/@types%2fnode/-/node-16.7.11.tgz#5877b3ab359af251fd413517be2d4265b7fea9a9"
@@ -111,6 +116,11 @@ is-fullwidth-code-point@^3.0.0:
   version "3.0.0"
   resolved "http://192.168.1.88:4873/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz#f116f8064fe90b3f7844a38997c0b75051269f1d"
   integrity sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==
+
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "http://192.168.1.88:4873/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 mz@^2.4.0:
   version "2.7.0"

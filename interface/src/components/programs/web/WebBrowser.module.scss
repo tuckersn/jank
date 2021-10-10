@@ -1,5 +1,7 @@
 .toolbar {
     flex: 0;
+    display: flex;
+    flex-direction: row;
 }
 
 .content {

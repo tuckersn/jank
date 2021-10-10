@@ -2309,6 +2309,11 @@
   resolved "http://192.168.1.88:4873/@types%2fjson-schema/-/json-schema-7.0.9.tgz"
   integrity sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==
 
+"@types/lodash@^4.14.175":
+  version "4.14.175"
+  resolved "http://192.168.1.88:4873/@types%2flodash/-/lodash-4.14.175.tgz#b78dfa959192b01fae0ad90e166478769b215f45"
+  integrity sha512-XmdEOrKQ8a1Y/yxQFOMbC47G/V2VDO1GvMRnl4O75M4GW/abC5tnfzadQYkqEveqRM1dEJGFFegfPNA2vvx2iw==
+
 "@types/node@*":
   version "16.10.2"
   resolved "http://192.168.1.88:4873/@types%2fnode/-/node-16.10.2.tgz#5764ca9aa94470adb4e1185fe2e9f19458992b2e"
@@ -6610,13 +6615,14 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-jank-shared@../shared/:
+jank-shared@../shared:
   version "0.0.1"
   dependencies:
     "@types/ip" "^1.1.0"
     chalk "^4.1.2"
     cli-highlight "^2.1.11"
     ip "^1.1.5"
+    lodash "^4.17.21"
     nanoid "^3.1.25"
     rxjs "^7.3.0"
     type-fest "^2.2.0"
