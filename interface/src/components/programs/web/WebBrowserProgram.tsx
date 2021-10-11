@@ -55,18 +55,16 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
     const [tabs, setTabs] = useState<Tab[]>(Object.values(TABS));
     
 
-    const [tabList, setTabList] = useState<string[]>(['0','1','2']);
-    const [index] = useState(new BehaviorSubject({
-        index: -1,
-        list: tabList
-    }));
+const [tabList, setTabList] = useState<string[]>(['0','1','2']);
+const [index] = useState(new BehaviorSubject({
+    index: -1,
+    list: tabList
+}));
 
 
 
     useEffect(() => {
-        index.subscribe(({index,list}) => {
-            console.log("TABS UPDATE:", index, list[index], list);
-        });
+
     }, [])
 
     
@@ -114,13 +112,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
         </div>
         <div className={WebBrowserStyle.content}>
             
-            <Tabs list={tabList} setList={setTabList} index={index} tabFactory={() => {
-                return ({key}) => {
-                    return <div>
-                        {key}
-                    </div>;
-                }
-            }}/>
+            <Tabs list={tabList} setList={setTabList} index={index}/>
             {/* <TabbedContainer tabs={tabs}>   
             </TabbedContainer>
             <BrowserView></BrowserView> */}

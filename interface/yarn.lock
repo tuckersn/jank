@@ -4499,6 +4499,15 @@ dnd-core@14.0.0:
     "@react-dnd/invariant" "^2.0.0"
     redux "^4.0.5"
 
+dnd-core@14.0.1:
+  version "14.0.1"
+  resolved "http://192.168.1.88:4873/dnd-core/-/dnd-core-14.0.1.tgz#76d000e41c494983210fb20a48b835f81a203c2e"
+  integrity sha512-+PVS2VPTgKFPYWo3vAFEA8WPbTf7/xo43TifH9G8S1KqnrQu0o77A3unrF5yOugy4mIz7K5wAVFHUcha7wsz6A==
+  dependencies:
+    "@react-dnd/asap" "^4.0.0"
+    "@react-dnd/invariant" "^2.0.0"
+    redux "^4.1.1"
+
 dns-equal@^1.0.0:
   version "1.0.0"
   resolved "http://192.168.1.88:4873/dns-equal/-/dns-equal-1.0.0.tgz"
@@ -7771,6 +7780,11 @@ nanoid@^3.1.23, nanoid@^3.1.25:
   resolved "http://192.168.1.88:4873/nanoid/-/nanoid-3.1.25.tgz"
   integrity sha512-rdwtIXaXCLFAQbnfqDRnI6jaRHp9fTcYBjtFKE8eezcZ7LuLjhUaQGNeMXf1HmRoCH32CLz6XwX0TtxEOS/A3Q==
 
+nanoid@^3.1.29:
+  version "3.1.29"
+  resolved "http://192.168.1.88:4873/nanoid/-/nanoid-3.1.29.tgz#214fb2d7a33e1a5bef4757b779dfaeb6a4e5aeb4"
+  integrity sha512-dW2pUSGZ8ZnCFIlBIA31SV8huOGCHb6OwzVCc7A69rb/a+SgPBwfmLvK5TKQ3INPbRkcI8a/Owo0XbiTNH19wg==
+
 nanomatch@^1.2.9:
   version "1.2.13"
   resolved "http://192.168.1.88:4873/nanomatch/-/nanomatch-1.2.13.tgz#b87a8aa4fc0de8fe6be88895b38983ff265bd119"
@@ -9108,6 +9122,11 @@ prepend-http@^2.0.0:
   resolved "http://192.168.1.88:4873/prepend-http/-/prepend-http-2.0.0.tgz"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
+prettier@^2.4.1:
+  version "2.4.1"
+  resolved "http://192.168.1.88:4873/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c"
+  integrity sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
+
 pretty-bytes@^5.3.0, pretty-bytes@^5.4.1:
   version "5.6.0"
   resolved "http://192.168.1.88:4873/pretty-bytes/-/pretty-bytes-5.6.0.tgz#356256f643804773c82f64723fe78c92c62beaeb"
@@ -9344,14 +9363,14 @@ react-dnd-html5-backend@^14.0.1:
   dependencies:
     dnd-core "14.0.0"
 
-react-dnd@^14.0.3:
-  version "14.0.3"
-  resolved "http://192.168.1.88:4873/react-dnd/-/react-dnd-14.0.3.tgz"
-  integrity sha512-i73Hx5SKfDRdwXe30+CjF/DidiRdt/gwpPN14ajkPR20t/0osnNKFNHg3DLV6RZym+DJ0pO9H5APeMsBWGU3+Q==
+react-dnd@^14.0.4:
+  version "14.0.4"
+  resolved "http://192.168.1.88:4873/react-dnd/-/react-dnd-14.0.4.tgz#ffb4ea0e2a3a5532f9c6294d565742008a52b8b0"
+  integrity sha512-AFJJXzUIWp5WAhgvI85ESkDCawM0lhoVvfo/lrseLXwFdH3kEO3v8I2C81QPqBW2UEyJBIPStOhPMGYGFtq/bg==
   dependencies:
     "@react-dnd/invariant" "^2.0.0"
     "@react-dnd/shallowequal" "^2.0.0"
-    dnd-core "14.0.0"
+    dnd-core "14.0.1"
     fast-deep-equal "^3.1.3"
     hoist-non-react-statics "^3.3.2"
 
@@ -9537,9 +9556,9 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redux@^4.0.5:
+redux@^4.0.5, redux@^4.1.1:
   version "4.1.1"
-  resolved "http://192.168.1.88:4873/redux/-/redux-4.1.1.tgz"
+  resolved "http://192.168.1.88:4873/redux/-/redux-4.1.1.tgz#76f1c439bb42043f985fbd9bf21990e60bd67f47"
   integrity sha512-hZQZdDEM25UY2P493kPYuKqviVwZ58lEmGQNeQ+gXa+U0gYPUBf7NKYazbe3m+bs/DzM/ahN12DbF+NG8i0CWw==
   dependencies:
     "@babel/runtime" "^7.9.2"

@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 export module Theme {
-    const _DEAFAULT_THEME = {
+    const _DEFAULT_THEME = {
         baseColor: "17, 21, 27",
         baseColorLight: "28, 47, 71",
         baseColorVeryLight: "38, 67, 102",
@@ -13,9 +13,9 @@ export module Theme {
         hightLight: "172, 198, 255"
     }
 
-    export const DEAFAULT_THEME: Readonly<typeof _DEAFAULT_THEME> = _DEAFAULT_THEME;
-    export type ITheme = Partial<typeof _DEAFAULT_THEME>;
-    export const current = new BehaviorSubject(_DEAFAULT_THEME);
+    export const DEFAULT_THEME: Readonly<typeof _DEFAULT_THEME> = _DEFAULT_THEME;
+    export type ITheme = Partial<typeof _DEFAULT_THEME>;
+    export const current = new BehaviorSubject(_DEFAULT_THEME);
 
     export function loadTheme(theme: ITheme) {
         theme = Object.assign({}, current.value, theme);
@@ -33,5 +33,5 @@ export module Theme {
         current.next(theme as Required<typeof theme>);
     }
 
-    loadTheme(_DEAFAULT_THEME);
+    loadTheme(_DEFAULT_THEME);
 }
