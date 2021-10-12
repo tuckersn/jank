@@ -2,7 +2,7 @@
  * Dragging is loosely based on this example:
  * https://codesandbox.io/s/github/react-dnd/react-dnd/tree/gh-pages/examples_hooks_ts/04-sortable/cancel-on-drop-outside?from-embed=&file=/src/Container.tsx
  */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { JSXElementConstructor, memo, useCallback, useEffect, useState } from "react";
 
 import _ from "lodash";
 import styled, { CSSProperties } from "styled-components";
@@ -10,7 +10,7 @@ import { BehaviorSubject } from "rxjs";
 import { useDrag } from "react-dnd";
 
 import { Theme } from "../../Theme";
-import { DefaultTab } from "./DefaultTab";
+import { DefaultTab, TextComponentProps } from "./DefaultTab";
 
 const TabsContainer = styled.div`
 	display: flex;
@@ -29,6 +29,7 @@ export type TabProps = {
 	setCurrentIndex: (index: number) => void;
     moveTab: (key: string, index: number) => number;
     findTab: (key: string) => { index: number };
+    TextComponent?: React.FC<TextComponentProps>
 };
 
 export type MoveTabCallBack = (event: {
@@ -38,18 +39,11 @@ export type MoveTabCallBack = (event: {
 	draggedItem: string;
 }) => void;
 
-export function defaultTabComponentFactory(
-	textComponent?: (props: TabProps) => JSX.Element,
-	moveTab?: MoveTabCallBack
-): React.FC<TabProps> {
-	moveTab =
-		moveTab || (({ draggedIndex, draggedItem, dropIndex, dropItem }) => {});
 
-	return DefaultTab;
-}
 
 export function Tabs({
-	tabFactory,
+	TabComponent,
+    TextComponent,
 	style,
 	list,
 	setList,
@@ -62,7 +56,8 @@ export function Tabs({
 	 * tabs component will automatically set index to -1 if it
 	 * exceeds the length of the list.
 	 */
-	tabFactory?: (props: TabProps) => JSX.Element;
+	TabComponent?: React.FC<TabProps>
+    TextComponent?: React.FC<TextComponentProps>
 	style?: CSSProperties;
 	list: string[];
 	/**
@@ -79,6 +74,7 @@ export function Tabs({
 	}>;
 }) {
 	const [currentIndex, setCurrentIndex] = useState<number>(-1);
+
 
 	function updateIndex() {
 		if (list.length < 0) {
@@ -107,19 +103,16 @@ export function Tabs({
           [list],
     );
 
-	const moveTab = useCallback(
-		(key: string, atIndex: number) => {
-            const {tab,index} = findTab(key);
-			let array = [...list];
-            array.splice(index, 1);
-            array.splice(atIndex, 0, tab);
-            if(setList) {
-                setList([...array]);
-            }
-            return index;
-		},
-		[list,setList]
-	);
+	const moveTab = (key: string, atIndex: number) => {
+        const {tab,index: newIndex} = findTab(key);
+        let array = [...list];
+        array.splice(newIndex, 1);
+        array.splice(atIndex, 0, tab);
+        if(setList) {
+            setList([...array]);
+        }
+        return newIndex;
+    }
 
 	useEffect(() => {
 		updateIndex();
@@ -133,13 +126,14 @@ export function Tabs({
 		updateIndex();
 	}, [currentIndex]);
 
-	const TabComponent = tabFactory || defaultTabComponentFactory();
+
+    const TabComponentTag: React.FC<TabProps> = TabComponent || DefaultTab;
 
 	return (
 		<TabsContainer style={style}>
 			{list.map((itemValue: string, itemIndex) => {
 				return (
-					<TabComponent
+					<TabComponentTag
 						key={itemValue}
 						{...{
 							startingIndex: itemIndex,
@@ -150,6 +144,17 @@ export function Tabs({
 							destroy: setList
 								? () => {
 										if (setList) {
+
+                                            if(currentIndex > itemIndex) {
+                                                if(list.length > 1) {
+                                                    if(itemIndex > 0) {
+                                                        console.log("SHIFT");
+                                                        setCurrentIndex(currentIndex - 1);
+                                                    }
+                                                } else {
+                                                    setCurrentIndex(-1);
+                                                }
+                                            }
 											list.splice(itemIndex, 1);
 											setList([...list]);
 										}
@@ -157,7 +162,8 @@ export function Tabs({
 								: null,
 							setCurrentIndex,
                             moveTab,
-                            findTab
+                            findTab,
+                            TextComponent
 						}}
 					/>
 				);
