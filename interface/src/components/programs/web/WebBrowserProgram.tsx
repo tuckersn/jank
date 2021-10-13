@@ -56,7 +56,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
     const [tabs, setTabs] = useState<Tab[]>(Object.values(TABS));
     const [currentTab, setCurrentTab] = useState<string>();
 
-    const [tabList, setTabList] = useState<string[]>(['0','1','2','3','4','5','6']);
+    const [tabList, setTabList] = useState<string[]>(['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14']);
     const [index] = useState(new BehaviorSubject({
         index: -1,
         list: tabList
@@ -118,7 +118,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
             <BrowserView></BrowserView> */}
 
             <h1>this is a feed of the selected tab in the parent component {currentTab}</h1>
-        </div>
+        </div> 
     </div>;
 };
 

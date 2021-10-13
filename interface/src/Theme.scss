@@ -3,10 +3,12 @@
     --theme-base-color: 17, 21, 27;
     --theme-base-color-light: 28, 47, 71;
     --theme-base-color-very-light: 	38, 67, 102;
+    --theme-base-color-extremely-light: 48, 84, 128;
     --theme-base-color-dark: 14, 24, 41;
     //--theme-base-color-very-dark: 2, 7, 15;
     --theme-base-color-very-dark: 4, 16, 36;
     --theme-highlight-color: 172, 198, 255;
+    --theme-base-color-extremely-dark: 3, 5, 10;
 }
 /***
 
@@ -17,8 +19,10 @@
 $theme-base-color: var(--theme-base-color);
 $theme-base-color-dark: var(--theme-base-color-dark);
 $theme-base-color-very-dark: var(--theme-base-color-very-dark);
+$theme-base-color-extremely-dark: var(--theme-base-color-extremely-dark);
 $theme-base-color-light: var(--theme-base-color-light);
 $theme-base-color-very-light: var(--theme-base-color-very-light);
+$theme-base-color-extremely-light: var(--theme-base-color-extremely-light);
 
 $theme-accent-color: #2e60a1;
 
@@ -39,3 +43,22 @@ $theme-font-color: white;
 $theme-font-color-dark: #789496;
 
 
+
+/***
+
+    SCROLLBAR
+
+***/
+::-webkit-scrollbar {
+    width: 1em;
+}
+::-webkit-scrollbar-track {
+    background-color: rgba($theme-base-color-extremely-dark);
+    box-sizing: border-box;
+    border: 1px solid rgba($theme-base-color-light);
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba($theme-base-color);
+    box-sizing: border-box;
+    border: 1px solid rgba($theme-base-color-extremely-light);
+}

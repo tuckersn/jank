@@ -4,13 +4,16 @@ export module Theme {
         baseColor: "17, 21, 27",
         baseColorLight: "28, 47, 71",
         baseColorVeryLight: "38, 67, 102",
+        baseColorExtremelyLight: "48, 84, 128",
         baseColorDark: "14, 24, 41",
-        baseColorVeryDark: "4, 16, 36",
+        baseColorVeryDark: "6, 12, 23",
+        baseColorExtremelyDark: "3, 5, 10",
 
         accentColor: "#2e60a1",
         accentColorDark: "#24364d",
 
-        hightLight: "172, 198, 255"
+        hightLight: "172, 198, 255",
+        highVeryLight: "193, 209, 245"
     }
 
     export const DEFAULT_THEME: Readonly<typeof _DEFAULT_THEME> = _DEFAULT_THEME;

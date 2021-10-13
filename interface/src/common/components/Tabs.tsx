@@ -2,32 +2,31 @@
  * Dragging is loosely based on this example:
  * https://codesandbox.io/s/github/react-dnd/react-dnd/tree/gh-pages/examples_hooks_ts/04-sortable/cancel-on-drop-outside?from-embed=&file=/src/Container.tsx
  */
-import React, { JSXElementConstructor, memo, useCallback, useEffect, useState } from "react";
+import React, { JSXElementConstructor, memo, useCallback, useEffect, useRef, useState } from "react";
 
 import _ from "lodash";
 import styled, { CSSProperties } from "styled-components";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, first } from "rxjs";
 import { useDrag } from "react-dnd";
 
 import { Theme } from "../../Theme";
 import { DefaultTab, TextComponentProps } from "./DefaultTab";
 
-const TabsContainer = styled.div`
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-`;
 
-export type TabProps = {
+
+export type TabProps<DATA=any> = {
 	// Same thing as key
 	value: string;
 	startingIndex: number;
 	currentIndex: number;
 	tabList: string[];
+	data: DATA;
+	setData: (data: DATA) => void;
 	setList?: (list: string[]) => void;
 	destroy: (() => void) | null;
 	setCurrentIndex: (index: number) => void;
     moveTab: (key: string, index: number) => number;
+    moveTabIndex: (newIndex: number, oldIndex: number) => number;
     findTab: (key: string) => { index: number };
     TextComponent?: React.FC<TextComponentProps>
 };
@@ -73,8 +72,13 @@ export function Tabs({
 		index: number;
 	}>;
 }) {
+	
+	const container = useRef<HTMLDivElement>(null);
 	const [currentIndex, setCurrentIndex] = useState<number>(-1);
+	const [data,setData] = useState<any | null>(null);
 
+	const [scrollReset, setScrollReset] = useState<boolean>(false);
+	const [scroll] = useState(new BehaviorSubject<number>(0));
 
 	function updateIndex() {
 		if (list.length < 0) {
@@ -92,9 +96,10 @@ export function Tabs({
 		}
 	}
 
+
     const findTab = useCallback(
         (searchKey: string) => {
-            const tab = list.filter((key) => `${key}` === searchKey)[0]
+            const tab = list.filter((key) => `${key}` === searchKey)[0];
             return {
               tab,
               index: list.indexOf(tab),
@@ -104,18 +109,43 @@ export function Tabs({
     );
 
 	const moveTab = (key: string, atIndex: number) => {
+		console.log("... move?");
         const {tab,index: newIndex} = findTab(key);
+		setScrollReset(true);
         let array = [...list];
         array.splice(newIndex, 1);
         array.splice(atIndex, 0, tab);
         if(setList) {
             setList([...array]);
         }
+
+        return newIndex;
+    }
+
+    const moveTabIndex = (currentIndex: number, newIndex: number) => {
+		
+        let array = [...list];
+		setScrollReset(true);
+		const temp = array[currentIndex];
+		array[currentIndex] = array[newIndex];
+		array[newIndex] = temp;
+        if(setList) {
+            setList([...array]);
+        }
+
         return newIndex;
     }
 
 	useEffect(() => {
+		console.log("NEW TABS");
 		updateIndex();
+
+		// async function scrollingCB() {
+		// 	scroll.pipe(first()).subscribe((pos) => {
+
+		// 	});
+		// }
+		
 	}, []);
 
 	useEffect(() => {
@@ -127,10 +157,30 @@ export function Tabs({
 	}, [currentIndex]);
 
 
+
     const TabComponentTag: React.FC<TabProps> = TabComponent || DefaultTab;
+	const TabsContainer = styled.div`
+		width: auto;
+		height: 48px;
+		overflow-x: scroll;
+		overflow-y: hidden;
+		white-space: nowrap;
+	`;
+
+	useEffect(() => {
+		if(container) {
+			container.current!.scrollLeft = scroll.value;
+		}
+	});
 
 	return (
-		<TabsContainer style={style}>
+		<TabsContainer ref={container} style={style} onScroll={(event) => {
+			if(scrollReset) {
+				event.preventDefault();
+			}
+			scroll.next(container.current!.scrollLeft);
+		}}>
+			<div>
 			{list.map((itemValue: string, itemIndex) => {
 				return (
 					<TabComponentTag
@@ -141,6 +191,8 @@ export function Tabs({
 							tabList: list,
 							value: itemValue,
 							setList,
+							data,
+							setData,
 							destroy: setList
 								? () => {
 										if (setList) {
@@ -162,12 +214,14 @@ export function Tabs({
 								: null,
 							setCurrentIndex,
                             moveTab,
+                            moveTabIndex,
                             findTab,
                             TextComponent
 						}}
 					/>
 				);
 			})}
+			</div>
 		</TabsContainer>
 	);
 }
