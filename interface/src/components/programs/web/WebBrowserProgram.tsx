@@ -21,7 +21,7 @@ export interface WebBrowserTabRef {
 }
 
 const TABS: WebBrowserTabRef[] = (() => {
-    const length = 35;
+    const length = 5;
     const output = [];
     for(let i = 0; i < length; i++) {
         output.push({
@@ -35,9 +35,17 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
     
     const [tabs, setTabs] = useState<WebBrowserTabRef[]>(Object.values(TABS));
     const [currentTab, setCurrentTab] = useState<string>();
+    const [activeKey] = useState(new BehaviorSubject(''));
 
 
-
+    useEffect(() => {
+        const activeSub = activeKey.subscribe((key) => {
+            setCurrentTab(key);
+        });
+        return () => {
+            activeSub.unsubscribe();
+        }
+    }, []);
     
     
     return <div style={{
@@ -73,7 +81,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
         </div>
         <div className={WebBrowserStyle.content}>
            
-            <TabManager list={tabs} setList={setTabs} style={{
+            <TabManager list={tabs} setList={setTabs} activeKey={activeKey} style={{
                 height: "46px"
             }}>
 

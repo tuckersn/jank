@@ -1,6 +1,7 @@
 import _ from "lodash";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled, { CSSProperties } from "styled-components";
+import { BehaviorSubject } from "rxjs";
 import { Tab } from "./Tab";
 
 export interface TabManagerProps {
@@ -10,6 +11,8 @@ export interface TabManagerProps {
     setList: (list: {
         key: string
     }[]) => void,
+    activeKey: BehaviorSubject<string>,
+    hoveredKey?: BehaviorSubject<string>,
     style: CSSProperties
 }
 
@@ -27,21 +30,63 @@ const TabManagerInnerDiv = styled.div`
 export const TabManager: React.FC<TabManagerProps> = ({
     list,
     setList,
-    style
+    style,
+    activeKey,
+    hoveredKey: hoveredKeyProp
 }) => {
 
-    const remove = useCallback(
-        (index: number) => {
-            list.splice(index,1);
-            setList([...list]);
-        },
-        []
-    )
+    const [hoveredKey] = useState(hoveredKeyProp || new BehaviorSubject(''));
+
+    const remove = (index: number) => {
+        const { key } = list[index];
+        list.splice(index,1);
+        if(activeKey.value === key) {
+            console.log("V:", key, activeKey.value,index, list[index+1])
+            if(list.length > 1) {
+                if(index === list.length) {
+                    activeKey.next(list[index-1].key);
+                } else {
+                    activeKey.next(list[index].key);
+                }
+            }
+        }
+        
+        setList([...list]);
+    }
+
+    const findTab = (key: string) => {
+        for(let i = 0; i < list.length; i++) {
+            const tab = list[i];
+            if(tab.key === key) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    const moveTabIndex = (index: number, nextIndex: number) => {
+        const newList = [...list];
+        const temp = newList[index];
+        newList[index] = newList[nextIndex];
+        newList[nextIndex] = temp;
+        setList([...newList]); 
+        return nextIndex;
+    };
     
     return <TabManagerDiv style={style}>
         <TabManagerInnerDiv>
             {list.map((item, index) => {
-                return <Tab item={item} index={index} remove={remove}/>
+                if(typeof item.key !== 'string') {
+                    console.log("STUFF:", hoveredKey.value, activeKey.value);
+                }
+                return <Tab key={item.key}
+                    item={item}
+                    index={index}
+                    remove={remove}
+                    findTab={findTab}
+                    moveTabIndex={moveTabIndex}
+                    hoveredKey={hoveredKey}
+                    activeKey={activeKey}/>
             })} 
         </TabManagerInnerDiv>
     </TabManagerDiv>;
