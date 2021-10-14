@@ -10,26 +10,11 @@ import { BehaviorSubject, first } from "rxjs";
 import { useDrag } from "react-dnd";
 
 import { Theme } from "../../Theme";
-import { DefaultTab, TextComponentProps } from "./DefaultTab";
+import { DefaultTab, TabProps, TextComponentProps } from "./DefaultTab";
 
 
 
-export type TabProps<DATA=any> = {
-	// Same thing as key
-	value: string;
-	startingIndex: number;
-	currentIndex: number;
-	tabList: string[];
-	data: DATA;
-	setData: (data: DATA) => void;
-	setList?: (list: string[]) => void;
-	destroy: (() => void) | null;
-	setCurrentIndex: (index: number) => void;
-    moveTab: (key: string, index: number) => number;
-    moveTabIndex: (newIndex: number, oldIndex: number) => number;
-    findTab: (key: string) => { index: number };
-    TextComponent?: React.FC<TextComponentProps>
-};
+
 
 export type MoveTabCallBack = (event: {
 	dropIndex: number;
@@ -74,27 +59,34 @@ export function Tabs({
 }) {
 	
 	const container = useRef<HTMLDivElement>(null);
-	const [currentIndex, setCurrentIndex] = useState<number>(-1);
+	const [currentIndex] = useState(new BehaviorSubject(-1));
 	const [data,setData] = useState<any | null>(null);
 
+	const [hoveredIndex] = useState(new BehaviorSubject<number>(-1));
 	const [scrollReset, setScrollReset] = useState<boolean>(false);
 	const [scroll] = useState(new BehaviorSubject<number>(0));
+	const [holdWidth,setHoldWidth] = useState(false);
 
 	function updateIndex() {
 		if (list.length < 0) {
-			setCurrentIndex(-1);
-		} else if (currentIndex === -1) {
-			setCurrentIndex(0);
-		} else if (currentIndex > list.length - 1) {
-			setCurrentIndex(0);
+			currentIndex.next(-1);
+		} else if (currentIndex.value === -1) {
+			currentIndex.next(0);
+		} else if (currentIndex.value > list.length - 1) {
+			currentIndex.next(0);
 		}
 		if (indexSubject) {
 			indexSubject.next({
-				index: currentIndex,
+				index: currentIndex.value,
 				list,
 			});
 		}
 	}
+
+	const resetScroll = useCallback(() => {
+		if(container.current)
+			container.current!.scrollLeft = scroll.value;
+	},[]);
 
 
     const findTab = useCallback(
@@ -118,39 +110,62 @@ export function Tabs({
         if(setList) {
             setList([...array]);
         }
+		
+		if(newIndex === currentIndex.value) {
+			currentIndex.next(atIndex);
+		}
+		
+		if(atIndex === currentIndex.value) {
+			currentIndex.next(newIndex);
+		}
 
+		resetScroll();
         return newIndex;
     }
 
-    const moveTabIndex = (currentIndex: number, newIndex: number) => {
+    const moveTabIndex = (atIndex: number, newIndex: number) => {
 		
         let array = [...list];
 		setScrollReset(true);
-		const temp = array[currentIndex];
-		array[currentIndex] = array[newIndex];
+		const temp = array[atIndex];
+		array[atIndex] = array[newIndex];
 		array[newIndex] = temp;
         if(setList) {
             setList([...array]);
         }
 
+		if(newIndex === currentIndex.value) {
+			currentIndex.next(atIndex);
+		}
+		
+		if(atIndex === currentIndex.value) {
+			currentIndex.next(newIndex);
+		}
+
+		resetScroll()
         return newIndex;
     }
+
+	const select = (value: string) => {
+		console.log("SELECT");
+		const {index} = findTab(value);
+		currentIndex.next(index);
+		
+	};
 
 	useEffect(() => {
 		console.log("NEW TABS");
 		updateIndex();
-
-		// async function scrollingCB() {
-		// 	scroll.pipe(first()).subscribe((pos) => {
-
-		// 	});
-		// }
-		
+		scroll.subscribe(() => {
+			if(scrollReset) {
+				if(container) {
+					container.current!.scrollLeft = scroll.value;
+					setScrollReset(false);
+				}
+			}
+		});
 	}, []);
 
-	useEffect(() => {
-		updateIndex();
-	}, [list]);
 
 	useEffect(() => {
 		updateIndex();
@@ -158,7 +173,6 @@ export function Tabs({
 
 
 
-    const TabComponentTag: React.FC<TabProps> = TabComponent || DefaultTab;
 	const TabsContainer = styled.div`
 		width: auto;
 		height: 48px;
@@ -167,11 +181,9 @@ export function Tabs({
 		white-space: nowrap;
 	`;
 
-	useEffect(() => {
-		if(container) {
-			container.current!.scrollLeft = scroll.value;
-		}
-	});
+	if(container.current) {
+		resetScroll()
+	}
 
 	return (
 		<TabsContainer ref={container} style={style} onScroll={(event) => {
@@ -183,40 +195,41 @@ export function Tabs({
 			<div>
 			{list.map((itemValue: string, itemIndex) => {
 				return (
-					<TabComponentTag
+					<DefaultTab
 						key={itemValue}
 						{...{
-							startingIndex: itemIndex,
+							hoveredIndex,
+							index: itemIndex,
 							currentIndex,
 							tabList: list,
 							value: itemValue,
 							setList,
 							data,
 							setData,
-							destroy: setList
-								? () => {
-										if (setList) {
+							destroy: (i) => {
+								if (setList) {
 
-                                            if(currentIndex > itemIndex) {
-                                                if(list.length > 1) {
-                                                    if(itemIndex > 0) {
-                                                        console.log("SHIFT");
-                                                        setCurrentIndex(currentIndex - 1);
-                                                    }
-                                                } else {
-                                                    setCurrentIndex(-1);
-                                                }
-                                            }
-											list.splice(itemIndex, 1);
-											setList([...list]);
+									if(currentIndex.value > itemIndex) {
+										if(list.length > 1) {
+											if(itemIndex > 0) {
+												console.log("SHIFT");
+												currentIndex.next(currentIndex.value - 1);
+											}
+										} else {
+											currentIndex.next(-1);
 										}
-								  }
-								: null,
-							setCurrentIndex,
+									}
+									list.splice(itemIndex, 1);
+									setList([...list]);
+
+									
+								}
+							},
                             moveTab,
                             moveTabIndex,
                             findTab,
-                            TextComponent
+                            TextComponent,
+							select
 						}}
 					/>
 				);

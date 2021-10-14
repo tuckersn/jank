@@ -1,0 +1,48 @@
+// import styled from "styled-components";
+// import { BehaviorSubject } from "../../../node_modules/rxjs/dist/types";
+// import { TabProps } from "./Tab";
+
+
+
+
+// export type  TextComponentProps = TabProps & {
+    
+// };
+
+// export const DefaultTabTextContainer = styled.div`
+// 	display: flex;
+// 	flex-direction: row;
+//     flex: 1 1 auto;
+// 	width: 100%;
+// 	height: 100%;
+// `;
+
+// export const DefaultTabTextComponent = ({ index, value, destroy, select }: TextComponentProps) => {
+// 	return (
+// 		<DefaultTabTextContainer>
+// 			<div style={{
+//                 float: "left"
+//             }}>{value.length > 20 ? value.slice(0, 17) + "..." : value}</div>
+// 			{destroy ? (
+// 				<div
+// 					style={{
+// 						alignSelf: "flex-end",
+// 						marginLeft: "auto",
+//                         float: "right"
+// 					}}
+// 					onClick={(event) => {
+// 						event.preventDefault();
+// 						destroy(index);
+// 					}}
+// 					{...{
+// 						preventchange: "true",
+// 					}}
+// 				>
+// 					x
+// 				</div>
+// 			) : (
+// 				""
+// 			)}
+// 		</DefaultTabTextContainer>
+// 	);
+// };

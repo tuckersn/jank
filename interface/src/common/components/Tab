@@ -1,0 +1,191 @@
+// import React, { JSXElementConstructor, memo, useCallback, useEffect, useMemo, useState } from "react";
+// import { useDrag, useDrop } from "react-dnd";
+// import styled from "styled-components";
+// import { BehaviorSubject, first } from "rxjs";
+// import { Theme } from "../../Theme";
+// import { DefaultTabTextComponent, TextComponentProps } from "./DefaultTabTextComponent-";
+
+
+
+
+// export type TabProps = {
+// 	// Same thing as key
+// 	value: string;
+// 	index: number;
+    
+// 	destroy: (itemIndex: number) => void;
+	
+// 	currentIndex: BehaviorSubject<number>;
+//     moveTab: (key: string, index: number) => number;
+//     moveTabIndex: (newIndex: number, oldIndex: number) => number;
+//     findTab: (key: string) => { index: number };
+//     select: (value: string) => void;
+//     hoveredIndex: BehaviorSubject<number>
+//     TextComponent?: React.FC<TextComponentProps>
+// };
+
+
+
+
+// const TabContainer = styled.div`
+//     display: inline-block;
+// 	box-sizing: border-box;
+//     overflow: hidden;
+
+// 	min-width: 100px;
+//     height: 100%;
+
+// 	/* border-top: 1px solid white; */
+// 	border-left: 1px solid white;
+// 	border-right: 1px solid white;
+
+//     padding-top: 2px;
+//     padding-bottom: 2px;
+//     padding-left: 8px;
+//     padding-right: 8px;
+// `;
+
+
+
+// export const Tab: React.FC<TabProps> = function DefaultTab(props) {
+//     const { index } = props;
+//     const { value, findTab, select, moveTab } = props;
+//     const { hoveredIndex, moveTabIndex, currentIndex } = props;
+//     const [active, setActive] = useState(false);
+//     const [highlight, setHighlight] = useState(false);
+
+//     const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
+//         type: "jank-tab",
+//         index: props.index,
+//         item: {
+//             index: props.index,
+//             value: props.value,
+//         },
+//         collect: (monitor) => ({
+//             isDragging: monitor.isDragging(),
+//         }),
+//         end: (item, monitor) => {
+//             const { index: droppedIndex, value: droppedValue } = item;
+//             const didDrop = monitor.didDrop();
+//             if (!didDrop) {
+                
+//                 const { index } = findTab(value);
+//                 //const newIndex = moveTab(value, droppedIndex);
+//                 const newIndex = moveTabIndex(index, hoveredIndex.value === -1 ? index : hoveredIndex.value);
+//                 // Old index was current
+//                 if(index === currentIndex.value) {
+//                     currentIndex.next(newIndex);
+//                 // Other tab was the active tab
+//                 } else if (newIndex === currentIndex.value) {
+//                     currentIndex.next(index);
+//                 }
+//                 hoveredIndex.next(-1);
+//             }
+//             setHighlight(false);
+//         },
+//     }), [value, index, moveTab]);
+
+   
+//     const [, drop] = useDrop(
+//         () => ({
+//             accept: "jank-tab",
+//             canDrop: () => false,
+//             hover({index: newHoveredIndex,value: hoveredValue}:{index:number,value:string}, monitor) {
+                
+//                 if (index !== newHoveredIndex) {
+//                     const { index } = findTab(value);
+//                     hoveredIndex.next(index);
+//                     if(hoveredIndex) {
+//                         const sub = hoveredIndex.subscribe(() => {
+//                             if(!monitor.isOver()) {
+//                                 setHighlight(false);
+//                                 setTimeout(() => {
+//                                     sub.unsubscribe();
+//                                 }, 10);
+//                             }
+//                         });
+//                     }
+//                 } 
+
+
+                
+//             },
+
+//         }),
+//         [findTab, moveTab]
+//     );
+
+//     useEffect(() => {
+
+//         const activeSub = currentIndex.subscribe((current) => {
+//             setHighlight(false);
+//             // Subscribe to the next time currentIndex changes
+//             if(!active) {
+//                 setActive(true);
+//                 currentIndex.pipe(first((current) => {
+//                     return current !== index;
+//                 })).subscribe(() => {
+//                     setActive(false);
+//                 })
+//             }
+           
+//         });
+
+//         const highLightSub = hoveredIndex.subscribe((current) => {
+//             if(current === index) {
+//                 setHighlight(true);
+//                 hoveredIndex.pipe(first((current) => {
+//                     return current !== index;
+//                 })).subscribe(() => {
+//                     setHighlight(false);
+//                 })
+//             }
+//         })
+
+//         return () => {
+//             activeSub.unsubscribe();
+//             highLightSub.unsubscribe();
+//         }
+//     }, []);
+
+
+//     return (
+//         <TabContainer
+//             style={{
+//                 backgroundColor: `rgba(${Theme.current.value.baseColorVeryDark})`,
+//                 ...(
+//                     active ? {
+//                         backgroundColor: Theme.current.value.accentColor,
+//                     } : {}
+//                 ),
+//                 ...(
+//                     isDragging ? {
+//                         opacity: 0
+//                     } : {
+//                         opacity: 1
+//                     }
+//                 ),
+//                 ...(
+//                     highlight ? {
+//                         backgroundColor: `rgba(${Theme.current.value.highVeryLight})`,
+//                         color: `rgba(${Theme.current.value.baseColorDark})`
+//                     } : {}
+//                 )
+//             }}
+//             onClick={(event) => {
+//                 select(value);
+//                 // console.log("CHANGING INDEX:", index, value, currentIndex.value);
+//                 // if (event.target instanceof HTMLElement) {
+//                 //     if (event.target.getAttribute("preventchange") === "true") {
+//                 //         return;
+//                 //     }
+                    
+//                 // }
+//                 event.preventDefault();
+//             }}
+//             ref={(node) => drag(drop(node))}
+//         >
+//             <DefaultTabTextComponent key={value} {...props}/>
+//         </TabContainer>
+//     );
+// };

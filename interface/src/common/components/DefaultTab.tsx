@@ -1,10 +1,28 @@
 import React, { JSXElementConstructor, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import styled from "styled-components";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, first } from "rxjs";
 import { Theme } from "../../Theme";
-import { TabProps } from "./Tabs";
 
+
+export type TabProps<DATA=any> = {
+	// Same thing as key
+	value: string;
+	index: number;
+    
+    data: DATA;
+    setData: (data: DATA) => void;
+
+	destroy: (itemIndex: number) => any;
+	
+	currentIndex: BehaviorSubject<number>;
+    moveTab: (key: string, index: number) => number;
+    moveTabIndex: (newIndex: number, oldIndex: number) => number;
+    findTab: (key: string) => { index: number };
+    select: (value: string) => void;
+    hoveredIndex: BehaviorSubject<number>
+    TextComponent?: React.FC<TextComponentProps>
+};
 
 export type  TextComponentProps = TabProps & {
     highlight: boolean,
@@ -19,7 +37,7 @@ export const DefaultTabTextContainer = styled.div`
 	height: 100%;
 `;
 
-export const DefaultTabTextComponent = ({ startingIndex: index, value, destroy }: TextComponentProps) => {
+export const DefaultTabTextComponent = ({ index, value, destroy }: TextComponentProps) => {
 	return (
 		<DefaultTabTextContainer>
 			<div style={{
@@ -34,7 +52,7 @@ export const DefaultTabTextComponent = ({ startingIndex: index, value, destroy }
 					}}
 					onClick={(event) => {
 						event.preventDefault();
-						destroy();
+						destroy(index);
 					}}
 					{...{
 						preventchange: "true",
@@ -77,14 +95,16 @@ const TabContainer = styled.div`
 export const DefaultTab: React.FC<TabProps<{
     currentHoveredIndex: BehaviorSubject<number>
 }>> = function DefaultTab(props) {
-    const { data, setData, currentIndex, tabList, setCurrentIndex, startingIndex, value, findTab, moveTab, moveTabIndex, TextComponent } = props;
+    const { index, data, setData, select, currentIndex, value, findTab, moveTab, moveTabIndex, TextComponent } = props;
+    const [active, setActive] = useState(false);
     const [highlight, setHighlight] = useState(false);
+
 
     const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
         type: "jank-tab",
-        index: props.startingIndex,
+        index: props.index,
         item: {
-            index: props.startingIndex,
+            index: props.index,
             value: props.value,
         },
         collect: (monitor) => ({
@@ -100,17 +120,17 @@ export const DefaultTab: React.FC<TabProps<{
                 //const newIndex = moveTab(value, droppedIndex);
                 const newIndex = moveTabIndex(index, data?.currentHoveredIndex.value === -1 ? index : data?.currentHoveredIndex.value);
                 // Old index was current
-                if(index === currentIndex) {
-                    setCurrentIndex(newIndex);
+                if(index === currentIndex.value) {
+                    currentIndex.next(newIndex);
                 // Other tab was the active tab
-                } else if (newIndex === currentIndex) {
-                    setCurrentIndex(index);
+                } else if (newIndex === currentIndex.value) {
+                    currentIndex.next(index);
                 }
                 data?.currentHoveredIndex.next(-1);
             }
             setHighlight(false);
         },
-    }), [value, startingIndex, moveTab]);
+    }), [value, index, moveTab]);
 
    
     const [, drop] = useDrop(
@@ -122,7 +142,7 @@ export const DefaultTab: React.FC<TabProps<{
                 
             
 
-                if (startingIndex !== hoveredIndex) {
+                if (index !== hoveredIndex) {
 
                     setHighlight(true);
                     const { index } = findTab(value);
@@ -166,15 +186,22 @@ export const DefaultTab: React.FC<TabProps<{
                 currentHoveredIndex: new BehaviorSubject(-1)
             })
         }
+        currentIndex.subscribe((selectedIndex) => {
+            if(!active) {
+                setActive(true);
+                currentIndex.subscribe((current) => {
+                    if(current !== index) {
+                        setActive(false);
+                    }
+                })
+            }
+        });
     }, []);
 
     useEffect(() => {
         setHighlight(false);
     }, [currentIndex, ]);
 
-    useEffect(() => {
-        setHighlight(false);
-    }, [tabList]);
 
     const TextComponentTag = useMemo(() => {
         return TextComponent || DefaultTabTextComponent;
@@ -185,7 +212,7 @@ export const DefaultTab: React.FC<TabProps<{
             style={{
                 backgroundColor: `rgba(${Theme.current.value.baseColorVeryDark})`,
                 ...(
-                    startingIndex === currentIndex ? {
+                    index === currentIndex.value ? {
                         backgroundColor: Theme.current.value.accentColor,
                     } : {}
                 ),
@@ -204,14 +231,14 @@ export const DefaultTab: React.FC<TabProps<{
                 )
             }}
             onClick={(event) => {
-                console.log("CHANGING INDEX:", startingIndex, value, currentIndex);
+                console.log("CHANGING INDEX:", index, value, currentIndex);
                 if (event.target instanceof HTMLElement) {
-                    console.log("ELEMENT:", event.target, startingIndex);
+                    console.log("ELEMENT:", event.target, index);
                     if (event.target.getAttribute("preventchange") === "true") {
                         console.log("NOT CHANGING INDEX");
                         return;
                     }
-                    setCurrentIndex(startingIndex);
+                    select(value);
                 }
             }}
             ref={(node) => drag(drop(node))}
