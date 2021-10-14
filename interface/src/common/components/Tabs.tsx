@@ -192,7 +192,14 @@ export function Tabs({
 			}
 			scroll.next(container.current!.scrollLeft);
 		}}>
-			<div>
+			<button onClick={() => {
+				console.log("TEST:", container.current?.scrollWidth);
+			}}>
+				test
+			</button>
+			<div style={{
+				width: '100px'
+			}}>
 			{list.map((itemValue: string, itemIndex) => {
 				return (
 					<DefaultTab
