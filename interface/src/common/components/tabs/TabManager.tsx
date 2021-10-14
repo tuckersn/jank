@@ -21,11 +21,12 @@ export const TabManagerDiv = styled.div`
     overflow-y: hidden;
     overflow-x: scroll;
     white-space: nowrap;
+
+    &::-webkit-scrollbar {
+        height: 10px;
+    }
 `;
 
-const TabManagerInnerDiv = styled.div`
-    position: relative;
-`;
 
 export const TabManager: React.FC<TabManagerProps> = ({
     list,
@@ -74,20 +75,20 @@ export const TabManager: React.FC<TabManagerProps> = ({
     };
     
     return <TabManagerDiv style={style}>
-        <TabManagerInnerDiv>
-            {list.map((item, index) => {
-                if(typeof item.key !== 'string') {
-                    console.log("STUFF:", hoveredKey.value, activeKey.value);
-                }
-                return <Tab key={item.key}
-                    item={item}
-                    index={index}
-                    remove={remove}
-                    findTab={findTab}
-                    moveTabIndex={moveTabIndex}
-                    hoveredKey={hoveredKey}
-                    activeKey={activeKey}/>
-            })} 
-        </TabManagerInnerDiv>
+
+        {list.map((item, index) => {
+            if(typeof item.key !== 'string') {
+                console.log("STUFF:", hoveredKey.value, activeKey.value);
+            }
+            return <Tab key={item.key}
+                item={item}
+                index={index}
+                remove={remove}
+                findTab={findTab}
+                moveTabIndex={moveTabIndex}
+                hoveredKey={hoveredKey}
+                activeKey={activeKey}/>
+        })} 
+    
     </TabManagerDiv>;
 }

@@ -12,6 +12,8 @@ import { TabManager } from "../../../common/components/tabs/TabManager"
 import { Tab } from "../../../common/components/tabs/Tab"
 
 import WebBrowserStyle from './WebBrowser.module.scss';
+import { Theme } from "../../../Theme";
+import { MdMenu } from "react-icons/md";
 
 export interface WebBrowserInstanceState {
     location: BehaviorSubject<string>;
@@ -30,6 +32,8 @@ const TABS: WebBrowserTabRef[] = (() => {
     }
     return output;
 })();
+
+const NAV_BAR_HEIGHT = 32;
 
 export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () => {
     
@@ -54,6 +58,35 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
         width: '100%',
         height: '100%'
     }}>
+        
+        <div className={WebBrowserStyle.content}>
+           
+            <div style={{
+                display: "flex",
+                flexDirection: "row"
+            }}>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "auto",
+                    width: NAV_BAR_HEIGHT + "px",
+                    height: NAV_BAR_HEIGHT + "px",
+                    border: `1px solid ${Theme.current.value.accentColorDark}`,
+                    boxSizing: "border-box",
+                    backgroundColor: `rgba(${Theme.current.value.baseColorExtremelyDark})`
+                }}>
+                    <MdMenu/>
+                </div>
+                <TabManager list={tabs} setList={setTabs} activeKey={activeKey} style={{
+                    height: NAV_BAR_HEIGHT + "px"
+                }}>
+
+                </TabManager>
+            </div>
+            
+            <h1>this is a feed of the selected tab in the parent component {currentTab}</h1>
+        </div>
         <div className={WebBrowserStyle.toolbar}>
             NAV BAR HERE
             <button onClick={() => {
@@ -79,16 +112,6 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
                 RE
             </button>
         </div>
-        <div className={WebBrowserStyle.content}>
-           
-            <TabManager list={tabs} setList={setTabs} activeKey={activeKey} style={{
-                height: "46px"
-            }}>
-
-            </TabManager>
-            
-            <h1>this is a feed of the selected tab in the parent component {currentTab}</h1>
-        </div> 
     </div>;
 };
 

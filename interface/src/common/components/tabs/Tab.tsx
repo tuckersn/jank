@@ -23,17 +23,32 @@ export interface TabProps {
 }
 
 export const TabDiv = styled.div`
-    border: 1px solid white;
-    padding: 4px;
-    padding-left: 6px;
-    padding-right: 6px;
     display: inline-block;
-
+    height: 100%;
+    
+    padding: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    
+    box-sizing: border-box;
+    border-left: 1px solid white;
     background-color: rgba(${Theme.current.value.baseColorExtremelyDark});
 
     * {
         float: left;
     }
+
+    &:first-of-type {
+        border-left: 0;
+    }
+`;
+
+export const TabInnerDiv = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 `;
 
 export const Tab: React.FC<TabProps> = ({
@@ -138,21 +153,23 @@ export const Tab: React.FC<TabProps> = ({
         }}
         ref={(node) => drag(drop(node))}
     >
-        <div>
-            KEY: {item.key}
-        </div>
-        <div style={{
-                marginLeft: '6px'
-            }}
-            onClick={() => {
-                console.log("REMOVE");
-                remove(index);
-            }}
-            {...{
-                preventchange: "true"
-            }}
-        >
-            X
-        </div>
+        <TabInnerDiv>
+            <div>
+                KEY: {item.key}
+            </div>
+            <div style={{
+                    marginLeft: '6px'
+                }}
+                onClick={() => {
+                    console.log("REMOVE");
+                    remove(index);
+                }}
+                {...{
+                    preventchange: "true"
+                }}
+            >
+                X
+            </div>
+        </TabInnerDiv>
     </TabDiv>;
 }
