@@ -9,6 +9,7 @@ export interface IBrowserViewItem {
     id: Readonly<string>;
     window: IWindowItem,
     view: BrowserView,
+    attached: boolean,
     onDestroy?: (bv: IBrowserViewItem) => void
 }
 
@@ -34,8 +35,12 @@ export module BrowserViewRegistry {
         delete _regisrty[bv.id];
     }
 
-    export function create(window: IWindowItem, options: BrowserViewConstructorOptions) {
-        const id = nanoid();
+    export function attach(view: IBrowserViewItem, window: IWindowItem) {
+        window.browserWindow.addBrowserView(view.view);
+        view.attached = true;
+    }
+
+    export function create(id: string, window: IWindowItem, options: BrowserViewConstructorOptions) {
         const view = new BrowserView(Object.assign(({
             webPreferences: {
                 nodeIntegration: false,
@@ -60,9 +65,10 @@ export module BrowserViewRegistry {
             id,
             window,
             view,
+            attached: false
         }
 
-        window.browserWindow.addBrowserView(view);
+        attach(_regisrty[id], window);
         return _regisrty[id];
     }
 }
@@ -84,13 +90,30 @@ export const onBrowserViewChannel: OnIpcEventFunction<BrowserViewMessages.Render
     switch(type) {
         case 'browser-view-R-spawn': {
             const {
-                requestId
+                requestId,
+                id
             } = (payload as BrowserViewMessages.RSpawn["payload"]);
-            const view = BrowserViewRegistry.create(window, {
+            
+            
 
+            if(id) {
+                if(id in BrowserViewRegistry.registry()) {
+                    const view = BrowserViewRegistry.get(id);
+                    BrowserViewRegistry.attach(view, window);
+                    await reply({
+                        type: 'browser-view-M-spawn-response',
+                        payload: {
+                            id: view.id,
+                            requestId
+                        }
+                    } as BrowserViewMessages.MSpawnResponse)
+                    break;
+                }
+            }
+
+            const view = BrowserViewRegistry.create(id || nanoid(), window, {
+                
             });
-
-            console.log("CREATING BROWSER VIEW");
 
             await reply({
                 type: 'browser-view-M-spawn-response',
@@ -130,13 +153,26 @@ export const onBrowserViewChannel: OnIpcEventFunction<BrowserViewMessages.Render
             } = (payload as BrowserViewMessages.RDestroy['payload']);
             console.log("BROWSERVIEW DESTRUCTION:", target);
             if('all' in target) {
-                console.log("ALL");
                 const browserViewIds = Object.keys(BrowserViewRegistry.registry());
                 for(let id of browserViewIds) {
                     BrowserViewRegistry.destroy(id);
                 }
+                console.log("ALL:", BrowserViewRegistry.registry());
             } else {
                 //TODO: destroy a single view
+            }
+
+            break;
+        }
+        case "browser-view-R-detach": {
+            const {
+                target
+            } = (payload as BrowserViewMessages.RDetach['payload']);
+            if(target.id in BrowserViewRegistry.registry()) {
+                const bv = BrowserViewRegistry.get(target.id);
+                window.browserWindow.removeBrowserView(bv.view);
+                bv.attached = false;
+                console.log("DETACHING")
             }
 
             break;

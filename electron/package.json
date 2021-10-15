@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "electron": "^14.0.0",
-    "jank-shared": "../shared",
+    "jank-shared": "../shared/",
     "nanoid": "^3.1.25",
     "node-pty": "^0.10.1",
     "rxjs": "^7.3.0",

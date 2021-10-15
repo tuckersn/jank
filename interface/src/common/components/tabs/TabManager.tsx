@@ -1,8 +1,8 @@
 import _ from "lodash";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled, { CSSProperties } from "styled-components";
 import { BehaviorSubject } from "rxjs";
-import { Tab } from "./Tab";
+import { Tab, TabProps } from "./Tab";
 
 export interface TabManagerProps {
     list: {
@@ -13,7 +13,8 @@ export interface TabManagerProps {
     }[]) => void,
     activeKey: BehaviorSubject<string>,
     hoveredKey?: BehaviorSubject<string>,
-    style: CSSProperties
+    style: CSSProperties,
+    customTabComponent?: React.FC<TabProps>
 }
 
 export const TabManagerDiv = styled.div`
@@ -33,7 +34,8 @@ export const TabManager: React.FC<TabManagerProps> = ({
     setList,
     style,
     activeKey,
-    hoveredKey: hoveredKeyProp
+    hoveredKey: hoveredKeyProp,
+    customTabComponent
 }) => {
 
     const [hoveredKey] = useState(hoveredKeyProp || new BehaviorSubject(''));
@@ -66,6 +68,11 @@ export const TabManager: React.FC<TabManagerProps> = ({
     }
 
     const moveTabIndex = (index: number, nextIndex: number) => {
+
+        // error when dragged onto a non-tab element
+        if(nextIndex === -1)
+            return index;
+
         const newList = [...list];
         const temp = newList[index];
         newList[index] = newList[nextIndex];
@@ -73,12 +80,19 @@ export const TabManager: React.FC<TabManagerProps> = ({
         setList([...newList]); 
         return nextIndex;
     };
+
+    useEffect(() => {
+        activeKey.subscribe(() => {
+            hoveredKey.next('');
+        })
+        
+    }, []);
     
     return <TabManagerDiv style={style}>
 
         {list.map((item, index) => {
-            if(typeof item.key !== 'string') {
-                console.log("STUFF:", hoveredKey.value, activeKey.value);
+            if(item == undefined) {
+                console.log("STUFF:", index, item, hoveredKey.value, activeKey.value);
             }
             return <Tab key={item.key}
                 item={item}
@@ -87,7 +101,8 @@ export const TabManager: React.FC<TabManagerProps> = ({
                 findTab={findTab}
                 moveTabIndex={moveTabIndex}
                 hoveredKey={hoveredKey}
-                activeKey={activeKey}/>
+                activeKey={activeKey}
+                customTabComponent={customTabComponent}/>
         })} 
     
     </TabManagerDiv>;

@@ -42,7 +42,10 @@ export module BrowserViewMessages {
     export const PREFIX = 'browser-view';
 
     export type RSpawn = Message<`${typeof PREFIX}-R-spawn`, {
+        // UUID for waiting for a response message
         requestId?: string,
+        // Preset browserViewId, set this if you already have an id.
+        id?: string
     }>;
 
     export type RDestroy = Message<`${typeof PREFIX}-R-destroy`, {
@@ -52,6 +55,12 @@ export module BrowserViewMessages {
         } | {
             // If all is true, erase destroy all views for this window.
             all: true
+        }
+    }>;
+
+    export type RDetach = Message<`${typeof PREFIX}-R-detach`, {
+        target: {
+            id: string
         }
     }>;
 
@@ -73,7 +82,7 @@ export module BrowserViewMessages {
         h: number
     }>;
 
-    export type RenderMessages = RSpawn | RDestroy | RPosition;
+    export type RenderMessages = RSpawn | RDetach | RDestroy | RPosition;
     export type MainMessages = MSpawnResponse | MDestroyResponse;
     export type AnyMessage = RenderMessages | MainMessages;
 }

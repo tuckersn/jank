@@ -9,7 +9,7 @@ export module Theme {
         baseColorVeryDark: "6, 12, 23",
         baseColorExtremelyDark: "3, 5, 10",
 
-        accentColor: "#2e60a1",
+        accentColor: "46, 96, 161",
         accentColorDark: "#24364d",
 
         hightLight: "172, 198, 255",

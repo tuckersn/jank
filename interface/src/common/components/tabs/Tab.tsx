@@ -19,7 +19,8 @@ export interface TabProps {
     findTab: (key: string) => number;
     moveTabIndex: (index: number, nextIndex: number) => number;
     hoveredKey: BehaviorSubject<string>,
-    activeKey: BehaviorSubject<string>
+    activeKey: BehaviorSubject<string>,
+    customTabComponent: TabManagerProps['customTabComponent']
 }
 
 export const TabDiv = styled.div`
@@ -31,7 +32,7 @@ export const TabDiv = styled.div`
     padding-right: 12px;
     
     box-sizing: border-box;
-    border-left: 1px solid white;
+    border-left: 1px solid rgba(${Theme.current.value.baseColorVeryLight});
     background-color: rgba(${Theme.current.value.baseColorExtremelyDark});
 
     * {
@@ -51,16 +52,17 @@ export const TabInnerDiv = styled.div`
     width: 100%;
 `;
 
-export const Tab: React.FC<TabProps> = ({
-    item,
-    index,
-    remove,
-    findTab,
-    moveTabIndex,
-    hoveredKey,
-    activeKey
-}) => {
-
+export const Tab: React.FC<TabProps> = (props) => {
+    const {
+        item,
+        index,
+        remove,
+        findTab,
+        moveTabIndex,
+        hoveredKey,
+        activeKey,
+        customTabComponent
+    } = props;
     const { key } = item;
 
     const [active,setActive] = useState(false);
@@ -82,6 +84,23 @@ export const Tab: React.FC<TabProps> = ({
             }
         },
     }), [item.key, index, moveTabIndex]);
+
+    const [, drop] = useDrop(
+        () => ({
+            accept: "jank-tab",
+            canDrop: () => false,
+            hover({ key: oldKey }: typeof item, monitor) {
+                if(item) {
+                    if (item.key !== oldKey) {
+                        hoveredKey.next(key);
+                    }
+                }
+            },
+        }),
+        [findTab, moveTabIndex]
+    );
+    
+
 
     useEffect(() => {
         const hoverSub = hoveredKey.subscribe((hoveredKey) => {
@@ -106,23 +125,12 @@ export const Tab: React.FC<TabProps> = ({
         }
     }, [])
 
-    const [, drop] = useDrop(
-        () => ({
-            accept: "jank-tab",
-            canDrop: () => false,
-            hover({ key: oldKey }: typeof item, monitor) {
-                if (item.key !== oldKey) {
-                    hoveredKey.next(key);
-                }  
-            },
-        }),
-        [findTab, moveTabIndex]
-    );
-    
+
+
     return <TabDiv style={{
             ...(
                 isDragging ? {
-                    opacity: 0
+                    opacity: 0.4
                 } : {
                     opacity: 1
                 }
@@ -153,23 +161,27 @@ export const Tab: React.FC<TabProps> = ({
         }}
         ref={(node) => drag(drop(node))}
     >
-        <TabInnerDiv>
-            <div>
-                KEY: {item.key}
-            </div>
-            <div style={{
-                    marginLeft: '6px'
-                }}
-                onClick={() => {
-                    console.log("REMOVE");
-                    remove(index);
-                }}
-                {...{
-                    preventchange: "true"
-                }}
-            >
-                X
-            </div>
-        </TabInnerDiv>
+        
+            {
+                customTabComponent ? customTabComponent(props) : <TabInnerDiv>
+                    <div>
+                        KEY: {item.key}
+                    </div>
+                    <div style={{
+                            marginLeft: '6px'
+                        }}
+                        onClick={() => {
+                            console.log("REMOVE");
+                            remove(index);
+                        }}
+                        {...{
+                            preventchange: "true"
+                        }}
+                    >
+                        X
+                    </div>
+                </TabInnerDiv>
+            }
+        
     </TabDiv>;
 }

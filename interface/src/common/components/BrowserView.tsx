@@ -6,33 +6,10 @@ import { filter } from "rxjs";
 import styled, { StyledComponent } from "styled-components";
 import { ElectronShim, ipcRenderer } from "../shims/electron";
 
-const Container = styled.div`
-	height: 100%;
-	width: 100%;
-`;
 
-const BrowserViewDiv = styled.div`
-	height: 100%;
-	width: 100%;
-`;
-
-const BrowserViewComponent: React.FC<{
-	size: { width: number; height: number };
-}> = ({ size }) => {
-	const browserViewDivRef = useRef<HTMLDivElement>(null);
-	const [id, setId] = useState<string | null>(null);
-
-	useEffect(() => {
+export function spawnBrowserView(browserViewId: string): Promise<BrowserViewMessages.MSpawnResponse["payload"]> {
+	return new Promise((res,err) => {
 		const requestId: string = nanoid();
-		const event: BrowserViewMessages.RSpawn = {
-			type: "browser-view-R-spawn",
-			payload: {
-				requestId,
-			},
-		};
-
-		console.log("Getting ready to start!");
-
 		let subscription = ElectronShim.browserViewMessages
 			.pipe(
 				filter(({ msg }) => {
@@ -44,19 +21,75 @@ const BrowserViewComponent: React.FC<{
 			)
 			.subscribe(({ msg: { payload } }) => {
 				const msg = payload as BrowserViewMessages.MSpawnResponse["payload"];
-				setId(msg.id);
+				res(msg);
 				subscription.unsubscribe();
 			});
 
+		const event: BrowserViewMessages.RSpawn = {
+			type: "browser-view-R-spawn",
+			payload: {
+				requestId,
+				id: browserViewId
+			},
+		};
 		ipcRenderer.send("browser-view", event);
+	});
+}
 
-		console.log("Waiting for a response.");
+
+
+const Container = styled.div`
+	height: 100%;
+	width: 100%;
+`;
+
+const BrowserViewDiv = styled.div`
+	height: 100%;
+	width: 100%;
+`;
+
+const BrowserViewComponent: React.FC<{
+	
+	size: { width: number; height: number };
+	// Will spawn an instance if the key
+	id?: string;
+	spawn?: boolean;
+	onDetach?: (args: {id: string}) => void;
+}> = ({
+	size,
+	spawn,
+	id: propsId,
+	onDetach
+}) => {
+	const browserViewDivRef = useRef<HTMLDivElement>(null);
+	const [id, setId] = useState<string>(propsId || nanoid());
+
+	useEffect(() => {
+		if(spawn) {
+			spawnBrowserView(id);
+		}
+
+		return () => {
+			console.log("DESTRUCT:", onDetach);
+			if(onDetach) {
+				onDetach({
+					id
+				});
+			}
+			const event: BrowserViewMessages.RDetach = {
+				type: 'browser-view-R-detach',
+				payload: {
+					target: {
+						id
+					}
+				}
+			}
+			ipcRenderer.send('browser-view', event);
+		}
 	}, []);
 
 	useEffect(() => {
-		console.log("BV RESIZE:", id, browserViewDivRef);
 		if (id && browserViewDivRef) {
-			console.log("UPDATING POSITION");
 			const rect = browserViewDivRef.current?.getBoundingClientRect()!;
 			const event: BrowserViewMessages.RPosition = {
 				type: "browser-view-R-position",
@@ -69,13 +102,6 @@ const BrowserViewComponent: React.FC<{
 				},
 			};
 			ipcRenderer.send("browser-view", event);
-			console.log("RESIZE:", event, {
-				id,
-				x: rect.left,
-				y: rect.top,
-				h: size.height,
-				w: size.width,
-			});
 		}
 	}, [size.height, size.width, id, browserViewDivRef]);
 

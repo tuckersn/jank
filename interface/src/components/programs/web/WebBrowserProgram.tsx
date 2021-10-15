@@ -9,14 +9,18 @@ import { PaneProps } from "../Panes";
 import { MinimalProgram } from "../Programs";
 
 import { TabManager } from "../../../common/components/tabs/TabManager"
-import { Tab } from "../../../common/components/tabs/Tab"
+import { Tab, TabProps } from "../../../common/components/tabs/Tab"
 
 import WebBrowserStyle from './WebBrowser.module.scss';
 import { Theme } from "../../../Theme";
 import { MdMenu } from "react-icons/md";
 
 export interface WebBrowserInstanceState {
+    
     location: BehaviorSubject<string>;
+    tabs: BehaviorSubject<{
+        key: string
+    }[]>
 }
 export interface WebBrowserTabRef {
     key: string
@@ -33,21 +37,48 @@ const TABS: WebBrowserTabRef[] = (() => {
     return output;
 })();
 
-const NAV_BAR_HEIGHT = 32;
+const WebBrowserTab: React.FC<TabProps> = ({
+    item,
+    index,
+    remove
+}) => {
+    return <div>
+        <div>
+            {index} - {item.key}
+        </div>
+        <div onClick={() => {
+            remove(index);
+        }} {...{
+            preventchange: "true"
+        }}>
+            x
+        </div>
+    </div>
+};
 
-export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () => {
+const NAV_BAR_HEIGHT = 38;
+export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
+    instance
+}) => {
     
-    const [tabs, setTabs] = useState<WebBrowserTabRef[]>(Object.values(TABS));
+    const [tabs, setTabsInternal] = useState<WebBrowserTabRef[]>(Object.values(TABS));
     const [currentTab, setCurrentTab] = useState<string>();
     const [activeKey] = useState(new BehaviorSubject(''));
 
+    function setTabs(tabs: WebBrowserTabRef[]) {
+        instance.state.tabs.next(tabs);
+    }
 
     useEffect(() => {
         const activeSub = activeKey.subscribe((key) => {
             setCurrentTab(key);
         });
+        const instanceTabsSub = instance.state.tabs.subscribe((tabs) => {
+            setTabsInternal(tabs);
+        })
         return () => {
             activeSub.unsubscribe();
+            instanceTabsSub.unsubscribe();
         }
     }, []);
     
@@ -60,7 +91,6 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
     }}>
         
         <div className={WebBrowserStyle.content}>
-           
             <div style={{
                 display: "flex",
                 flexDirection: "row"
@@ -78,19 +108,28 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
                 }}>
                     <MdMenu/>
                 </div>
-                <TabManager list={tabs} setList={setTabs} activeKey={activeKey} style={{
-                    height: NAV_BAR_HEIGHT + "px"
-                }}>
+                <TabManager
+                    list={tabs}
+                    setList={setTabs}
+                    activeKey={activeKey}
+                    // customTabComponent={WebBrowserTab}
+                    style={{
+                        height: NAV_BAR_HEIGHT + "px"
+                    }}
+                >
 
                 </TabManager>
             </div>
-            
-            <h1>this is a feed of the selected tab in the parent component {currentTab}</h1>
+        </div>
+        <div style={{
+            flex: 1
+        }}>
+            <BrowserView key={currentTab} id={currentTab} spawn/> 
         </div>
         <div className={WebBrowserStyle.toolbar}>
             NAV BAR HERE
             <button onClick={() => {
-                setTabs([...tabs, {
+                setTabsInternal([...tabs, {
                     key: nanoid()
                 }]);
             }}>
@@ -98,7 +137,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
             </button>
             <button onClick={() => {
                 console.log("TABS:", tabs);
-                setTabs([...tabs.sort((a,b) => {
+                setTabsInternal([...tabs.sort((a,b) => {
                     if(Math.random() > 0.5) {
                         return -1;
                     } else {
@@ -107,7 +146,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = () =
                 })]);
 
                 // Randomly mix the array
-                setTabs([...tabs.sort(() => Math.random() > 0.5 ? 1 : -1)]);
+                setTabsInternal([...tabs.sort(() => Math.random() > 0.5 ? 1 : -1)]);
             }}>
                 RE
             </button>
@@ -131,6 +170,8 @@ export const WebBrowserProgram: MinimalProgram<WebBrowserInstanceState> = {
                 throw new Error('location must be a BehaviorSubject<string>');
             }
         }
+
+        instance.state.tabs = new BehaviorSubject<WebBrowserInstanceState['tabs']['_value']>([]);
 
         
 
