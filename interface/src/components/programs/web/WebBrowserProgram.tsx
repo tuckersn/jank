@@ -1,8 +1,8 @@
 
 import { nanoid } from "nanoid";
 import React, { memo, useEffect, useState } from "react"
-import { BehaviorSubject } from "rxjs";
-import BrowserView from "../../../common/components/BrowserView";
+import { BehaviorSubject, filter, first, Observable, Subscription } from "rxjs";
+import BrowserView, { spawnBrowserView } from "../../../common/components/BrowserView";
 
 import { FileBrowserInstanceState } from "../files/FileBrowserProgram";
 import { PaneProps } from "../Panes";
@@ -14,37 +14,44 @@ import { Tab, TabProps } from "../../../common/components/tabs/Tab"
 import WebBrowserStyle from './WebBrowser.module.scss';
 import { Theme } from "../../../Theme";
 import { MdMenu } from "react-icons/md";
+import { useBehaviorSubject } from "../../../common/hooks";
+import { ElectronShim } from "../../../common/shims/electron";
+import { BrowserViewMessages } from "jank-shared/dist/communication/render-ipc";
+import { ValueOf } from "type-fest";
 
-export interface WebBrowserInstanceState {
-    
-    location: BehaviorSubject<string>;
-    tabs: BehaviorSubject<{
-        key: string
-    }[]>
-}
-export interface WebBrowserTabRef {
+
+
+export interface WebBrowserTab {
     key: string
 }
+export interface WebBrowserInstanceState {
+    location: BehaviorSubject<string>;
+    tabs: BehaviorSubject<WebBrowserTab[]>,
+}
 
-const TABS: WebBrowserTabRef[] = (() => {
-    const length = 5;
-    const output = [];
-    for(let i = 0; i < length; i++) {
-        output.push({
-            key: i.toString()
-        });
-    }
-    return output;
-})();
+
+const tabData = new BehaviorSubject<{[key: string]: {
+    title: string,
+    sub: Subscription
+}}>({});
+
 
 const WebBrowserTab: React.FC<TabProps> = ({
     item,
     index,
     remove
 }) => {
+
+    const [data] = useBehaviorSubject(tabData);
+
+    console.log("DATA:", data);
+    
     return <div>
-        <div>
+        {/* <div>
             {index} - {item.key}
+        </div> */}
+        <div>
+            {data[item.key].title}
         </div>
         <div onClick={() => {
             remove(index);
@@ -56,18 +63,68 @@ const WebBrowserTab: React.FC<TabProps> = ({
     </div>
 };
 
+const navigationMessages = ElectronShim.browserViewMessages.pipe(filter(({msg}) => msg.type === 'browser-view-M-navigated')) as ElectronShim.IpcObservable<BrowserViewMessages.MNavigated>;
+
+
 const NAV_BAR_HEIGHT = 38;
 export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
     instance
 }) => {
-    
-    const [tabs, setTabsInternal] = useState<WebBrowserTabRef[]>(Object.values(TABS));
+    const [menu, setMenu] = useState(false);
+    const [tabs, setTabsInternal] = useState<WebBrowserTab[]>([]);
     const [currentTab, setCurrentTab] = useState<string>();
     const [activeKey] = useState(new BehaviorSubject(''));
+    const [location, setLocation] = useBehaviorSubject(instance.state.location);
+    const [locationField, setLocationField] = useState('');
 
-    function setTabs(tabs: WebBrowserTabRef[]) {
+
+    function setTabs(tabs: WebBrowserTab[]) {
         instance.state.tabs.next(tabs);
     }
+
+    async function addTab(switchTo: boolean): Promise<string> {
+        const key = nanoid();
+        await spawnBrowserView(key);
+
+
+        //TODO fix this type.
+        const data: any = {};
+        data[key] = {
+            title: '[unnamed tab]',
+            sub: navigationMessages.subscribe(({msg}) => {
+                if(msg.type === 'browser-view-M-navigated') {
+                    //TODO fix this type.
+                    const data: any = {};
+                    data[key] = {
+                        title: msg.payload.title
+                    };
+                    tabData.next({
+                        ...tabData.value,
+                        ...data
+                    });
+                } else {
+                    
+                }
+            })
+        }
+        tabData.next({...tabData.value, ...data});
+
+      
+
+        setTabsInternal([...tabs, {
+            key: key
+        }]);
+        if(switchTo) {
+            activeKey.next(key)
+        }
+        return key;
+    }
+
+    useEffect(() => {
+        if(location !== locationField) {
+            setLocationField(location);
+        }
+    }, [location]);
 
     useEffect(() => {
         const activeSub = activeKey.subscribe((key) => {
@@ -76,6 +133,14 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
         const instanceTabsSub = instance.state.tabs.subscribe((tabs) => {
             setTabsInternal(tabs);
         })
+
+        const {tabs} = instance.state;
+        if(tabs.value.length < 1) {
+            addTab(true);
+        } else if(activeKey.value === '') {
+            activeKey.next(tabs.value[0].key);
+        }
+
         return () => {
             activeSub.unsubscribe();
             instanceTabsSub.unsubscribe();
@@ -105,33 +170,73 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
                     border: `1px solid ${Theme.current.value.accentColorDark}`,
                     boxSizing: "border-box",
                     backgroundColor: `rgba(${Theme.current.value.baseColorExtremelyDark})`
+                }} onClick={() => {
+                    addTab(true);
                 }}>
                     <MdMenu/>
                 </div>
                 <TabManager
-                    list={tabs}
-                    setList={setTabs}
+                    tabs={tabs}
+                    setTabs={setTabs}
                     activeKey={activeKey}
-                    // customTabComponent={WebBrowserTab}
+                    customTabComponent={WebBrowserTab}
                     style={{
                         height: NAV_BAR_HEIGHT + "px"
                     }}
+                    
                 >
-
                 </TabManager>
+
             </div>
         </div>
         <div style={{
-            flex: 1
+            display: 'flex',
+            width: '100%'
         }}>
-            <BrowserView key={currentTab} id={currentTab} spawn/> 
+            <button>
+                back
+            </button>
+            <button>
+                forward
+            </button>
+            <button onClick={(event) => {
+                setLocation(location);
+            }}>
+                refresh
+            </button>
+            <input
+                type="text"
+                value={locationField}
+                onChange={event => {
+                    setLocationField(event.target.value);
+                }}
+                onKeyDown={(event) => {
+                    if(event.key === 'Enter') {
+                        setLocation(locationField);
+                    }
+                }}
+                style={{
+                    height: '100%',
+                    flex: 1
+                }}
+            />
+            <button>
+                bookmark
+            </button>
+            <button>
+                dev tools
+            </button>
         </div>
-        <div className={WebBrowserStyle.toolbar}>
-            NAV BAR HERE
+        <div style={{
+            flex: 1,
+            backgroundColor: "white"
+        }}>
+            <BrowserView locationSubject={instance.state.location} key={currentTab} id={activeKey} delayBeforeDetach={500}  hide/>
+        </div>
+        {/* <div className={WebBrowserStyle.toolbar}>
+            NAV BAR HERE - {location}
             <button onClick={() => {
-                setTabsInternal([...tabs, {
-                    key: nanoid()
-                }]);
+                addTab(true);
             }}>
                 +
             </button>
@@ -150,7 +255,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
             }}>
                 RE
             </button>
-        </div>
+        </div> */}
     </div>;
 };
 

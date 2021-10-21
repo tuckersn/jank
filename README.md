@@ -23,3 +23,17 @@ npm install -g sass
 
 Run the yarn install command in each yarn package, and then use the bash scripts in the root directory to build/start.
 
+## Todo list
+
+### Interface
+
+#### Web browser
+Features:
+- Tab movement between windows.
+- Redirect location field to a search engine query on invalid urls.
+- Fix subscriptions not being unsubscribed from when a tab is removed.
+### Electron
+
+### Process manager
+
+### Shared

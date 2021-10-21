@@ -62,3 +62,29 @@ $theme-font-color-dark: #789496;
     box-sizing: border-box;
     border: 1px solid rgba($theme-base-color-extremely-light);
 }
+
+
+/**
+
+    INPUT
+
+**/
+button {
+	color: $theme-font-color;	
+	background-color: $theme-base-color-light;
+	border: 1px $theme-border-hard;
+	padding: 4px;
+}
+
+input[type=text] {
+    background-color: $theme-base-color-dark;
+    color: white;
+    border: 1px $theme-border-hard;
+    box-sizing: border-box;
+}
+
+.jank-link {
+	&:hover {
+		color: rgba($theme-highlight-color);
+	}
+}

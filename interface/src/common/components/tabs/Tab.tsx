@@ -10,7 +10,7 @@ import { TabManagerProps } from "./TabManager";
 
 
 export interface TabProps {
-    item: TabManagerProps['list'][0];
+    item: TabManagerProps['tabs'][0];
     index: number;
     remove: (index: number) => void;
     /**
@@ -118,7 +118,7 @@ export const Tab: React.FC<TabProps> = (props) => {
             } else {
                 setActive(false);
             }
-        })
+        });
         return () => {
             hoverSub.unsubscribe();
             activeSub.unsubscribe();

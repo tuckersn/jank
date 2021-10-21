@@ -6,8 +6,8 @@ import { Config } from "../../common/config";
 
 
 import "./Frame.scss";
-import { LayoutEditor } from "./LayoutEditor/LayoutEditor";
-import { LayoutGrid } from "./LayoutGrid";
+import { LayoutEditor } from "../../shared/layout/LayoutEditor/LayoutEditor";
+import { LayoutGrid } from "../../shared/layout/LayoutGrid";
 import React from "react";
 import { ElectronShim } from "../../common/shims/electron";
 import { Theme } from "../../Theme";

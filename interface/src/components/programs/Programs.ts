@@ -36,7 +36,7 @@ export interface Program<INSTANCE_STATE extends Object = any, PROGRAM_STATE exte
      * INSTANCE_STATE should have optional and required properties based on this
      * function's resulting instance.
      */
-    instanceInit: (instance: Partial<Instance<INSTANCE_STATE, SERIALIZABLE>>) => Instance<INSTANCE_STATE, SERIALIZABLE>;
+    instanceInit: (instance: Instance<INSTANCE_STATE, SERIALIZABLE>) => Instance<INSTANCE_STATE, SERIALIZABLE>;
  
     onRegistration: () => void; 
     onDestruction: () => void;

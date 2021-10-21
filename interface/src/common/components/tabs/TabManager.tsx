@@ -3,12 +3,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled, { CSSProperties } from "styled-components";
 import { BehaviorSubject } from "rxjs";
 import { Tab, TabProps } from "./Tab";
+import { Theme } from "../../../Theme";
 
 export interface TabManagerProps {
-    list: {
+    tabs: {
         key: string
     }[],
-    setList: (list: {
+    setTabs: (tabs: {
         key: string
     }[]) => void,
     activeKey: BehaviorSubject<string>,
@@ -25,13 +26,15 @@ export const TabManagerDiv = styled.div`
 
     &::-webkit-scrollbar {
         height: 10px;
+        box-sizing: border-box;
+        border: 155px solid rgba(${Theme.current.value.baseColorVeryLight});
     }
 `;
 
 
 export const TabManager: React.FC<TabManagerProps> = ({
-    list,
-    setList,
+    tabs: list,
+    setTabs: setList,
     style,
     activeKey,
     hoveredKey: hoveredKeyProp,

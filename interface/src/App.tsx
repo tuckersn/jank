@@ -4,7 +4,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 
 import { Frame } from './components/frame/Frame';
 import Config from './common/config';
-import { LayoutEditor } from './components/frame/LayoutEditor/LayoutEditor';
+import { LayoutEditor } from './shared/layout/LayoutEditor/LayoutEditor';
 import { CSSProperties, useEffect } from 'react';
 import { BrowserViewMessages } from 'jank-shared/dist/communication/render-ipc';
 import { ElectronShim } from './common/shims/electron';

@@ -15,8 +15,10 @@ export interface Instance<STATE extends Object = any, SERIALIZABLE extends Objec
     title?: string,
     iconImg: BehaviorSubject<string|undefined>,
     state: STATE,
-    meta: SERIALIZABLE
+    meta: SERIALIZABLE,
+    hidden: boolean
 }
+
 
 export type InstanceCreationObject<STATE extends Object = any, SERIALIZABLE extends Object = any> = 
     Pick<Instance<STATE, SERIALIZABLE>, 'state'  | 'meta'> 
@@ -102,7 +104,9 @@ export module InstanceRegistry {
             title,
             iconImg: iconImg ? iconImg : new BehaviorSubject<string|undefined>(''),
             state,
-            meta
+            meta,
+            // It's assumed to be active on creation
+            hidden: false
         });
     
         return new Promise((res,err) => {

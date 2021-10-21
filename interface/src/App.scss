@@ -45,21 +45,3 @@
 
 
 
-
-/**
-
-THEMEING
-
-**/
-button {
-	color: $theme-font-color;	
-	background-color: $theme-base-color-light;
-	border: 1px $theme-border-hard;
-	padding: 4px;
-}
-
-.jank-link {
-	&:hover {
-		color: rgba($theme-highlight-color);
-	}
-}

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import FlexLayout, { IJsonModel, Layout, Model, TabNode } from "flexlayout-react";
+import FlexLayout, { IJsonModel, Layout as FLLayout, Model, TabNode } from "flexlayout-react";
 
-import { Instance, InstanceRegistry, InstanceCreationObject } from "../../programs/Instances";
+import { Instance, InstanceRegistry, InstanceCreationObject } from "../../../components/programs/Instances";
 import {Image} from "../../../common/components/Image";
 import { nanoid } from "nanoid";
 
-import "./FlexLayout.scss";
-import { BehaviorSubject, filter, Observable } from "rxjs";
-import { ProgramRegistry } from "../../programs/Programs";
 
+import { BehaviorSubject, filter, Observable } from "rxjs";
+import { ProgramRegistry } from "../../../components/programs/Programs";
+
+import { Layout } from "../Layout";
+
+
+import "./LayoutEditor.scss";
 
 const json: IJsonModel = {
 	global: {},
@@ -69,6 +73,7 @@ export function LayoutEditor({}) {
 
     
     const [model, setModel] = useState(Model.fromJson(json));
+	const [layout] = useState(new Layout());
 
 
 
@@ -127,7 +132,7 @@ export function LayoutEditor({}) {
         height: '100%',
         width: '100%'
     }}>
-        <Layout model={model} factory={factory}
+        <FLLayout model={model} factory={factory}
 			classNameMapper={(className) => {
 				/*	
 					As of writing classNames follow this pattern:
@@ -147,8 +152,15 @@ export function LayoutEditor({}) {
 				if(instance) {
 					renderValues.content = instance.title ? instance.title : renderValues.content;
 				}
-			}}>
+			}}
+			onAction={(action) => {
+				if(action.type === FlexLayout.Actions.SELECT_TAB) {
+					console.log("SELECTED:", action);
+				}
+				return action;
+			}}
+			>
 			
-		</Layout>
+		</FLLayout>
     </div>);
 }

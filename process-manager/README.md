@@ -1,10 +1,10 @@
-# Process Manager
+# Process manager
 This project is ran as a child process of Electron's main process as a sort of backend. The reason for this is to keep the Electron main process light as it will grow drastically.
 
 This is designed in such a way it should be easy to swap the NodeIPC for a network protocol as this would allow multi node process managment.
 
 
-## Websocket Authentication
+## Websocket authentication
 First the client sends a message in this format 'id:secret' which authenticates the client. Upon success for now the connection is live, in the future the client and server will exchange brand new public and private keys.  
 
 

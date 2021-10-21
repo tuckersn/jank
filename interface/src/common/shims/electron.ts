@@ -1,26 +1,33 @@
 import { BehaviorSubject, filter, Observable, Subject } from "rxjs";
 
-import { BrowserViewMessages, FrameMessages, Message, ProcessMessages, RenderMessages } from "jank-shared/dist/communication/render-ipc";
+import { BrowserViewMessages, FrameMessages, MainMessages, Message, ProcessMessages, RenderMessages } from "jank-shared/dist/communication/render-ipc";
 
 import { ElectronType, IpcRendererType, RemoteType, ShellType } from "./electron-types";
 import { nanoid } from "nanoid";
-import { Prefixs } from "jank-shared/src/communication/render-ipc";
+import { Prefixes } from "jank-shared/src/communication/render-ipc";
 
 export const electron: ElectronType = window.require('electron');
 export const ipcRenderer: IpcRendererType = electron.ipcRenderer;
 export const shell: ShellType = electron.shell;
 
+
 export module ElectronShim { 
 
 
-    export function send(channel: Prefixs, msg: RenderMessages) {
+    export function send(channel: Prefixes, msg: RenderMessages) {
         ipcRenderer.send(channel, msg);
     }
 
+
+    export type IpcObservable<MESSAGE> = Observable<{
+        event: any,
+        msg: MESSAGE
+    }>;
+
  
-    export const frameMessages: Observable<{event:any, msg: FrameMessages.MainMessages}> = new Observable((observale) => {
+    export const frameMessages: Observable<{event:any, msg: FrameMessages.MainMessages}> = new Observable((observable) => {
         ipcRenderer.on('frame', (event, msg : FrameMessages.MainMessages) => {
-            observale.next({
+            observable.next({
                 event: {
 
                 },
@@ -28,9 +35,9 @@ export module ElectronShim {
             });
         });
     });
-    export const processMessages: Observable<{event:any, msg: ProcessMessages.MainMessages}> = new Observable((observale) => {
+    export const processMessages: Observable<{event:any, msg: ProcessMessages.MainMessages}> = new Observable((observable) => {
         ipcRenderer.on('process', (event, msg : ProcessMessages.MainMessages) => {
-            observale.next({
+            observable.next({
                 event: {
 
                 },
@@ -38,9 +45,9 @@ export module ElectronShim {
             });
         });
     });
-    export const browserViewMessages: Observable<{event:any, msg: BrowserViewMessages.MainMessages}> = new Observable((observale) => {
+    export const browserViewMessages: Observable<{event:any, msg: BrowserViewMessages.MainMessages}> = new Observable((observable) => {
         ipcRenderer.on('browser-view', (event, msg : BrowserViewMessages.MainMessages) => {
-            observale.next({
+            observable.next({
                 event: {
 
                 },
@@ -48,6 +55,7 @@ export module ElectronShim {
             });
         });
     });
+
 
 
     frameMessages.subscribe(({msg}) => {
@@ -86,8 +94,6 @@ export module ElectronShim {
             }
         }
         ipcRenderer.send('process', event);
-
-        console.log("WRPPING UP.")
 
         if(!promise)
             return;
