@@ -9,9 +9,9 @@ export interface TabManagerProps {
     tabs: {
         key: string
     }[],
-    setTabs: (tabs: {
+    setTabs: <INPUT extends {
         key: string
-    }[]) => void,
+    }>(tabs: INPUT[]) => void,
     activeKey: BehaviorSubject<string>,
     hoveredKey?: BehaviorSubject<string>,
     style: CSSProperties,

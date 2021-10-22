@@ -165,12 +165,19 @@ const BrowserViewComponent: React.FC<{
 		if (browserViewDivRef) {
 			if(idSubject.value !== '') {
 				const rect = browserViewDivRef.current?.getBoundingClientRect()!;
+				console.log("POS:", {
+					id: idSubject.value,
+					x: rect.x,
+					y: rect.y,
+					h: size.height,
+					w: size.width,
+				})
 				const event: BrowserViewMessages.RPosition = {
 					type: "browser-view-R-position",
 					payload: {
 						id: idSubject.value,
-						x: rect.left,
-						y: rect.top,
+						x: rect.x,
+						y: rect.y,
 						h: size.height,
 						w: size.width,
 					},

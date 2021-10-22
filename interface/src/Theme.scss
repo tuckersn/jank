@@ -7,8 +7,13 @@
     --theme-base-color-dark: 14, 24, 41;
     //--theme-base-color-very-dark: 2, 7, 15;
     --theme-base-color-very-dark: 4, 16, 36;
-    --theme-highlight-color: 172, 198, 255;
     --theme-base-color-extremely-dark: 3, 5, 10;
+
+
+    --theme-highlight-color: 172, 198, 255;
+    
+    --theme-border-color: 57, 125, 214;
+
 }
 /***
 
@@ -28,6 +33,8 @@ $theme-accent-color: #2e60a1;
 
 $theme-error-color: rgb(68, 13, 13);
 
+$theme-border-color: var(--theme-border-color);
+
 $theme-highlight-color: var(--theme-highlight-color);
 
 /***
@@ -35,8 +42,8 @@ $theme-highlight-color: var(--theme-highlight-color);
     COMMON
 
 ***/
-
-$theme-border-hard: solid #397dd6;
+$theme-border-hard-color: rgba($theme-border-color);
+$theme-border-hard: solid $theme-border-hard-color;
 $theme-border-soft: solid #385a86;
 
 $theme-font-color: white;

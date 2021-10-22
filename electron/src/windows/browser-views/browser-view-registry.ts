@@ -14,6 +14,8 @@ export interface IBrowserViewItem {
     window: IWindowItem,
     view: BrowserView,
     attachedTo: string[],
+    location: string,
+    title: string,
     onDestroy?: (bv: IBrowserViewItem) => void
 }
 
@@ -58,33 +60,46 @@ export module BrowserViewRegistry {
         view.webContents.on('did-fail-load', (event, listener) => {
             console.log("BV failed:", event);
         });
-        
-        view.webContents.loadURL('https://google.com').then((e) => {
-            console.log("going to google?", e);
-        });
-
-        view.webContents.on('did-navigate', (event, url, httpCode, httpStatusText) => {
-            console.log("NAVIGATED");
-            const message: BrowserViewMessages.MNavigated = {
-                type: 'browser-view-M-navigated',
-                payload: {
-                    id,
-                    url,
-                    title: view.webContents.getTitle()
-                }
-            };
-            sendToBrowserViewIpc(window, message);
-        });
-
-     
+               
         _regisrty[id] = {
             id,
             window,
             view,
-            attachedTo: []
+            attachedTo: [],
+            title: view.webContents.getTitle(),
+            location: 'https://google.com'
         }
 
+        
+
+        function sendNavUpdate() {
+            const message: BrowserViewMessages.MNavigated = {
+                type: 'browser-view-M-navigated',
+                payload: {
+                    id,
+                    url: _regisrty[id].location,
+                    title: _regisrty[id].title
+                }
+            };
+            sendToBrowserViewIpc(window, message);
+        }
+
+        view.webContents.loadURL(_regisrty[id].location).then((e) => {
+            console.log("going to google?", e);
+        });
+
+        view.webContents.on('did-navigate', (event, url, httpCode, httpStatusText) => {
+            _regisrty[id].location = url;
+            sendNavUpdate();
+        });
+
+        view.webContents.on('page-title-updated', (event, title, set) => {
+            _regisrty[id].title = title;
+            sendNavUpdate();
+        });
+
         attach(_regisrty[id], window);
+        
         return _regisrty[id];
     }
 }
@@ -168,12 +183,20 @@ export const onBrowserViewChannel: OnIpcEventFunction<BrowserViewMessages.Render
 
             if(id in BrowserViewRegistry.registry()) {
                 const browserView = BrowserViewRegistry.registry()[id];
-                browserView.view.setBounds({
-                    x,
-                    y,
-                    height: h,
-                    width: w
-                });
+                // Rather be too big than too small.
+                const bounds = {
+                    x: Math.floor(x),
+                    y: Math.floor(y),
+                    height: Math.ceil(h),
+                    width: Math.ceil(w)
+                };
+                console.log("PV POSITION:", bounds);
+                try {
+                    browserView.view.setBounds(bounds);
+                } catch(e) {
+                    console.error(`Failed to set browser view bounds of ${id}, the bounds were ${JSON.stringify(bounds, null,4)}`)
+                    throw e;
+                }
             }
         }
         break;

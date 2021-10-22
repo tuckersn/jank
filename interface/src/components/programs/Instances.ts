@@ -16,7 +16,8 @@ export interface Instance<STATE extends Object = any, SERIALIZABLE extends Objec
     iconImg: BehaviorSubject<string|undefined>,
     state: STATE,
     meta: SERIALIZABLE,
-    hidden: boolean
+    hidden: boolean,
+    actions: {[functionName: string]: Function}
 }
 
 
@@ -48,7 +49,7 @@ export module InstanceRegistry {
         [instanceId: string]: Instance;
     }
 
-    const registry: InstanceMap = {};
+    const _registry: InstanceMap = {};
     const programGroupedRegistry: {[programName: string]: InstanceMap } = {};
 
     export const creation = new Observable<Instance>((observer) => {
@@ -56,6 +57,11 @@ export module InstanceRegistry {
             observer.next(instance);
         });
     });
+
+
+    function registry() {
+        return _registry;
+    }
     
 
     function registerForProgram<STATE=any,META=any>(instance: Instance<STATE, META>) {
@@ -68,7 +74,7 @@ export module InstanceRegistry {
 
     _instanceCreation.subscribe(({instance,callback,error}) => {
         try {
-            registry[instance.id] = instance;
+            _registry[instance.id] = instance;
             registerForProgram(instance);
             callback();
         } catch(e: any) {
@@ -77,12 +83,18 @@ export module InstanceRegistry {
     });
 
     export function get(instanceId: string) {
-        return registry[instanceId];
+        return _registry[instanceId];
     }
 
-    export function getByProgram(programUniqueName: string) {
+
+    export function getMapByProgram(programUniqueName: string) {
         return programGroupedRegistry[programUniqueName];
     }
+    export function getByProgram(programUniqueName: string) {
+        return Object.values(getMapByProgram(programUniqueName));
+    }
+
+    
 
     export function destroy() {
 
@@ -106,7 +118,8 @@ export module InstanceRegistry {
             state,
             meta,
             // It's assumed to be active on creation
-            hidden: false
+            hidden: false,
+            actions: {}
         });
     
         return new Promise((res,err) => {

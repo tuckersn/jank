@@ -13,7 +13,9 @@ export module Theme {
         accentColorDark: "#24364d",
 
         hightLight: "172, 198, 255",
-        highVeryLight: "193, 209, 245"
+        highVeryLight: "193, 209, 245",
+
+        borderColor: "57, 125, 214"
     }
 
     export const DEFAULT_THEME: Readonly<typeof _DEFAULT_THEME> = _DEFAULT_THEME;

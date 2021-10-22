@@ -27,10 +27,6 @@ export const TabDiv = styled.div`
     display: inline-block;
     height: 100%;
     
-    padding: 4px;
-    padding-left: 12px;
-    padding-right: 12px;
-    
     box-sizing: border-box;
     border-left: 1px solid rgba(${Theme.current.value.baseColorVeryLight});
     background-color: rgba(${Theme.current.value.baseColorExtremelyDark});
@@ -48,8 +44,14 @@ export const TabInnerDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    
+
     height: 100%;
     width: 100%;
+
+    padding: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
 `;
 
 export const Tab: React.FC<TabProps> = (props) => {
