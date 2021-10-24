@@ -15,20 +15,24 @@ import WebBrowserStyle from './WebBrowser.module.scss';
 import { Theme } from "../../../Theme";
 import { MdAdd, MdArrowBack, MdArrowForward, MdBookmark, MdClose, MdDeveloperMode, MdMenu, MdRefresh } from "react-icons/md";
 import { useBehaviorSubject } from "../../../common/hooks";
-import { ElectronShim } from "../../../common/shims/electron";
+import { ElectronShim, ipcRenderer } from "../../../common/shims/electron";
 import { BrowserViewMessages } from "jank-shared/dist/communication/render-ipc";
 import { ValueOf } from "type-fest";
 import { useObservable } from "../../../common/hooks/RXJS";
+import { Slider } from "../../../common/components";
 
 
+export interface WebBrowserTabState {
+    sub: Subscription,
+    location: string,
+    title: string,
+    history: string[]
+};
 
 export interface WebBrowserTab {
     key: string;
     navigate?: (location: string) => void,
-    tabState?: BehaviorSubject<{
-        sub: Subscription,
-        title: string
-    }>;
+    tabState?: BehaviorSubject<WebBrowserTabState>;
 }
 export interface WebBrowserInstanceState {
     location: BehaviorSubject<string>;
@@ -52,8 +56,6 @@ const WebBrowserTab: React.FC<TabProps> = ({
     const tabState = useObservable((item as Required<WebBrowserTab>).tabState);
     const [title, setTitle] = useState('[unnamed tab]');
 
-    
-    console.log("DATA:", tabState, title, item.key);
     useEffect(() => {
         if(tabState) {
             if(tabState.title !== title) {
@@ -98,7 +100,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
     instance
 }) => {
     const [menu, setMenu] = useState(false);
-    const [tabs, setTabsInternal] = useState<WebBrowserTab[]>([]);
+    const [tabs, setTabs] = useBehaviorSubject<WebBrowserTab[]>(instance.state.tabs);
     const [currentTab, setCurrentTab] = useState<string>();
     const [activeKey] = useState(new BehaviorSubject(''));
     const [location, setLocation] = useBehaviorSubject(instance.state.location);
@@ -106,48 +108,60 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
 
     const [optionsOpen, setOptionsOpen] = useState(false);
 
-    function setTabs(tabs: WebBrowserTab[]) {
-        instance.state.tabs.next(tabs);
-    }
 
-    function navigate(location: string) {
+    function navigate(location: string, locationSetter: (location: string) => void = setLocation) {
         if(/^(http(s|)|file):\/\//im.test(location)) {
             // Is valid URL, go to it.
             //TODO: validation
-            setLocation(location);
+            locationSetter(location);
         } else if(/^[A-Z]+(\.[A-Z]+|)(:[0-9]+|)$/im.test(location)) {
             // Valid domain, single word, with or without a port listed.
             //TODO: validation
-            setLocation(`http://${location}`);
+            locationSetter(`http://${location}`);
         } else {
             //TODO: validation
-            setLocation(SEARCH_ENGINE + location);
+            locationSetter(SEARCH_ENGINE + location);
         }
     }
+
+    function refresh() {
+        setLocation(location);
+    }
+
 
     async function addTab(switchTo: boolean): Promise<string> {
         const key = nanoid();
         await spawnBrowserView(key);
 
-        const tabState: WebBrowserTab['tabState'] = new BehaviorSubject({
+        const tabState: BehaviorSubject<WebBrowserTabState> = new BehaviorSubject<WebBrowserTabState>({
             title: '[unnamed tab]',
+            location: 'https://google.com',
             sub: navigationMessages.subscribe(({msg}) => {
                 if(msg.type === 'browser-view-M-navigated') {
                     if(msg.payload.id === key) {
                         tabState!.next({
                             ...tabState!.value,
-                            title: msg.payload.title
+                            title: msg.payload.title,
+                            location: msg.payload.url
                         });
                     }
                 } else {
                     
                 }
-            })
-        })
+            }),
+            history: []
+        });
 
-        setTabsInternal([...tabs, {
+        setTabs([...tabs, {
             key: key,
-            navigate,
+            navigate: (location) => {
+                navigate(location, (location) => {
+                    tabState.next({
+                        ...tabState.value,
+                        location
+                    })
+                });
+            },
             tabState
         }]);
         if(switchTo) {
@@ -163,12 +177,23 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
     }, [location]);
 
     useEffect(() => {
+        //TODO: do this in O(n) time.
+        if(tabs) {
+            for(let tab of tabs) {
+                if(tab.key === currentTab) {
+                    if(tab.tabState?.value.location) {
+                        setLocation(tab.tabState.value.location);
+                    }
+                    break;
+                }
+            }
+        }
+    }, [currentTab]);
+
+    useEffect(() => {
         const activeSub = activeKey.subscribe((key) => {
             setCurrentTab(key);
         });
-        const instanceTabsSub = instance.state.tabs.subscribe((tabs) => {
-            setTabsInternal(tabs);
-        })
 
         const {tabs} = instance.state;
         if(tabs.value.length < 1) {
@@ -179,7 +204,6 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
 
         return () => {
             activeSub.unsubscribe();
-            instanceTabsSub.unsubscribe();
         }
     }, []);
     
@@ -252,7 +276,7 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
                 <MdArrowForward/>
             </button>
             <button onClick={(event) => {
-                setLocation(location);
+                refresh();
             }}>
                 <MdRefresh/>
             </button>
@@ -293,7 +317,10 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
                     boxSizing: "border-box",
                     borderRight: `2px solid rgba(${Theme.current.value.borderColor})`
                 }}>
-                    TESTING
+                    <Slider min={10} max={500} onValue={(value) => {
+                        console.log("VAL:", value);
+                        return value;
+                    }}/>
                 </div> 
             : '' }
             <div style={{

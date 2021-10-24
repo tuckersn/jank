@@ -75,29 +75,18 @@ const BrowserViewComponent: React.FC<{
 
 	const browserViewDivRef = useRef<HTMLDivElement>(null);
 	const [id, setId] = useBehaviorSubject(idSubject);
-	const location = useObservable(ElectronShim.browserViewMessages.pipe(map(({msg}) => {
-		if(msg.type === 'browser-view-M-navigated') {
-			if(msg.payload.id === id) {
-				if(setTitle) {
-					setTitle(msg.payload.title);
-				}
-				return msg.payload.url;
-			}
-		}
-		return null;
-	}), filter((v) => v !== null)));
 
-	useEffect(() => {
-		/**
-		 * I removed this check because I didn't have
-		 * a specific reason to add it, and it was a
-		 * very simple way to implement refreshing.
-		 */
-		// if(location !== locationSubject.value) {
-		// 	locationSubject.next(location || '');
-		// }
-		locationSubject.next(location || '');
-	}, [location]);
+	// useEffect(() => {
+	// 	/**
+	// 	 * I removed this check because I didn't have
+	// 	 * a specific reason to add it, and it was a
+	// 	 * very simple way to implement refreshing.
+	// 	 */
+	// 	// if(location !== locationSubject.value) {
+	// 	// 	locationSubject.next(location || '');
+	// 	// }
+	// 	locationSubject.next(location || '');
+	// }, [location]);
 
 	useEffect(() => {
 
@@ -121,8 +110,12 @@ const BrowserViewComponent: React.FC<{
 			}
 		}
 
+		// Shared between urlSub and navSub
+		let lastLocation = '';
+
 		const urlSub = locationSubject.subscribe((newUrl) => {
-			if(newUrl !== location) {
+			if(newUrl !== lastLocation) {
+				lastLocation = newUrl;
 				const message: BrowserViewMessages.RNavigate = {
 					type: 'browser-view-R-navigate',
 					payload: {
@@ -133,8 +126,27 @@ const BrowserViewComponent: React.FC<{
 					}
 				};
 				ipcRenderer.send('browser-view', message);
+				console.log("NAVIGATING:", newUrl);
 			}
 		})
+
+		const navSub = ElectronShim.browserViewMessages.pipe(map(({msg}) => {
+			if(msg.type === 'browser-view-M-navigated') {
+				if(msg.payload.id === id) {
+					return msg.payload;
+				}
+			}
+			return null;
+		})).subscribe((args) => {
+			if(args) {
+				const {title,url} = args;
+				lastLocation = url;
+				locationSubject.next(url);
+				if(setTitle) {
+					setTitle(title);
+				}
+			}
+		});
 	
 		return () => {
 			if(onDetach) {
@@ -143,6 +155,7 @@ const BrowserViewComponent: React.FC<{
 				});
 			}
 			urlSub.unsubscribe();
+			navSub.unsubscribe();
 			// Delay to reduce chance of flashing, just goes under the new one.
 			setTimeout(() => {
 				if(id !== idSubject.value) {
@@ -165,13 +178,6 @@ const BrowserViewComponent: React.FC<{
 		if (browserViewDivRef) {
 			if(idSubject.value !== '') {
 				const rect = browserViewDivRef.current?.getBoundingClientRect()!;
-				console.log("POS:", {
-					id: idSubject.value,
-					x: rect.x,
-					y: rect.y,
-					h: size.height,
-					w: size.width,
-				})
 				const event: BrowserViewMessages.RPosition = {
 					type: "browser-view-R-position",
 					payload: {

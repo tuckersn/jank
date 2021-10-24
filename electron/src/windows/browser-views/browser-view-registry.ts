@@ -222,8 +222,15 @@ export const onBrowserViewChannel: OnIpcEventFunction<BrowserViewMessages.Render
             const { id } = (payload as BrowserViewMessages.RAttach['payload']).target;
             if(id) {
                 if(id in BrowserViewRegistry.registry()) {
-                    const view = BrowserViewRegistry.get(id);
-                    BrowserViewRegistry.attach(view, window);
+                    const viewItem = BrowserViewRegistry.get(id);
+                    BrowserViewRegistry.attach(viewItem, window);
+
+                    navigate({
+                        target: {
+                            id
+                        },
+                        url: viewItem.view.webContents.getURL()
+                    }, viewItem.window, reply);
                 }
             }
         }
