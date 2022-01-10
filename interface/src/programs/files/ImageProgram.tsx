@@ -1,5 +1,5 @@
 import React, { CSSProperties } from "react";
-import { fileStringFromURL } from "../../../common/util";
+import { fileStringFromURL } from "../../common/util";
 import { PaneProps } from "../Panes";
 
 const imgStyle: CSSProperties = {

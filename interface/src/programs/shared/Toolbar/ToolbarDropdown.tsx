@@ -1,6 +1,6 @@
 import { CSSProperties, useRef, useState } from "react";
 import { IconType } from "react-icons/lib";
-import Config from "../../../../common/config";
+import Config from "../../../common/config";
 import { getBaseStyle, ToolBarItemProps } from "./Toolbar";
 
 

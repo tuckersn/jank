@@ -1,6 +1,6 @@
 import React from "react";
 import { BehaviorSubject } from "rxjs";
-import { Instance} from "../Instances";
+import { Instance, InstanceCreationObject} from "../Instances";
 import { PaneProps } from "../Panes";
 import { Program } from "../Programs";
 
@@ -13,7 +13,9 @@ export const ProgramListPane: React.FC<PaneProps> = ({instance, InstanceRegistry
         title: string,
         program: Program<any>,
         state?: any,
-        meta?: any
+        serialize?: InstanceCreationObject['serialize'],
+        destroy?: InstanceCreationObject['destroy']
+        
     }[] = [{
         title: "Tab List Tab",
         program: ProgramRegistry.get("jank-tab-list")
@@ -61,18 +63,34 @@ export const ProgramListPane: React.FC<PaneProps> = ({instance, InstanceRegistry
     return (<div style={{height: "100%", width: "100%"}}>
         {buttons.map((button) => {
             return (<div key={button.title}>
-                <button onClick={() => {
-                    InstanceRegistry.create(button.program, {
+                <button onClick={async () => {
+                    const instance = await InstanceRegistry.create(button.program.uniqueName, {
                         id: button.instanceId,
-                        title: button.title,
-                        state: button.state,
-                        meta: button.meta
+                        title: button.title
                     });
+
+                    for(let key of Object.keys(button.state || {})) {
+                        instance.state[key] = button.state[key];
+                    }
                 }}>
                     {button.title}
                 </button>
             </div>);
         })}
+        <div style={{
+            border: "1px solid red",
+            padding: "8px"
+        }}>
+            <button onClick={() => {
+                console.log("LOADING DYNAMIC COMPONENT");
+
+                import("../../../../extensions/example-extension/src/extension").then((extension) => {
+                    console.log("EXTENSION:", extension);
+                });
+            }}>
+                Load dynamic component test
+            </button>
+        </div>
     </div>);
 
     

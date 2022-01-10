@@ -1,24 +1,25 @@
 import { constants } from "os";
 import React, { FC, ClassAttributes, HTMLAttributes, useEffect, useState, useMemo } from "react";
 import { async, BehaviorSubject } from "rxjs";
-import { useBehaviorSubject } from "../../../common/hooks";
-import { DirectoryFile, File, ImageFile } from "../../../common/interfaces/files";
-import { FS } from "../../../common/shims/file-system";
-import { fs, path } from "../../../common/shims/node";
+import { useBehaviorSubject } from "../../common/hooks";
+import { DirectoryFile, File, ImageFile } from "../../common/interfaces/files";
+import { FS } from "../../common/shims/file-system";
+import { fs, path } from "../../common/shims/node";
 
 import { PaneProps } from "../Panes";
 import { MinimalProgram, Program, ProgramRegistry } from "../Programs";
 
 import folderIcon from "material-design-icons/file/2x_web/ic_folder_white_48dp.png";
-import { EDangerous } from "../../../common/modules/html/elements";
+import { EDangerous } from "../../common/modules/html/elements";
 
 import { useTable, Column, usePagination, TableInstance, useResizeColumns, UseResizeColumnsColumnProps, useBlockLayout } from "react-table";
-import { TableInstanceAll, TableInstanceWithPagination } from "../../../shared/react-table/table-instance";
+import { TableInstanceAll, TableInstanceWithPagination } from "../../shared/react-table/table-instance";
 import { nanoid } from "nanoid";
-import { Image } from "../../../common/components/Image";
+import { Image } from "../../common/components/Image";
 
 
 import FileBrowserStyle from "./FileBrowser.module.scss";
+import { InstanceRegistry } from "../Instances";
 
 
 declare module "react-table" {
@@ -273,19 +274,31 @@ export const FileBrowserPane: FC<PaneProps<FileBrowserInstanceState>> = ({
 
 
 export const FileBrowserProgram: MinimalProgram<FileBrowserInstanceState> = {
-    uniqueName: 'jank-file-browser',
+    uniqueName: 'jank-web-browser',
     component: FileBrowserPane,
     instanceInit: (instance) => {
-
-        if(instance.state === undefined) {
-            instance.state = {
+        console.log("WEB BROWSER INSTANCE:", instance);
+        return {
+            actions: {},
+            serialize: () => {
+                return {
+                };
+            },
+            state: {
                 cwd: new BehaviorSubject<string>('C:\\')
-            };
-        }
+            },
+            destroy: () => {
 
-        
-
-        return instance as Required<typeof instance>;;
+            },
+            ...instance
+        };
     },
-    state: {}
+    state: {},
+    deserialize: (serialized) => {
+        return InstanceRegistry.create<FileBrowserInstanceState>('jank-file-browser', {
+            id: nanoid(),
+            destroy: () => {},
+            serialize: () => ({})
+        });
+    }
 };

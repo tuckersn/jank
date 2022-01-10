@@ -33,7 +33,7 @@ export const InstanceViewProgram: React.FC<{
                     {instance.programName}<br/>
                     {instance.title}<br/>
                     {JSON.stringify(instance.state, null, 4)}<br/>
-                    {JSON.stringify(instance.meta, null, 4)}<br/>
+                    {JSON.stringify(instance.serialize, null, 4)}<br/>
                     {instance.iconImg.value}<br/>
                 </div>
             </div>

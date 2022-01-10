@@ -1,5 +1,5 @@
-import { InstanceRegistry } from "./components/programs/Instances";
-import { ProgramRegistry } from "./components/programs/Programs";
+import { InstanceRegistry } from "./programs/Instances";
+import { ProgramRegistry } from "./programs/Programs";
 
 function json<T extends Object>(value: T): string {
     return JSON.stringify(value, null, 4);

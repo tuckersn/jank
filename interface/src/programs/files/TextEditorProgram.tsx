@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from "react";
 
-import { Slider } from "../../../common/components/Slider";
-import { fileStringFromPath } from "../../../common/util";
-import { MonacoEditor } from "../../../shared/monaco/MonacoEditor";
+import { Slider } from "../../common/components/Slider";
+import { fileStringFromPath } from "../../common/util";
+import { MonacoEditor } from "../../shared/monaco/MonacoEditor";
 
 import { editor } from "monaco-editor";
 import { ToolBar, toolBarButton } from "../shared/Toolbar/Toolbar";
 import { MdAccessAlarm, MdAccountBox, MdMap, MdMenu, MdSave, MdSettings } from "react-icons/md";
-import Config from "../../../common/config";
+import Config from "../../common/config";
 import { toolBarDropdownFactory } from "../shared/Toolbar/ToolbarDropdown";
 import { PaneProps } from "../Panes";
+import { MinimalProgram } from "../Programs";
 
-export const TextEditorTab: React.FC<PaneProps<{
-    value: string,
-    url: string
-}>> = ({instance}) => {
+import { BehaviorSubject } from "rxjs";
+import { Instance, InstanceRegistry } from "../Instances";
 
-    const [content, setContent] = useState(instance.state?.value || '');
+
+export interface TextEditorSerializable {
+    content: string,
+    location: string
+}
+
+export interface TextEditorState {
+    content: BehaviorSubject<string>,
+    location: BehaviorSubject<string>
+}
+
+export const TextEditorPane: React.FC<PaneProps<TextEditorState, any, TextEditorSerializable>> = ({instance}) => {
+
+    const [content, setContent] = useState(instance.state?.content || '');
     const [title, setTitle] = useState(instance.title);
     const [editor, setEditor] = useState<editor.IStandaloneCodeEditor>();
     const [minimap, setMinimap] = useState<boolean>(false);
@@ -24,11 +36,11 @@ export const TextEditorTab: React.FC<PaneProps<{
     useEffect(() => {
         if(instance.state) {
             if('file' in instance.state) {
-                setTitle(fileStringFromPath(instance.state.url));
+                setTitle(fileStringFromPath(instance.state.location.value));
             } else if ('data' in instance.state) {
                 setTitle("");
             } else if ('url' in instance.state) {
-                setTitle(fileStringFromPath(instance.state.url));
+                setTitle(fileStringFromPath(instance.state.location.value));
             } else {
                 setTitle('New File');
             }
@@ -127,8 +139,51 @@ export const TextEditorTab: React.FC<PaneProps<{
             <MonacoEditor minimap={{
                 enabled: minimap
             }} style={{height:"100%", width:"100%"}} onStart={({editor, model}) => {
-                editor.setValue(instance.state?.value || 'hello world');
+                console.log("INSTANCE:", instance, editor);
+                editor.setValue(instance.state?.content?.value || 'hello world');
             }}/>
         </div>
     </ToolBar>);
+}
+
+
+export const TextEditorProgram: MinimalProgram<TextEditorState> = {
+    uniqueName: 'jank-text-editor',
+    component: TextEditorPane,
+    instanceInit: (inputInstance) => {
+
+        const contentSubject = new BehaviorSubject('');
+        const locationSubject = new BehaviorSubject('');
+
+
+        const instance: Instance<TextEditorState, TextEditorSerializable> = {
+            ...inputInstance,
+            state: {
+                content: contentSubject,
+                location: locationSubject
+            },
+            serialize: () => {
+                return {
+                    content: contentSubject.value || '',
+                    location: locationSubject.value || ''
+                }
+            },
+            actions: {},
+            destroy: () => {
+
+            }
+        };
+
+
+        
+
+
+        return instance;
+    },
+    state: {
+
+    },
+    deserialize: (serialized) => {
+        return InstanceRegistry.create<TextEditorState>('jank-text-editor');
+    }
 }

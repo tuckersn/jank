@@ -3,9 +3,9 @@ import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { IconBaseProps, IconType } from "react-icons/lib";
 
 import { Promisable } from "type-fest";
-import Config from "../../../../common/config";
-import ReactIcons from "../../../../shared/react-icons";
-import { Theme } from "../../../../Theme";
+import Config from "../../../common/config";
+import ReactIcons from "../../../shared/react-icons";
+import { Theme } from "../../../Theme";
 
 
 

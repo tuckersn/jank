@@ -4,7 +4,7 @@ export module Theme {
         baseColor: "17, 21, 27",
         baseColorLight: "28, 47, 71",
         baseColorVeryLight: "38, 67, 102",
-        baseColorExtremelyLight: "48, 84, 128",
+        baseColorExtremelyLight: "70, 118, 176",
         baseColorDark: "14, 24, 41",
         baseColorVeryDark: "6, 12, 23",
         baseColorExtremelyDark: "3, 5, 10",
@@ -30,6 +30,7 @@ export module Theme {
                 throw new Error("Invalid key in theme: " + key);
             } else {
                 const cssVarKey = '--theme-' + key.split(/(?=[A-Z])/m).map((key) => key.toLocaleLowerCase()).join('-');
+                console.log("VAR:", cssVarKey);
                 document.documentElement.style.setProperty(cssVarKey, theme[(key as keyof typeof theme)] || null);
             }
         }

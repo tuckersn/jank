@@ -7,14 +7,14 @@ import { Message as ComponentMessage } from 'console-feed/lib/definitions/Compon
 import { PassThrough } from 'stream';
 import { Subject } from 'rxjs';
 
-import { Node, Electron } from "../../../common/shims";
+import { Node, Electron } from "../../common/shims";
 import { nanoid } from 'nanoid';
 import { Methods } from 'console-feed/lib/definitions/Methods';
 import { relative } from 'path';
-import { MonacoEditor } from '../../../shared/monaco/MonacoEditor';
+import { MonacoEditor } from '../../shared/monaco/MonacoEditor';
 import * as monaco from "monaco-editor";
 import {KeyCode,KeyMod} from "monaco-editor";
-import { Theme } from '../../../Theme';
+import { Theme } from '../../Theme';
 import { PaneProps } from '../Panes';
 
 // const MonacoEnvironment = {

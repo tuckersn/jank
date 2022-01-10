@@ -1,13 +1,13 @@
 # Jank
-A personal toolbox designed for running miniature programs visually with loose coupling, built around a REPL.
+An aptly named React & Electron based personal toolbox.
 
 ## ⚠️ SECURITY DISCLAIMER ⚠️
-This project is inherently insecure. It is provided as is, but there will be some security patches. This project is primarily for entertainment and educational purposes in mind. If you find value you in it, great!
+This application is insecure, **USE AT YOUR OWN RISK.** This project was designed to be educational and entertainment.
 
 This early into development especially there are a number of extremely insecure aspects of this project. Using this project out of the box shouldn't pose any threats, but to enable the maximum user power the program it is inherently dangerous from a cyber security perspective.
 
 ### Bugs unrelated to security
-Visual bugs such as those related to BrowserViews may be unavoidable or not worth the effort, these issues will be archived under the unavoidable tag for future reference.
+Visual bugs such as those related to BrowserViews may be unavoidable or not worth the effort, these issues will be archived under the unavoidable tag for future reference. Example: many panels will not layer correctly due to use of [Electron's BrowerViews](https://www.electronjs.org/docs/latest/api/browser-view). 
 
 ## Requirements
 Currently only tested against Windows 10.

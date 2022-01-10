@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Promisable } from "type-fest";
 import { Program, ProgramRegistry } from "./Programs";
 
 
@@ -15,15 +16,14 @@ export interface Instance<STATE extends Object = any, SERIALIZABLE extends Objec
     title?: string,
     iconImg: BehaviorSubject<string|undefined>,
     state: STATE,
-    meta: SERIALIZABLE,
+    serialize: () => Promisable<SERIALIZABLE>,
+    destroy: () => Promisable<void>,
     hidden: boolean,
     actions: {[functionName: string]: Function}
 }
 
 
-export type InstanceCreationObject<STATE extends Object = any, SERIALIZABLE extends Object = any> = 
-    Pick<Instance<STATE, SERIALIZABLE>, 'state'  | 'meta'> 
-    & Omit<Partial<Instance<STATE, SERIALIZABLE>>, 'programName'>;
+export type InstanceCreationObject<STATE extends Object = any, SERIALIZABLE extends Object = any> = Omit<Partial<Instance<STATE, SERIALIZABLE>>, 'programName'>;
 
 
 const _instanceCreation: Subject<{
@@ -100,27 +100,32 @@ export module InstanceRegistry {
 
     }
 
-    export function create<STATE extends Object = any, SERIALIZABLE extends Object = any>(program: Program<STATE, SERIALIZABLE>, {
+    export function create<STATE extends Object = any, SERIALIZABLE extends Object = any>(programKey: string, {
         id,
         name,
         title,
         iconImg,
         state,
-        meta
-    } : InstanceCreationObject<STATE, SERIALIZABLE>): Promise<Instance<STATE, SERIALIZABLE>> {
+        serialize,
+        destroy
+    } : InstanceCreationObject<STATE, SERIALIZABLE> = {}): Promise<Instance<STATE, SERIALIZABLE>> {
+
+        const program = ProgramRegistry.get(programKey);
     
         const instance: Instance<STATE, SERIALIZABLE> = program.instanceInit({
             programName: program.uniqueName,
             id: id !== undefined ? id : nanoid(),
-            name,
-            title,
             iconImg: iconImg ? iconImg : new BehaviorSubject<string|undefined>(''),
-            state,
-            meta,
             // It's assumed to be active on creation
-            hidden: false,
-            actions: {}
+            hidden: false
         });
+
+        instance.name = name || instance.name;
+        instance.title = title || instance.title;
+        //TODO: make a record to behavior subjects and merge the records.
+        instance.state = state || instance.state;
+        instance.serialize = serialize || instance.serialize;
+        instance.destroy = destroy || instance.destroy;
     
         return new Promise((res,err) => {
             _instanceCreation.next({

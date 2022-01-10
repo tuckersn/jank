@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { inspect} from "jank-shared/dist/util";
 import * as chalk from "chalk";
-import { XtermConsole } from "../../shared/xterm/XtermConsole";
+import { XtermConsole } from "../shared/xterm/XtermConsole";
 import { PaneProps } from "./Panes";
 import ansiEscapes from 'ansi-escapes';
-import { ElectronShim } from "../../common/shims/electron";
+import { ElectronShim } from "../common/shims/electron";
 import { Subject } from "rxjs";
-import Xterm from "../../shared/xterm/Xterm";
+import Xterm from "../shared/xterm/Xterm";
 import { start } from "repl";
 
 import { ProcessManagerWS } from "jank-shared/dist/communication/process-manager-ws";

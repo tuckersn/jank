@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import FlexLayout, { IJsonModel, Layout as FLLayout, Model, TabNode } from "flexlayout-react";
 
-import { Instance, InstanceRegistry, InstanceCreationObject } from "../../../components/programs/Instances";
+import { Instance, InstanceRegistry, InstanceCreationObject } from "../../../programs/Instances";
 import {Image} from "../../../common/components/Image";
 import { nanoid } from "nanoid";
 
 
 import { BehaviorSubject, filter, Observable } from "rxjs";
-import { ProgramRegistry } from "../../../components/programs/Programs";
+import { ProgramRegistry } from "../../../programs/Programs";
 
 import { Layout } from "../Layout";
 
@@ -42,28 +42,38 @@ const json: IJsonModel = {
 
 function exampleTabs() {
 	return [
-		InstanceRegistry.create(ProgramRegistry.get('jank-text'), {
+		InstanceRegistry.create('jank-text', {
 			name: "text:file:./helloWorld.txt",
 			title: "TEST!",
 			state: {
 				'text': "Hello world?"
 			},
-			meta: {}
+			serialize: () => ({}),
+			destroy: () => {
+
+			}
 		}),
-		InstanceRegistry.create(ProgramRegistry.get('jank-tab-list'), {
+		InstanceRegistry.create('jank-tab-list', {
 			name: "tab-list",
 			title: "TAB LIST DEBUG",
 			state: {
 				'text': "Hello world?"
 			},
-			meta: {}
+			serialize: () => ({}),
+			destroy: () => {
+
+			}
 		}),
-		InstanceRegistry.create(ProgramRegistry.get('jank-text'), {
+		InstanceRegistry.create('jank-text', {
 			name: "text",
 			title: "TEST!",
 			state: {
 				text: 'test'
-			}, meta: {}
+			},
+			serialize: () => ({}),
+			destroy: () => {
+
+			}
 		})
 	];
 }

@@ -3,15 +3,15 @@ import React from "react";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Promisable } from "type-fest";
 import { REPLTab } from "./debugging/REPLTab";
-import { ProgramListPane } from "./debugging/ProgramListPane";
+import { ProgramListPane } from "./debugging/ProgramListProgram";
 import { ImagePane } from "./files/ImageProgram";
-import { TextEditorTab } from "./files/TextEditorProgram";
+import { TextEditorPane, TextEditorProgram } from "./files/TextEditorProgram";
 import { PaneProps } from "./Panes";
 import { TerminalTab } from "./TerminalTab";
 import { TextDisplayPane } from "./TextDisplayProgram";
 import { FileBrowserProgram } from "./files/FileBrowserProgram";
 import { ErrorPane } from "./ErrorPane";
-import { Instance, InstanceCreationObject } from "./Instances";
+import { Instance, InstanceCreationObject, InstanceRegistry } from "./Instances";
 import { WebBrowserProgram } from "./web/WebBrowserProgram";
 
 
@@ -36,17 +36,17 @@ export interface Program<INSTANCE_STATE extends Object = any, PROGRAM_STATE exte
      * INSTANCE_STATE should have optional and required properties based on this
      * function's resulting instance.
      */
-    instanceInit: (instance: Instance<INSTANCE_STATE, SERIALIZABLE>) => Instance<INSTANCE_STATE, SERIALIZABLE>;
- 
-    onRegistration: () => void; 
-    onDestruction: () => void;
+    instanceInit: (instance: Pick<Instance<INSTANCE_STATE, SERIALIZABLE>, 'id' | 'programName' | 'iconImg' | 'hidden'>) => Instance<INSTANCE_STATE, SERIALIZABLE>;
+    deserialize?: (serialized: SERIALIZABLE) => Promise<Instance<INSTANCE_STATE, SERIALIZABLE>>;
+    onRegistration?: () => void; 
+    onDestruction?: () => void;
 }
 
 /**
  * Minimum required fields to create a Program.
  */
-export type MinimalProgram<INSTANCE_STATE extends Object = any, PROGRAM_STATE extends Object = any> = Omit<Program<INSTANCE_STATE, PROGRAM_STATE>, 
-    'deleted' | 'onRegistration' | 'onDestruction'> & Partial<Program<INSTANCE_STATE, PROGRAM_STATE>>;
+export type MinimalProgram<INSTANCE_STATE extends Object = any, PROGRAM_STATE extends Object = any, SERIALIZABLE extends Object = any> = Omit<Program<INSTANCE_STATE, PROGRAM_STATE, SERIALIZABLE>, 
+    'deleted' | 'onRegistration' | 'onDestruction'> & Partial<Program<INSTANCE_STATE, PROGRAM_STATE, SERIALIZABLE>>;
 
 
 const _programCreation: Subject<{
@@ -82,7 +82,8 @@ export module ProgramRegistry {
         } catch(e: any) {
             error(e);
         }
-        program.onRegistration();
+        if(program.onRegistration)
+            program.onRegistration();
     });
 
     export function get(uniqueName: string) {
@@ -90,7 +91,10 @@ export module ProgramRegistry {
     }
 
     export async function destroy<ARGS=any>(uniqueName: string): Promise<Program<ARGS>> {
-        await registry[uniqueName].onDestruction();
+        if(registry[uniqueName].onDestruction) {
+            //@ts-expect-error
+            await registry[uniqueName].onDestruction();
+        }
         const program = registry[uniqueName];
         delete registry[uniqueName];
         program.deleted = true;
@@ -105,7 +109,8 @@ export module ProgramRegistry {
         onRegistration = () => {},
         onDestruction = () => {},
         state,
-        instanceInit: instanceState
+        instanceInit: instanceState,
+        deserialize,
     } : {randomName?: boolean} & MinimalProgram<INSTANCE_STATE, PROGRAM_STATE>): Promise<Program<INSTANCE_STATE>> {
 
         if(uniqueName === undefined) {
@@ -119,6 +124,7 @@ export module ProgramRegistry {
         const program: Program<INSTANCE_STATE, PROGRAM_STATE> = {
             uniqueName,
             component,
+            deserialize,
             deleted: false,
             onRegistration,
             onDestruction,
@@ -140,73 +146,35 @@ export module ProgramRegistry {
     }
 }
 
+export type ProgramConstructor = Parameters<typeof ProgramRegistry['create']>['0'];
 
-
-
-const _DEFAULT_PROGRAMS: {[uniqueName: string]: Omit<MinimalProgram<any>, 'uniqueName'>} = {
-    'jank-text': {
-        component: TextDisplayPane,
+function minimumProgramArguments(name: string, component: React.FC<PaneProps>): MinimalProgram {
+    return {
+        uniqueName: name,
+        component: component,
         instanceInit: (instance) => {
             return instance as any;
         },
-        state: {}
-    },
-    'jank-tab-list': {
-        component: ProgramListPane,
-        instanceInit: (instance) => {
-            return instance as any;
+        state: {},
+        deserialize: () => {
+           return InstanceRegistry.create(name);
         },
-        state: {}
-    },
-    'jank-image': {
-        component: ImagePane,
-        instanceInit: (instance) => {
-            return instance as any;
-        },
-        state: {}
-    },
-    'jank-terminal': {
-        component: TerminalTab,
-        instanceInit: (instance) => {
-            return instance as any;
-        },
-        state: {}
-    },
-    'jank-repl': {
-        component: REPLTab,
-        instanceInit: (instance) => {
-            return instance as any;
-        },
-        state: {}
-    },
-    'jank-text-editor': {
-        component: TextEditorTab,
-        instanceInit: (instance) => {
-            return instance as any;
-        },
-        state: {}
-    },
-    'jank-file-browser': FileBrowserProgram,
-    'jank-web-browser': WebBrowserProgram,
-    'error': {
-        component: ErrorPane,
-        instanceInit: (instance) => {
-            return instance as Required<typeof instance>;
-        },
-        state: {}
-    }
+    };
 }
 
-export const DEFAULT_PROGRAMS: Readonly<typeof _DEFAULT_PROGRAMS> = _DEFAULT_PROGRAMS;
-
-for(let program of Object.keys(DEFAULT_PROGRAMS)) {
-    const programObject = DEFAULT_PROGRAMS[program];
-    ProgramRegistry.create({
-        uniqueName: program,
-        component: programObject.component,
-        instanceInit: programObject.instanceInit,
-        state: programObject.state,
-    });
+const _DEFAULT_PROGRAMS: {[uniqueName: string]: Readonly<ReturnType<typeof minimumProgramArguments>> } = {
+    'jank-text': minimumProgramArguments('jank-text', TextDisplayPane),
+    'jank-tab-list': minimumProgramArguments('jank-tab-list', ProgramListPane),
+    'jank-image': minimumProgramArguments('jank-image', ImagePane),
+    'jank-terminal': minimumProgramArguments('jank-terminal', TerminalTab),
+    'jank-repl': minimumProgramArguments('jank-repl', REPLTab),
+    'jank-text-editor': TextEditorProgram,
+    'jank-file-browser': FileBrowserProgram,
+    'jank-web-browser': WebBrowserProgram,
+    'error': minimumProgramArguments('error', ErrorPane)
+}
+for(let program of Object.values(_DEFAULT_PROGRAMS)) {
+    ProgramRegistry.create(program);
 }
 
 

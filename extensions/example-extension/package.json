@@ -1,0 +1,16 @@
+{
+	"name": "example-extension",
+	"version": "0.0.0",
+	"main": "index.js",
+	"author": "Tucker Sneed",
+	"license": "MIT",
+	"dependencies": {
+		"nanoid": "^3.1.30",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
+	},
+	"devDependencies": {
+		"@types/react": "^17.0.38",
+		"@types/react-dom": "^17.0.11"
+	}
+}

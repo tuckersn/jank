@@ -2,24 +2,25 @@
 import { nanoid } from "nanoid";
 import React, { memo, useEffect, useState } from "react"
 import { BehaviorSubject, filter, first, map, Observable, Subscription } from "rxjs";
-import BrowserView, { spawnBrowserView } from "../../../common/components/BrowserView";
+import BrowserView, { spawnBrowserView } from "../../common/components/BrowserView";
 
 import { FileBrowserInstanceState } from "../files/FileBrowserProgram";
 import { PaneProps } from "../Panes";
-import { MinimalProgram } from "../Programs";
+import { MinimalProgram, ProgramRegistry } from "../Programs";
 
-import { TabManager } from "../../../common/components/tabs/TabManager"
-import { Tab, TabProps } from "../../../common/components/tabs/Tab"
+import { TabManager } from "../../common/components/tabs/TabManager"
+import { Tab, TabProps } from "../../common/components/tabs/Tab"
 
 import WebBrowserStyle from './WebBrowser.module.scss';
-import { Theme } from "../../../Theme";
+import { Theme } from "../../Theme";
 import { MdAdd, MdArrowBack, MdArrowForward, MdBookmark, MdClose, MdDeveloperMode, MdMenu, MdRefresh } from "react-icons/md";
-import { useBehaviorSubject } from "../../../common/hooks";
-import { ElectronShim, ipcRenderer } from "../../../common/shims/electron";
+import { useBehaviorSubject } from "../../common/hooks";
+import { ElectronShim, ipcRenderer } from "../../common/shims/electron";
 import { BrowserViewMessages } from "jank-shared/dist/communication/render-ipc";
 import { ValueOf } from "type-fest";
-import { useObservable } from "../../../common/hooks/RXJS";
-import { Slider } from "../../../common/components";
+import { useObservable } from "../../common/hooks/RXJS";
+import { Slider } from "../../common/components";
+import { InstanceRegistry } from "../Instances";
 
 
 export interface WebBrowserTabState {
@@ -99,6 +100,7 @@ const WebBrowserTab: React.FC<TabProps> = ({
 export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
     instance
 }) => {
+    console.log("INTS:", instance);
     const [menu, setMenu] = useState(false);
     const [tabs, setTabs] = useBehaviorSubject<WebBrowserTab[]>(instance.state.tabs);
     const [currentTab, setCurrentTab] = useState<string>();
@@ -356,27 +358,32 @@ export const WebBrowserPane: React.FC<PaneProps<WebBrowserInstanceState>> = ({
 };
 
 export const WebBrowserProgram: MinimalProgram<WebBrowserInstanceState> = {
-    uniqueName: 'jank-file-browser',
+    uniqueName: 'jank-web-browser',
     component: WebBrowserPane,
     instanceInit: (instance) => {
         console.log("WEB BROWSER INSTANCE:", instance);
-        if(instance.state === undefined) {
-            throw new Error('State is required.');
-        } else {
-            if(instance.state.location instanceof BehaviorSubject) {
-                if(typeof instance.state.location.value !== 'string') {
-                    throw new Error('location must be a BehaviorSubject<string>');
-                }
-            } else {
-                throw new Error('location must be a BehaviorSubject<string>');
-            }
-        }
+        return {
+            actions: {},
+            serialize: () => {
+                return {
+                };
+            },
+            state: {
+                location: new BehaviorSubject<string>(''),
+                tabs: new BehaviorSubject<WebBrowserInstanceState['tabs']['_value']>([])
+            },
+            destroy: () => {
 
-        instance.state.tabs = new BehaviorSubject<WebBrowserInstanceState['tabs']['_value']>([]);
-
-        
-
-        return instance as Required<typeof instance>;;
+            },
+            ...instance
+        };
     },
-    state: {}
+    state: {},
+    deserialize: (serialized) => {
+        return InstanceRegistry.create<WebBrowserInstanceState>('jank-web-browser', {
+            id: nanoid(),
+            destroy: () => {},
+            serialize: () => ({})
+        });
+    }
 };

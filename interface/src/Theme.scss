@@ -3,7 +3,7 @@
     --theme-base-color: 17, 21, 27;
     --theme-base-color-light: 28, 47, 71;
     --theme-base-color-very-light: 	38, 67, 102;
-    --theme-base-color-extremely-light: 48, 84, 128;
+    --theme-base-color-extremely-light: 70, 118, 176;
     --theme-base-color-dark: 14, 24, 41;
     //--theme-base-color-very-dark: 2, 7, 15;
     --theme-base-color-very-dark: 4, 16, 36;
@@ -78,9 +78,14 @@ $theme-font-color-dark: #789496;
 **/
 button {
 	color: $theme-font-color;	
-	background-color: $theme-base-color-light;
+	background-color: rgba($theme-base-color-light);
 	border: 1px $theme-border-hard;
 	padding: 4px;
+
+    &:hover {
+        color: $theme-font-color-dark;
+        background-color: rgba($theme-base-color-very-light);
+    }
 }
 
 input[type=text] {
