@@ -1,0 +1,50 @@
+{
+	"name": "@janktools/ui-framework",
+	"version": "0.0.0",
+	"main": "index.js",
+	"author": "Tucker Sneed",
+	"license": "MIT",
+	"dependencies": {
+		"@babel/core": "^7.16.7",
+		"@babel/plugin-transform-typescript": "^7.16.8",
+		"@babel/preset-env": "^7.16.8",
+		"@babel/preset-react": "^7.16.7",
+		"@types/ejs": "^3.1.0",
+		"babel-loader": "^8.2.3",
+		"babel-plugin-named-asset-import": "^0.3.8",
+		"babel-plugin-styled-components": "^2.0.2",
+		"cross-env": "^7.0.3",
+		"ejs": "^3.1.6",
+		"nanoid": "^3.1.30",
+		"react": "^17.0.2",
+		"ts-loader": "^9.2.6",
+		"type-fest": "^2.9.0",
+		"webpack": "^5.65.0",
+		"webpack-cli": "^4.9.1"
+	},
+	"scripts": {
+		"build-webpack": "cross-env NODE_ENV=development webpack --env development",
+		"build": "tsc"
+	},
+	"private": true,
+	"workspaces": [
+		"extensions"
+	],
+	"babel": {
+		"presets": [
+			"react-app"
+		],
+		"plugins": [
+			[
+				"@babel/plugin-transform-typescript",
+				{
+					"allowNamespaces": true
+				}
+			],
+			"babel-plugin-styled-components"
+		],
+		"ignore": [
+			"node_modules"
+		]
+	}
+}

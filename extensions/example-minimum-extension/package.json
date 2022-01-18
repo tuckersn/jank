@@ -1,0 +1,14 @@
+{
+	"name": "minimum-extension",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"dependencies": {
+		"@janktools/ui-framework": "^0.0.0",
+		"@types/ejs": "^3.1.0",
+		"ejs": "^3.1.6",
+		"react": "^17.0.2",
+		"type-fest": "^2.9.0"
+	},
+	"type": "module"
+}

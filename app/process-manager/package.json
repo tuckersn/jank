@@ -1,0 +1,41 @@
+{
+  "name": "jank-process",
+  "version": "0.0.0",
+  "description": "Backend of Jank, to keep Electron's main process from being busy.",
+  "main": "index.js",
+  "scripts": {
+    "compile": "bash ./electron_build.bash",
+    "build": "tsc"
+  },
+  "author": "Tucker Sneed",
+  "license": "MIT",
+  "private": true,
+  "repository": "https://github.com/tuckersn/jank",
+  "dependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/plugin-transform-typescript": "^7.16.8",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-react": "^7.16.7",
+    "@janktools/config": "^1.0.0",
+    "@janktools/shared": "0.0.1",
+    "@janktools/ui-framework": "^0.0.0",
+    "@types/ejs": "^3.1.0",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-named-asset-import": "^0.3.8",
+    "babel-plugin-styled-components": "^2.0.2",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-app": "^10.0.1",
+    "ejs": "^3.1.6",
+    "node-pty": "^0.10.1",
+    "react": "^17.0.2",
+    "ts-loader": "^9.2.6",
+    "type-fest": "^2.2.0",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "winston": "^3.3.3",
+    "ws": "^8.2.1"
+  },
+  "devDependencies": {
+    "@types/ws": "^7.4.7"
+  }
+}

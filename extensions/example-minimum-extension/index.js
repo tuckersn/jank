@@ -1,21 +1,15 @@
-
-import { InstanceRegistry } from "@janktools/ui-framework/dist/Instances";
-import { MinimalProgram } from "@janktools/ui-framework/dist/Programs";
-import { nanoid } from "nanoid";
-
-export const ExampleProgram: MinimalProgram<any> = {
-    uniqueName: 'example-program',
-    component:  function ExampleComponent() {
+export const MinimalExampleProgram = {
+    uniqueName: 'minimal-example-program',
+    component:  function MinimalExampleComponent() {
 		return <div style={{
 			color: "white",
 			backgroundColor: "darkgreen",
 			padding: "16px"
 		}}>
-			Example Extension Program! {nanoid()}
+			Hello World!
 		</div>;
 	},
     instanceInit: (instance) => {
-        console.log("WEB BROWSER INSTANCE:", instance);
         return {
             actions: {},
             serialize: () => {
@@ -32,10 +26,14 @@ export const ExampleProgram: MinimalProgram<any> = {
     },
     state: {},
     deserialize: (serialized) => {
-        return InstanceRegistry.create<any>('example-program', {
+        return InstanceRegistry.create<any>('minimal-example-program', {
             id: nanoid(),
             destroy: () => {},
             serialize: () => ({})
         });
     }
+}
+
+export function init() {
+	ProgramRegistry.create(MinimumExampleProgram);
 }

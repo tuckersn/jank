@@ -1,0 +1,156 @@
+@import 'src/Theme.scss';
+
+$color_base: rgba($theme-base-color) !default;
+$color_1: rgba($theme-base-color, 93%)  !default;
+$color_2: rgba($theme-base-color, 90%)  !default;
+$color_3: rgba($theme-base-color, 85%)  !default;
+$color_4: rgba($theme-base-color, 80%)  !default;
+$color_5: rgba($theme-base-color, 75%)  !default;
+$color_6: rgba($theme-base-color, 70%)  !default;
+
+$color_drag1: rgba($theme-highlight-color)  !default;
+$color_drag1_background: red !default;
+$color_drag2: rgba($theme-highlight-color) !default;
+$color_drag2_background: lime !default;
+
+$color_background: rgba($theme-base-color-dark) !default;
+$color_text: $theme-font-color !default;
+
+$font-size: medium !default;
+$font-family: Roboto, Arial, sans-serif !default;
+
+// Doesn't do anything
+@mixin tabset_mixin {
+}
+// Doesn't do anything
+@mixin tabset_tabbar_mixin {
+}
+@mixin tabset_header_mixin {
+}
+@mixin tabset_selected_mixin {
+}
+@mixin tabset_maximized_mixin {
+}
+@mixin tab_top_mixin {
+}
+@mixin tab_bottom_mixin {
+}
+@mixin tab_button_mixin {
+}
+@mixin tab_button_selected_mixin {
+}
+@mixin tab_button_unselected_mixin {
+}
+@mixin tab_button_hovered_mixin {
+}
+@mixin border_mixin {
+}
+@mixin border_button_mixin {
+}
+@mixin border_button_selected_mixin {
+}
+@mixin border_button_unselected_mixin {
+}
+@mixin border_button_hovered_mixin {
+}
+@mixin splitter_mixin {
+}
+@mixin splitter_hover_mixin {
+}
+@mixin splitter_drag_mixin {
+}
+@mixin splitter_border_mixin {
+}
+@mixin tab {
+}
+@mixin close_button_hovered_mixin {
+
+}
+@mixin toolbar_button_hovered_mixin {
+    
+}
+
+
+//https://github.com/parcel-bundler/parcel/issues/1800
+//@import "/../../node_modules/flexlayout-react/style/_base.scss";
+@import "~flexlayout-react/style/_base.scss";
+
+
+/**
+
+    MANUAL OVERRIDES
+
+    Has to be done due to the mixins being overriden.
+**/
+
+.flexlayout__layout {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 100%;
+    width: 100%;
+}
+
+.flexlayout__tab {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+
+.flexlayout__tabset_tabbar_outer {
+    background-color: rgba($theme-base-color);
+    box-sizing: border-box;
+    border-bottom: 1px $theme-border-soft;
+
+    .flexlayout__tab_button {
+        box-sizing: border-box;
+        border-top: 1px solid $color_background;
+        border-left: 1px solid $color_background;
+        border-right: 1px solid $color_background;
+
+
+        padding: 0;
+        padding-left: 1px;
+        padding-right: 1px;
+
+        .flexlayout__tab_button_leading {
+            height: calc(100% - 2px);
+        }
+    }    
+
+
+    .flexlayout__tab_button--selected {
+        box-sizing: border-box;
+        border-top: 1px $theme-border-soft;
+        border-left: 1px $theme-border-soft;
+        border-right: 1px $theme-border-soft;
+    }
+
+    // Equivalent to @mixin tabset_selected_mixin
+    &.flexlayout__tabset-selected {
+        background-color: rgba($theme-base-color-light);
+        box-sizing: border-box;
+        border-bottom: 1px $theme-border-hard;
+
+
+        .flexlayout__tab_button {
+            box-sizing: border-box;
+            border-top: 1px $theme-border-soft;
+            border-left: 1px $theme-border-soft;
+            border-right: 1px $theme-border-soft;
+        }    
+
+
+        .flexlayout__tab_button--selected {
+            box-sizing: border-box;
+            border-top: 1px $theme-border-hard;
+            border-left: 1px $theme-border-hard;
+            border-right: 1px $theme-border-hard;
+        }
+    }
+
+}

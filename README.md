@@ -6,6 +6,9 @@ This application is insecure, **USE AT YOUR OWN RISK.** This project was designe
 
 This early into development especially there are a number of extremely insecure aspects of this project. Using this project out of the box shouldn't pose any threats, but to enable the maximum user power the program it is inherently dangerous from a cyber security perspective.
 
+### Extensions
+Extensions are compiled into the application itself, they are even loaded before the majority of the application. There is no limitations on extensions, they are complete packages with their own dependencies and no isolation. ***Do not download untrusted extensions, there are no protections.*** This application is a monorepo where extensions are just another package, and extensions can share code between each other.
+
 ### Bugs unrelated to security
 Visual bugs such as those related to BrowserViews may be unavoidable or not worth the effort, these issues will be archived under the unavoidable tag for future reference. Example: many panels will not layer correctly due to use of [Electron's BrowerViews](https://www.electronjs.org/docs/latest/api/browser-view). 
 

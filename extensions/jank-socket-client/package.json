@@ -1,5 +1,5 @@
 {
-	"name": "example-extension",
+	"name": "@jank-extensions/socket-client",
 	"version": "0.0.0",
 	"main": "index.js",
 	"author": "Tucker Sneed",

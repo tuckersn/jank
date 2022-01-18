@@ -1,0 +1,57 @@
+{
+	"name": "@jankstools/jank",
+	"version": "0.0.0",
+	"private": true,
+	"devDependencies": {
+		"@types/eslint-scope": "^3.7.2"
+	},
+	"dependencies": {
+		"cross-env": "^7.0.3",
+		"ts-loader": "^9.2.6",
+		"lerna": "^4.0.0",
+		"turbo": "^1.0.25"
+	},
+	"workspaces": [
+		"extensions/*",
+		"app/*",
+		"configs/*"
+	],
+	"scripts": {
+		"bootstrap": "lerna bootstrap --use-workspaces",
+		"start": "yarn turbo run start ",
+		"force-start": "yarn turbo run start --force",
+		"build": "yarn turbo run build ",
+		"force-build": "yarn turbo run build --force"
+	},
+	"turbo": {
+		"baseBranch": "origin/main",
+		"pipeline": {
+			"build": {
+				"dependsOn": [
+					"^post-processing"
+				],
+				"outputs": [
+					"dist/**"
+				]
+			},
+			"post-processing": {
+				"dependsOn": [
+					"build"
+				],
+				"outputs": [
+					"dist/**"
+				]
+			},
+			"start": {
+				"cache": false,
+				"dependsOn": [
+					"post-processing"
+				]
+			}
+		}
+	},
+	"resolutions": {
+		"//": "See https://github.com/facebook/create-react-app/issues/11773",
+		"react-error-overlay": "6.0.9"
+	}
+}
