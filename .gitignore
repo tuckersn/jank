@@ -5,3 +5,8 @@ yarn-error.log
 .ionide
 graph-*.jpg
 lerna-debug.log
+*.code-workspace
+!workspace.code-workspace
+data/*
+!data/.gitkeep
+logs/*

@@ -3,7 +3,7 @@ import { Promisable } from "type-fest";
 import { path } from "../common/shims/node";
 import * as Programs from "@janktools/ui-framework/dist/Programs";
 import { ProgramRegistry } from "@janktools/ui-framework/dist/Programs";
-import { Theme } from "../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 import { IExtensionModule } from "@janktools/ui-framework/dist/Extension";
 
 

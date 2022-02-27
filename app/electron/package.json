@@ -13,7 +13,7 @@
   "author": "Tucker Sneed",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^16.7.5",
+    "@types/node": "^17.0.10",
     "typescript": "^4.3.5"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "@janktools/shared": "0.0.1",
     "@janktools/ui-framework": "^0.0.0",
     "@types/ejs": "^3.1.0",
+    "@types/node": "^17.0.10",
     "babel-loader": "^8.2.3",
     "babel-plugin-named-asset-import": "^0.3.8",
     "babel-plugin-styled-components": "^2.0.2",
@@ -36,6 +37,7 @@
     "node-pty": "^0.10.1",
     "react": "^17.0.2",
     "rxjs": "^7.3.0",
+    "styled-components": "^5.3.3",
     "ts-loader": "^9.2.6",
     "type-fest": "^2.2.0",
     "webpack": "^5.65.0",

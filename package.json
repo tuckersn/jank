@@ -6,29 +6,40 @@
 		"@types/eslint-scope": "^3.7.2"
 	},
 	"dependencies": {
+		"chalk": "^5.0.0",
 		"cross-env": "^7.0.3",
-		"ts-loader": "^9.2.6",
 		"lerna": "^4.0.0",
-		"turbo": "^1.0.25"
+		"ts-loader": "^9.2.6",
+		"turbo": "^1.0.25",
+		"concurrently": "7.0.0"
 	},
 	"workspaces": [
 		"extensions/*",
 		"app/*",
-		"configs/*"
+		"configs/*",
+		"scripts"
 	],
 	"scripts": {
 		"bootstrap": "lerna bootstrap --use-workspaces",
-		"start": "yarn turbo run start ",
-		"force-start": "yarn turbo run start --force",
+		"newstart": "yarn turbo run build && concurrently \"bash ./scripts/start-ui.bash\" \"bash ./scripts/start-electron.bash\"",
+		"start": "yarn turbo run start",
+		"start:graph": "yarn turbo run start --graph",
+		"start:force": "yarn turbo run start --force",
 		"build": "yarn turbo run build ",
-		"force-build": "yarn turbo run build --force"
+		"build:graph": "yarn turbo run build --graph",
+		"build:force": "yarn turbo run build --force",
+		"extensions:reimport": "node ./scripts/extension-import-generator.js",
+		"untrack": "bash ./scripts/untrack.bash",
+		"track": "bash ./scripts/track.bash"
 	},
 	"turbo": {
 		"baseBranch": "origin/main",
 		"pipeline": {
+			"@janktools/scripts#pre": {},
 			"build": {
 				"dependsOn": [
-					"^post-processing"
+					"^post-processing",
+					"@janktools/scripts#pre"
 				],
 				"outputs": [
 					"dist/**"

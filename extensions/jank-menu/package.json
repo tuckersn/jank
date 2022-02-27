@@ -5,12 +5,15 @@
 	"author": "Tucker Sneed",
 	"license": "MIT",
 	"dependencies": {
+		"@janktools/shared": "^0.0.1",
 		"@janktools/ui-framework": "^0.0.0",
 		"@types/ejs": "^3.1.0",
 		"cross-env": "^7.0.3",
 		"ejs": "^3.1.6",
 		"nanoid": "^3.1.30",
 		"react": "^17.0.2",
+		"rxjs": "^7.5.2",
+		"styled-components": "^5.3.3",
 		"ts-loader": "^9.2.6",
 		"type-fest": "^2.9.0"
 	},
@@ -20,5 +23,8 @@
 	"private": true,
 	"workspaces": [
 		"extensions"
-	]
+	],
+	"devDependencies": {
+		"@types/node": "^17.0.10"
+	}
 }

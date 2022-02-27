@@ -45,33 +45,11 @@ const json: IJsonModel = {
 function exampleTabs() {
 	console.log("IR:", InstanceRegistry);
 	return [
-		InstanceRegistry.create('jank-text', {
+		InstanceRegistry.create('jank-menu', {
 			name: "text:file:./helloWorld.txt",
 			title: "TEST!",
 			state: {
 				'text': "Hello world?"
-			},
-			serialize: () => ({}),
-			destroy: () => {
-
-			}
-		}),
-		InstanceRegistry.create('jank-tab-list', {
-			name: "tab-list",
-			title: "TAB LIST DEBUG",
-			state: {
-				'text': "Hello world?"
-			},
-			serialize: () => ({}),
-			destroy: () => {
-
-			}
-		}),
-		InstanceRegistry.create('jank-text', {
-			name: "text",
-			title: "TEST!",
-			state: {
-				text: 'test'
 			},
 			serialize: () => ({}),
 			destroy: () => {

@@ -1,4 +1,4 @@
-export module RGBColor {
+export module RGB {
 
     export function test(rgbString: string): boolean {
         return /[0-9]+,(| )[0-9]+,(| )[0-9]+((,(| )[0-9]+)|)/.test(rgbString);

@@ -77,12 +77,9 @@ export const ProgramListPane: React.FC<PaneProps> = ({instance, InstanceRegistry
                 <button onClick={async () => {
                     const instance = await InstanceRegistry.create(button.program.uniqueName, {
                         id: button.instanceId,
-                        title: button.title
+                        title: button.title,
+						state: Object.assign({}, button.state)
                     });
-
-                    for(let key of Object.keys(button.state || {})) {
-                        instance.state[key] = button.state[key];
-                    }
                 }}>
                     {button.title}
                 </button>

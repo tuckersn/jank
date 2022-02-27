@@ -3,7 +3,8 @@
 	"packages": [
 		"extensions/*",
 		"app/*",
-        "configs/*"
+        "configs/*",
+		"scripts"
 	],
 	"version": "independent",
 	"useWorkspaces": true

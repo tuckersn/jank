@@ -4,13 +4,15 @@ import { BsDash } from "react-icons/bs";
 
 import { Config } from "../../common/config";
 
+import { TitleBar } from "@janktools/ui-framework/dist";
+
 
 import "./Frame.scss";
 import { LayoutEditor } from "../../shared/layout/LayoutEditor/LayoutEditor";
 import { LayoutGrid } from "../../shared/layout/LayoutGrid";
 import React from "react";
 import { ElectronShim } from "../../common/shims/electron";
-import { Theme } from "../../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 
 
 const FrameContext: React.Context<{
@@ -61,7 +63,7 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
         <div style={titleBarStyle}>
             <div className={"jank title-bar"}>
                 <div className="left">
-                    <div className="selectable">
+                    {/* <div className="selectable">
                         <MdMenu size={iconScale * Math.log(frameHeight)} onClick={() => {
                             console.log("Menu would go here!");
                         }}/>
@@ -78,7 +80,14 @@ export const Frame: FC<FrameProps> = ({ children, layout }) => {
                     <button className="selectable" onClick={() => {
                         setFrameHeight(frameHeight + 1);
                         console.log("FRAME:", frameHeight);
-                    }}>+</button>
+                    }}>+</button> */}
+					{
+						TitleBar.left.components.map((Component) => {
+							console.log("TIME:", Date.now());
+							console.log("COMP:", Component);
+							return <Component/>;
+						})
+					}
                 </div>
                 <div className="middle">
                     {title}

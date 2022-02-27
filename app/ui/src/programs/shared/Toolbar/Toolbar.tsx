@@ -5,7 +5,7 @@ import { IconBaseProps, IconType } from "react-icons/lib";
 import { Promisable } from "type-fest";
 import Config from "../../../common/config";
 import ReactIcons from "../../../shared/react-icons";
-import { Theme } from "../../../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 
 
 

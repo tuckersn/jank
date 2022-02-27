@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled, { CSSProperties } from "styled-components";
 import { BehaviorSubject } from "rxjs";
 import { Tab, TabProps } from "./Tab";
-import { Theme } from "../../../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 
 export interface TabManagerProps {
     tabs: {

@@ -2,18 +2,12 @@
 import { InstanceRegistry } from "@janktools/ui-framework/dist/Instances";
 import { MinimalProgram } from "@janktools/ui-framework/dist/Programs";
 import { nanoid } from "nanoid";
+import { MenuProgramComponent } from "../components/MenuProgramComponent";
 
-export const ExampleProgram: MinimalProgram<any> = {
-    uniqueName: 'example-program',
-    component:  function ExampleComponent() {
-		return <div style={{
-			color: "white",
-			backgroundColor: "darkgreen",
-			padding: "16px"
-		}}>
-			Example Extension Program! {nanoid()}
-		</div>;
-	},
+
+export const MenuProgram: MinimalProgram<any> = {
+    uniqueName: 'jank-menu',
+    component:  MenuProgramComponent,
     instanceInit: (instance) => {
         console.log("WEB BROWSER INSTANCE:", instance);
         return {
@@ -32,7 +26,7 @@ export const ExampleProgram: MinimalProgram<any> = {
     },
     state: {},
     deserialize: (serialized) => {
-        return InstanceRegistry.create<any>('example-program', {
+        return InstanceRegistry.create<any>('jank-menu', {
             id: nanoid(),
             destroy: () => {},
             serialize: () => ({})

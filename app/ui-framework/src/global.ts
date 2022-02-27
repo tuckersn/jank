@@ -1,5 +1,7 @@
-import { InstanceRegistry } from "@janktools/ui-framework/dist/Instances";
-import { ProgramRegistry } from "@janktools/ui-framework/dist/Programs";
+import * as Layout from "./layout";
+import { TitleBar } from "./layout/titlebar";
+import { InstanceRegistry } from "./Instances";
+import { ProgramRegistry } from "./Programs";
 
 function json<T extends Object>(value: T): string {
     return JSON.stringify(value, null, 4);
@@ -19,9 +21,10 @@ export let GlobalThings = {
     values,
     keys,
     InstanceRegistry,
-    ProgramRegistry
+    ProgramRegistry,
+	Layout,
+	TitleBar
 }
-
 
 export function loadIntoGlobal() {
     for(let key of Object.keys(GlobalThings)) {

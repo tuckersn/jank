@@ -1,10 +1,18 @@
 import * as chalk from "chalk";
-import * as util from "util";
 import highlight from "cli-highlight";
 
 export type InspectOptions = {
     tabSize?: number;
     colors?: boolean;
+}
+
+
+let nodeUtilModuleRef: any | null = null;
+export function util() {
+	if(nodeUtilModuleRef === null) {
+		nodeUtilModuleRef = require("util");
+	}
+	return nodeUtilModuleRef!;
 }
 
 
@@ -20,7 +28,8 @@ export async function inspect(value: any, options: InspectOptions = {}): Promise
                     language: 'json'
                 });
             } else {
-                util.inspect(value);
+				//TODO: verify we have access to node's modules?
+                util().inspect(value);
             }
     }
 

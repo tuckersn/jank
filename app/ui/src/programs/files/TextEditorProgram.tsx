@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Slider } from "../../common/components/Slider";
 import { fileStringFromPath } from "../../common/util";
-import { MonacoEditor } from "../../shared/monaco/MonacoEditor";
+import { MonacoEditor } from "@janktools/ui-framework/dist/components/Monaco";
 
 import { editor } from "monaco-editor";
 import { ToolBar, toolBarButton } from "../shared/Toolbar/Toolbar";

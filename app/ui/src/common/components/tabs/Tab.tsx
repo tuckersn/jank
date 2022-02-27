@@ -4,7 +4,7 @@ import { useDrag, useDrop } from "react-dnd";
 import styled from "styled-components";
 import { ValueOf } from "type-fest";
 import { BehaviorSubject } from "rxjs";
-import { Theme } from "../../../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 import { TabManagerProps } from "./TabManager";
 
 

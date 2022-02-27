@@ -4,7 +4,7 @@ An aptly named React & Electron based personal toolbox.
 ## ⚠️ SECURITY DISCLAIMER ⚠️
 This application is insecure, **USE AT YOUR OWN RISK.** This project was designed to be educational and entertainment.
 
-This early into development especially there are a number of extremely insecure aspects of this project. Using this project out of the box shouldn't pose any threats, but to enable the maximum user power the program it is inherently dangerous from a cyber security perspective.
+Everything about this application is insecure, and it will not be fixed. Feel free to make PRs, but this project was designed to be flexible at the cost of security. Everything from how every part of the application runs with nodeIntegration true to the REPL was not designed with security in mind.
 
 ### Extensions
 Extensions are compiled into the application itself, they are even loaded before the majority of the application. There is no limitations on extensions, they are complete packages with their own dependencies and no isolation. ***Do not download untrusted extensions, there are no protections.*** This application is a monorepo where extensions are just another package, and extensions can share code between each other.

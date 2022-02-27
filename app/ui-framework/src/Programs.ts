@@ -85,6 +85,22 @@ export module ProgramRegistry {
 		return program;
     }
 
+	/**
+	 * Ways of getting the underlying registry.
+	 */
+
+	export function getMap() {
+		return Object.assign({}, registry);
+	}
+
+	export function getList() {
+		return Object.values(ProgramRegistry.getMap());
+	}
+
+	export function map<OUTPUT>(fn: (program: Program) => OUTPUT) {
+		return ProgramRegistry.getList().map(fn);
+	}
+
     export async function destroy<ARGS=any>(uniqueName: string): Promise<Program<ARGS>> {
         if(registry[uniqueName].onDestruction) {
             //@ts-expect-error

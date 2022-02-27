@@ -3,7 +3,7 @@ import { InstanceRegistry } from "@janktools/ui-framework/dist/Instances";
 import { PaneProps } from "@janktools/ui-framework/dist/Panes";
 import { MinimalProgram } from "@janktools/ui-framework/dist/Programs";
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export const PROGRAM_NAME = 'jank-socket-client';
 
@@ -29,19 +29,35 @@ export const SocketClientComponent: React.FC<PaneProps<SocketClientState>> = () 
 		}
 	]);
 
+
 	return <div>
 		<div>
 			{
-				messages.map(({
-					content,
-					fromRemote,
-					time
-				}) => {
-					return <div>
-						{fromRemote ? "<" : ">"} {content} - {time}
+				Object.keys(messages).map((key: any) => {
+					const {
+						content,
+						fromRemote,
+						time
+					} = messages[key];
+					return <div key={key}>
+						{fromRemote ? "<" : ">"} {JSON.stringify(content)} - {JSON.stringify(time)}
 					</div>;
 				})
 			}
+		</div>
+		<div>
+			<textarea value={textInput} onChange={(e) => setTextInput(e.target.value)} onKeyDown={(event) => {
+				//https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values
+				if(event.code === 'Enter') {
+					console.log("ENTER")
+					setMessages([...messages, {
+						fromRemote: false,
+						time: new Date(),
+						content: textInput
+					}]);
+					setTextInput('');
+				}
+			}}></textarea> 
 		</div>
 	</div>
 };
@@ -50,15 +66,7 @@ export const SocketClientComponent: React.FC<PaneProps<SocketClientState>> = () 
 
 export const SocketClientProgram: MinimalProgram<SocketClientState> = {
     uniqueName: PROGRAM_NAME,
-    component:  function ExampleComponent() {
-		return <div style={{
-			color: "white",
-			backgroundColor: "darkgreen",
-			padding: "16px"
-		}}>
-			Example Extension Program! {nanoid()}
-		</div>;
-	},
+    component:  SocketClientComponent,
     instanceInit: (instance) => {
         return {
             actions: {},

@@ -1,0 +1,19 @@
+{
+	"name": "@janktools/scripts",
+	"version": "0.0.0",
+	"main": "index.js",
+	"author": "Tucker Sneed",
+	"license": "MIT",
+	"scripts": {
+		"pre": "bash ./pre.bash"
+	},
+	"private": true,
+	"workspaces": [],
+	"dependencies": {
+		"@types/node": "^17.0.10",
+		"styled-components": "^5.3.3"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.10"
+	}
+}

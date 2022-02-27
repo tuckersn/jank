@@ -11,10 +11,10 @@ import { Node, Electron } from "../../common/shims";
 import { nanoid } from "nanoid";
 import { Methods } from "console-feed/lib/definitions/Methods";
 import { relative } from "path";
-import { MonacoEditor } from "../../shared/monaco/MonacoEditor";
+import { MonacoEditor } from "@janktools/ui-framework/dist/components/Monaco";
 import * as monaco from "monaco-editor";
 import {KeyCode,KeyMod} from "monaco-editor";
-import { Theme } from "../../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 import { PaneProps } from "@janktools/ui-framework/dist/Panes";
 
 // const MonacoEnvironment = {

@@ -13,7 +13,7 @@ import { Tab, TabProps } from "../../common/components/tabs/Tab"
 
 //@ts-ignore
 import WebBrowserStyle from './WebBrowser.module.scss';
-import { Theme } from "../../Theme";
+import { Theme } from "@janktools/ui-framework/dist/Theme";
 import { MdAdd, MdArrowBack, MdArrowForward, MdBookmark, MdClose, MdDeveloperMode, MdMenu, MdRefresh } from "react-icons/md";
 import { useBehaviorSubject } from "../../common/hooks";
 import { ElectronShim, ipcRenderer } from "../../common/shims/electron";

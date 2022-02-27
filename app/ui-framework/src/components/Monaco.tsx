@@ -1,7 +1,8 @@
 import * as monaco from "monaco-editor";
+export * as module from "monaco-editor";
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { RGBColor } from "../../common/modules/colors";
-import { Theme } from "../../Theme";
+import { Colors } from "@janktools/shared/dist/util";
+import { Theme } from "../Theme";
 
 
 
@@ -12,13 +13,12 @@ export module Monaco {
         rules: [
         ],
         colors: {
-            "editor.background": RGBColor.toHex(Theme.current.value.baseColorDark)
+            "editor.background": Colors.RGB.toHex(Theme.current.value.baseColorDark)
         }
     })
 }
 
-
-
+export const mod = monaco;
 
 
 export type MonacoEditorProps = {
@@ -67,7 +67,8 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
             automaticLayout: true,
             wordWrap,
             minimap,
-            renderWhitespace
+            renderWhitespace,
+			insertSpaces: false
         }));
 	}, []);
 
